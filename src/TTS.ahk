@@ -173,7 +173,7 @@ InitializeVoices() {
 InitializeVoices()
 
 ; Global variables
-global APP_VERSION := "1.0.0"
+global APP_VERSION := "1.0.1"  ; Updated from 1.0.0 to 1.0.1
 global state := {
     isReading: false,
     isPaused: false,
@@ -481,7 +481,7 @@ getSelOrCbText() {
     A_Clipboard := ""
 
     Send "^c" ; Copy the selected text
-    if !ClipWait(0.5) {
+    if !ClipWait(1.0) {
         ; If no selection, restore the clipboard and use it
         if (OldClipboard != "") {
             text := OldClipboard
@@ -508,7 +508,7 @@ ReadText(language) {
 
     ResetState()
 
-    text := getSelOrCbText()  ; importée depuis browserShortcuts.ahk 
+    text := getSelOrCbText()
     if (text == "")
         return
         
