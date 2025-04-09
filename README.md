@@ -2,7 +2,7 @@
 
 A simple application to read text aloud using text-to-speech voices available on Windows 11.
 
-![TTS Control Interface](assets/tts_interface.png)
+![draggable Control Interface](assets/modal.png)
 
 ## Features
 
