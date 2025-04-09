@@ -12,21 +12,21 @@ InitializeVoices() {
     missingVoices := false
     oneCoreVoices := []
     standardVoices := []
-    
+
     ; Get list of OneCore voices
     try {
-        Loop Reg, sourcePath, "K" {
+        loop reg, sourcePath, "K" {
             oneCoreVoices.Push(A_LoopRegName)
         }
     }
-    
+
     ; Get list of standard voices
     try {
-        Loop Reg, destinationPaths[1], "K" {
+        loop reg, destinationPaths[1], "K" {
             standardVoices.Push(A_LoopRegName)
         }
     }
-    
+
     ; Compare voice counts
     if (oneCoreVoices.Length > standardVoices.Length) {
         missingVoices := true
@@ -38,7 +38,9 @@ InitializeVoices() {
 
     ; Request admin rights if needed
     if !A_IsAdmin {
-        MsgBox("Des voix supplémentaires sont disponibles. Le script va redémarrer avec les droits administrateur pour les installer.")
+        MsgBox(
+            "Des voix supplémentaires sont disponibles. Le script va redémarrer avec les droits administrateur pour les installer."
+        )
         try {
             if A_IsCompiled
                 Run '*RunAs "' A_ScriptFullPath '" /restart'
@@ -47,7 +49,8 @@ InitializeVoices() {
             ExitApp
         }
         catch {
-            MsgBox("Impossible d'obtenir les droits administrateur. Certaines voix pourraient ne pas être disponibles.")
+            MsgBox("Impossible d'obtenir les droits administrateur. Certaines voix pourraient ne pas être disponibles."
+            )
             return
         }
     }
@@ -55,12 +58,12 @@ InitializeVoices() {
     ; Copy registry keys and update voices
     try {
         voicesAdded := 0
-        
+
         for destPath in destinationPaths {
             for voiceName in oneCoreVoices {
                 sourceKey := sourcePath "\" voiceName
                 destKey := destPath "\" voiceName
-                
+
                 ; Check if voice already exists in destination
                 try {
                     existingValue := RegRead(destKey)
@@ -69,24 +72,24 @@ InitializeVoices() {
                     ; Voice doesn't exist, create it
                     try {
                         RegCreateKey(destKey)
-                        
+
                         ; Copy all values from source to destination
-                        Loop Reg, sourceKey, "V" {
+                        loop reg, sourceKey, "V" {
                             RegWrite(RegRead(sourceKey, A_LoopRegName), "REG_SZ", destKey, A_LoopRegName)
                         }
-                        
+
                         ; Also copy subkeys if any
-                        Loop Reg, sourceKey, "K" {
+                        loop reg, sourceKey, "K" {
                             subSourceKey := sourceKey "\" A_LoopRegName
                             subDestKey := destKey "\" A_LoopRegName
-                            
+
                             RegCreateKey(subDestKey)
-                            
-                            Loop Reg, subSourceKey, "V" {
+
+                            loop reg, subSourceKey, "V" {
                                 RegWrite(RegRead(subSourceKey, A_LoopRegName), "REG_SZ", subDestKey, A_LoopRegName)
                             }
                         }
-                        
+
                         voicesAdded++
                     } catch as err {
                         ; Continue with next voice if one fails
@@ -95,7 +98,7 @@ InitializeVoices() {
                 }
             }
         }
-        
+
         ; Also create compatibility mappings for easier access
         compatibilityMappings := Map(
             "MSTTS_V110_frFR_HortenseM", "TTS_MS_FR-FR_HORTENSE_11.0",
@@ -105,42 +108,42 @@ InitializeVoices() {
             "MSTTS_V110_enUS_DavidM", "TTS_MS_EN-US_DAVID_11.0",
             "MSTTS_V110_enUS_MarkM", "TTS_MS_EN-US_MARK_11.0"
         )
-        
+
         for oneCoreKey, compatKey in compatibilityMappings {
             sourceKey := sourcePath "\" oneCoreKey
-            
+
             ; Check if source exists
             try {
                 RegRead(sourceKey)
-                
+
                 ; Create compatibility mapping in both destinations
                 for destPath in destinationPaths {
                     destKey := destPath "\" compatKey
-                    
+
                     ; Skip if already exists
                     try {
                         RegRead(destKey)
                     } catch {
                         try {
                             RegCreateKey(destKey)
-                            
+
                             ; Copy values
-                            Loop Reg, sourceKey, "V" {
+                            loop reg, sourceKey, "V" {
                                 RegWrite(RegRead(sourceKey, A_LoopRegName), "REG_SZ", destKey, A_LoopRegName)
                             }
-                            
+
                             ; Copy subkeys
-                            Loop Reg, sourceKey, "K" {
+                            loop reg, sourceKey, "K" {
                                 subSourceKey := sourceKey "\" A_LoopRegName
                                 subDestKey := destKey "\" A_LoopRegName
-                                
+
                                 RegCreateKey(subDestKey)
-                                
-                                Loop Reg, subSourceKey, "V" {
+
+                                loop reg, subSourceKey, "V" {
                                     RegWrite(RegRead(subSourceKey, A_LoopRegName), "REG_SZ", subDestKey, A_LoopRegName)
                                 }
                             }
-                            
+
                             voicesAdded++
                         } catch as err {
                             OutputDebug("Error creating compatibility mapping for " compatKey ": " err.Message)
@@ -157,7 +160,7 @@ InitializeVoices() {
         if (voicesAdded > 0) {
             RunWait("net stop Audiosrv", , "Hide")
             RunWait("net start Audiosrv", , "Hide")
-            
+
             MsgBox(voicesAdded " voix supplémentaires ont été installées. L'application va redémarrer.")
             Reload
         } else {
@@ -173,7 +176,7 @@ InitializeVoices() {
 InitializeVoices()
 
 ; Global variables
-global APP_VERSION := "1.0.1"  ; Updated from 1.0.0 to 1.0.1
+global APP_VERSION := "1.0.6"  ; Updated from 1.0.5 to 1.0.6
 global state := {
     isReading: false,
     isPaused: false,
@@ -181,10 +184,12 @@ global state := {
     internalRate: 2, ; Integer speed for SAPI
     currentText: "",   ; Current text being read
     originalText: "",  ; Original complete text
-    volume: 100      ; Volume level (0-100)
+    volume: 100,     ; Volume level (0-100)
+    controlGuiVisible: false  ; Track if control GUI is visible
 }
 
 global voice := ComObject("SAPI.SpVoice")
+global controlGui := false  ; Will hold the control GUI instance
 
 ; Create tray icon - only needed if not compiled with an icon
 if (!A_IsCompiled)
@@ -208,7 +213,7 @@ if FileExist(startupPath)
 ; Function to toggle startup status
 ToggleStartup(*) {
     startupPath := A_Startup "\TTS Reader.lnk"
-    
+
     if FileExist(startupPath) {
         ; Remove from startup
         try {
@@ -239,31 +244,41 @@ A_TrayMenu.Default := "Shortcuts..."
 ; Function to display shortcuts help
 ShowHelp(*) {
     helpText := "
-    (    
+    (
     MAIN SHORTCUTS:
     Win+Y : Play/Stop selected text
     Win+Alt+Y : Pause/Resume reading
-    
+
     NAVIGATION:
     Win+Ctrl+Y : Skip to next paragraph
     Win+Shift+Y : Go to previous paragraph
-    
+
     SPEED:
     Numpad+ : Increase speed
     Numpad- : Decrease speed
-    
+
     VOLUME:
     Numpad* : Increase volume
     Numpad/ : Decrease volume
-    
+
+    CONTROL INTERFACE:
+    When reading starts, a control panel appears with:
+    ⏮ : Go to previous paragraph
+    ⏸/▶ : Pause/Resume reading
+    ⏹ : Stop reading
+    ⏭ : Skip to next paragraph
+
+    The control panel can be moved by dragging it.
+    It closes automatically when reading stops.
+
     === How to use ===
     1. Select or copy text in any application
     2. Press Win+Y to start reading
-    3. Use the shortcuts above to control playback
-    
+    3. Use the shortcuts or control panel to control playback
+
     Language is automatically detected (English or French).
     )"
-    
+
     helpGui := Gui("+AlwaysOnTop")
     helpGui.Title := "Shortcuts"
     helpGui.SetFont("s10", "Segoe UI")
@@ -280,7 +295,7 @@ UpdateHotkeys(enable := true) {
         Hotkey "NumpadSub", "On"
         Hotkey "NumpadMult", "On"      ; Volume Up
         Hotkey "NumpadDiv", "On"       ; Volume Down
-        
+
         ; Navigation and control hotkeys
         Hotkey "#^y", "On"              ; Next line
         Hotkey "#+y", "On"              ; Previous paragraph
@@ -291,7 +306,7 @@ UpdateHotkeys(enable := true) {
         Hotkey "NumpadSub", "Off"
         Hotkey "NumpadMult", "Off"     ; Volume Up
         Hotkey "NumpadDiv", "Off"      ; Volume Down
-        
+
         ; Navigation and control hotkeys
         Hotkey "#^y", "Off"             ; Next line
         Hotkey "#+y", "Off"             ; Previous paragraph
@@ -318,7 +333,7 @@ JumpToNextLine(*) {
     ; Do nothing if reading is paused
     if (state.isPaused)
         return
-    
+
     ; Get the currently reading text
     text := state.currentText
 
@@ -361,59 +376,70 @@ JumpToPreviousParagraph(*) {
 
     ; Static variables to track jumps and timing
     static lastJumpTime := 0
-    static jumpCount := 0
-    
+    static lastPosition := 0
+    static currentParagraphStart := 0
+    static isFirstJump := true
+
     currentTime := A_TickCount
-    
+    timeSinceLastJump := currentTime - lastJumpTime
+
     ; Calculate the actual position in the original text
     currentPosInCurrent := voice.Status.InputWordPosition
     currentTextStart := InStr(state.originalText, state.currentText)
     currentPos := currentTextStart + currentPosInCurrent
-    
-    ; Check if we're within the time window for multiple jumps
-    if (currentTime - lastJumpTime < 3000) {
-        jumpCount++
-    } else {
-        jumpCount := 1
-    }
-    
+
+    ; Check if we're within the time window for quick jumps
+    isQuickClick := timeSinceLastJump < 1500
+
     ; Record the time of this jump
     lastJumpTime := currentTime
-    
+
     ; Stop the current reading completely (necessary to reset SAPI state)
     voice.Speak("", 3)  ; SVSFPurgeBeforeSpeak (stops immediately)
-    
-    ; Calculate the new position in the original text
-    if (jumpCount == 1) {
-        ; For first jump, find the previous paragraph or line break
-        newPos := InStr(SubStr(state.originalText, 1, currentPos), "`n",, -1)
+
+    ; Determine where to jump
+    if (isQuickClick && !isFirstJump) {
+        ; For quick clicks after the first jump, go to previous paragraph
+        ; Start searching from before the current paragraph start
+        searchPos := currentParagraphStart - 1
+
+        ; If we're already at the beginning, stay there
+        if (searchPos < 1) {
+            newPos := 1
+        } else {
+            ; Find the previous line break
+            newPos := InStr(SubStr(state.originalText, 1, searchPos), "`n", , -1)
+
+            ; If no previous line break found, go to the beginning
+            if (!newPos)
+                newPos := 1
+        }
+
+        ; Update the current paragraph start for next jump
+        currentParagraphStart := newPos
+    } else {
+        ; For first click or slow clicks, find the beginning of the current sentence/paragraph
+        ; Look for the previous line break before the current position
+        newPos := InStr(SubStr(state.originalText, 1, currentPos), "`n", , -1)
+
+        ; If no line break found, go to the beginning of the text
         if (!newPos)
             newPos := 1
-    } else {
-        ; For multiple jumps, look for double line breaks (paragraphs)
-        searchPos := currentPos
-        paragraphCount := 0
-        
-        while (searchPos > 1 && paragraphCount < jumpCount) {
-            ; Look for paragraph break
-            foundPos := InStr(SubStr(state.originalText, 1, searchPos), "`n`n",, -1)
-            if (foundPos) {
-                searchPos := foundPos - 1
-                paragraphCount++
-            } else {
-                ; If no more paragraph breaks found, go to beginning
-                searchPos := 1
-                break
-            }
-        }
-        
-        newPos := searchPos
+
+        ; Store this position as the current paragraph start
+        currentParagraphStart := newPos
+        isFirstJump := false
     }
-    
+
+    ; Reset first jump flag if it's not a quick click
+    if (!isQuickClick) {
+        isFirstJump := true
+    }
+
     ; Create new text starting from the calculated position
     remainingText := SubStr(state.originalText, newPos)
     remainingText := RegExReplace(remainingText, "^[\r\n]+", "")
-    
+
     if (remainingText != "") {
         ; Update current text and start new reading
         state.currentText := remainingText
@@ -427,44 +453,44 @@ JumpToPreviousParagraph(*) {
 ; Helper function to find paragraph boundaries in text
 FindParagraphBoundaries(text) {
     boundaries := []
-    
+
     ; Always include the start of the text
     startPos := 1
-    
+
     ; Scan through the text to find paragraph boundaries
     searchPos := 1
     textLength := StrLen(text)
-    
+
     while (searchPos <= textLength) {
         ; Look for paragraph breaks (double newlines)
         paragraphBreak := InStr(text, "`n`n", false, searchPos)
-        
+
         ; If no more paragraph breaks, the end of text is the last boundary
         if (!paragraphBreak) {
             ; Add the final paragraph
             boundaries.Push({ start: startPos, end: textLength + 1 })
             break
         }
-        
+
         ; Add this paragraph boundary
         boundaries.Push({ start: startPos, end: paragraphBreak + 2 })
-        
+
         ; Skip past any consecutive newlines
         newPos := paragraphBreak + 2
         while (SubStr(text, newPos, 1) == "`n" && newPos <= textLength) {
             newPos++
         }
-        
+
         ; Start of next paragraph
         startPos := newPos
         searchPos := newPos
     }
-    
+
     ; If no paragraphs were found (no double newlines), treat the entire text as one paragraph
     if (boundaries.Length == 0) {
         boundaries.Push({ start: 1, end: textLength + 1 })
     }
-    
+
     return boundaries
 }
 AdjustSpeedUp(*) {
@@ -499,7 +525,6 @@ getSelOrCbText() {
     }
 }
 
-
 ReadText(language) {
     if (voice.Status.RunningState == 2 || state.isPaused) {
         StopReading()
@@ -511,7 +536,7 @@ ReadText(language) {
     text := getSelOrCbText()
     if (text == "")
         return
-        
+
     state.currentText := text
     state.originalText := text  ; Store the original text
     state.currentText := IgnoreCharacters(state.currentText)
@@ -525,6 +550,9 @@ ReadText(language) {
         ; Enable hotkeys when reading starts
         UpdateHotkeys(true)
         voice.Speak(state.currentText, 1)  ; Asynchronous reading
+
+        ; Show the control GUI
+        CreateControlGui()
 
         ; Monitor reading status
         SetTimer(CheckReadingStatus, 100)
@@ -595,6 +623,9 @@ TogglePause(*) {
         voice.Resume()
         state.isPaused := false
     }
+
+    ; Update the control GUI to reflect the new state
+    UpdateControlGui()
 }
 
 ResetState() {
@@ -604,6 +635,8 @@ ResetState() {
 }
 
 StopReading() {
+    global controlGui  ; Ensure we're using the global variable
+
     if (state.isPaused) {
         voice.Resume()
         state.isPaused := false
@@ -611,6 +644,11 @@ StopReading() {
     voice.Speak("", 3)  ; Stop current reading
     state.currentText := "" ; Reset text
     ResetState()
+
+    ; Close the control GUI if it's open
+    if (state.controlGuiVisible) {
+        CloseControlGui()
+    }
 }
 
 SetVoiceLanguage(language, text := "") {
@@ -640,12 +678,14 @@ SetVoiceLanguage(language, text := "") {
 DetectLanguage(text) {
     ; Language detection based on common words and patterns
     frenchWords := ["le", "la", "les", "un", "une", "des", "et", "ou", "mais", "donc", "or", "ni", "car", "que", "qui",
-        "quoi", "dont", "où", "à", "au", "avec", "pour", "sur", "dans", "par", "ce", "cette", "ces", "je", "tu", "il", "elle",
+        "quoi", "dont", "où", "à", "au", "avec", "pour", "sur", "dans", "par", "ce", "cette", "ces", "je", "tu", "il",
+        "elle",
         "nous", "vous", "ils", "elles", "mon", "ton", "son", "notre", "votre", "leur"
     ]
     englishWords := ["the", "and", "or", "but", "so", "yet", "for", "nor", "that", "which", "who", "whom", "whose",
         "when", "where", "why", "how", "a", "an", "in", "on", "at", "with", "by", "this", "these", "those", "is", "are",
-        "was", "were", "be", "been", "being", "have", "has", "had", "do", "does", "did", "will", "would", "shall", "should"
+        "was", "were", "be", "been", "being", "have", "has", "had", "do", "does", "did", "will", "would", "shall",
+        "should"
     ]
 
     ; Add weight to more distinctive words
@@ -654,7 +694,7 @@ DetectLanguage(text) {
 
     frenchScore := 0
     englishScore := 0
-    
+
     ; Count French-specific characters (adds to French score)
     frenchChars := "éèêëàâäôöùûüçÉÈÊËÀÂÄÔÖÙÛÜÇ"
     for char in StrSplit(text) {
@@ -670,7 +710,7 @@ DetectLanguage(text) {
             frenchScore++
         if (HasVal(englishWords, word))
             englishScore++
-            
+
         ; Give extra weight to distinctive words
         if (HasVal(distinctiveFrench, word))
             frenchScore += 2
@@ -737,7 +777,7 @@ ShowVolumeWindow() {
     volumeGui := Gui("+AlwaysOnTop -Caption +ToolWindow")
     volumeGui.SetFont("s12", "Arial")
     volumeGui.Add("Text", , "Volume: " . state.volume . "%")
-    
+
     ; Position the window
     screenWidth := A_ScreenWidth
     screenHeight := A_ScreenHeight
@@ -750,4 +790,165 @@ ShowVolumeWindow() {
 
     ; Close the window after 2 seconds
     SetTimer () => volumeGui.Destroy(), -2000
+}
+
+; Create and show the control interface GUI
+CreateControlGui() {
+    global controlGui  ; Ensure we're using the global variable
+
+    ; Destroy existing GUI if it exists
+    if (controlGui) {
+        controlGui.Destroy()
+    }
+
+    ; Create a new GUI with a compact style
+    controlGui := Gui("+AlwaysOnTop +LastFound +ToolWindow")
+    controlGui.Title := "TTS"
+    controlGui.SetFont("s10", "Segoe UI")
+    controlGui.OnEvent("Close", CloseControlGui)
+
+    ; Make the GUI draggable without click-through style
+    OnMessage(0x201, GuiDragHandler)  ; WM_LBUTTONDOWN message
+
+    ; Calculate position (top-right corner, 100px from top and right)
+    screenWidth := A_ScreenWidth
+    guiWidth := 200
+    guiHeight := 60
+    xPos := screenWidth - guiWidth - 100
+    yPos := 100
+
+    ; Add buttons with icons using Unicode symbols
+    buttonWidth := 30
+    buttonHeight := 30
+    buttonOptions := "w" . buttonWidth . " h" . buttonHeight
+
+    ; Previous paragraph button
+    controlGui.Add("Button", "x15 y15 " . buttonOptions, "⏮").OnEvent("Click", (*) => JumpToPreviousParagraph())
+
+    ; Play/Pause button
+    global playPauseBtn  ; Make this global too
+    playPauseBtn := controlGui.Add("Button", "x+10 y15 " . buttonOptions, state.isPaused ? "▶" : "⏸")
+    playPauseBtn.OnEvent("Click", TogglePause)
+
+    ; Stop button
+    controlGui.Add("Button", "x+10 y15 " . buttonOptions, "⏹").OnEvent("Click", (*) => CloseControlGui())
+
+    ; Next paragraph button
+    controlGui.Add("Button", "x+10 y15 " . buttonOptions, "⏭").OnEvent("Click", (*) => JumpToNextLine())
+
+    ; Show the GUI
+    controlGui.Show("x" . xPos . " y" . yPos . " w" . guiWidth . " h" . guiHeight . " NoActivate")
+    state.controlGuiVisible := true
+
+    return controlGui
+}
+
+; Variables for GUI dragging
+global dragState := {
+    isMouseDown: false,
+    initialX: 0,
+    initialY: 0,
+    initialWinX: 0,
+    initialWinY: 0
+}
+
+; Function to handle GUI dragging
+GuiDragHandler(wParam, lParam, msg, hwnd) {
+    global controlGui, dragState  ; Ensure we're using the global variables
+
+    if (!controlGui || !state.controlGuiVisible)
+        return
+
+    ; Get mouse position and control under cursor
+    MouseGetPos(&mouseX, &mouseY, &mouseWin, &mouseCtrl)
+
+    ; Only start dragging if we're on the window and not on a control
+    ; This allows dragging from the title bar or empty space, but not from buttons
+    if (mouseWin != controlGui.Hwnd || mouseCtrl)
+        return
+
+    ; Start dragging
+    dragState.isMouseDown := true
+    dragState.initialX := mouseX
+    dragState.initialY := mouseY
+
+    ; Get window position
+    WinGetPos(&winX, &winY, , , "ahk_id " . controlGui.Hwnd)
+    dragState.initialWinX := winX
+    dragState.initialWinY := winY
+
+    ; Set up mouse move and button up handlers
+    OnMessage(0x200, GuiDragMoveHandler)  ; WM_MOUSEMOVE
+    OnMessage(0x202, GuiDragReleaseHandler)  ; WM_LBUTTONUP
+
+    return 0  ; Prevent default handling
+}
+
+; Function to handle GUI dragging movement
+GuiDragMoveHandler(wParam, lParam, msg, hwnd) {
+    global controlGui, dragState  ; Ensure we're using the global variables
+
+    if (!dragState.isMouseDown || !controlGui || !state.controlGuiVisible)
+        return
+
+    ; Get current mouse position
+    MouseGetPos(&mouseX, &mouseY)
+
+    ; Calculate new window position
+    newX := dragState.initialWinX + (mouseX - dragState.initialX)
+    newY := dragState.initialWinY + (mouseY - dragState.initialY)
+
+    ; Move the window
+    WinMove(newX, newY, , , "ahk_id " . controlGui.Hwnd)
+
+    return 0
+}
+
+; Function to handle GUI drag release
+GuiDragReleaseHandler(wParam, lParam, msg, hwnd) {
+    global controlGui, dragState  ; Ensure we're using the global variables
+
+    if (!controlGui || !state.controlGuiVisible)
+        return
+
+    ; Stop dragging
+    dragState.isMouseDown := false
+
+    ; Remove handlers
+    OnMessage(0x200, GuiDragMoveHandler, 0)  ; Remove WM_MOUSEMOVE handler
+    OnMessage(0x202, GuiDragReleaseHandler, 0)  ; Remove WM_LBUTTONUP handler
+
+    return 0
+}
+
+; Function to close the control GUI
+CloseControlGui(*) {
+    global controlGui  ; Ensure we're using the global variable
+
+    if (controlGui) {
+        controlGui.Destroy()
+        controlGui := false
+        state.controlGuiVisible := false
+    }
+
+    ; If we're closing the GUI, also stop reading
+    if (state.isReading) {
+        StopReading()
+    }
+}
+
+; Function to update the control GUI (e.g., when pausing/resuming)
+UpdateControlGui() {
+    global controlGui  ; Ensure we're using the global variable
+
+    if (!controlGui || !state.controlGuiVisible)
+        return
+
+    ; Update play/pause button text based on current state
+    try {
+        ; Recreate the GUI to update the button state
+        CreateControlGui()
+    } catch as err {
+        OutputDebug("Error updating control GUI: " . err.Message)
+    }
 }

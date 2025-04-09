@@ -2,6 +2,8 @@
 
 A simple application to read text aloud using text-to-speech voices available on Windows 11.
 
+![TTS Control Interface](assets/tts_interface.png)
+
 ## Features
 
 - Read selected text or text copied to the clipboard
@@ -10,6 +12,8 @@ A simple application to read text aloud using text-to-speech voices available on
 - Navigate by paragraph
 - Pause and resume reading
 - Automatic startup with Windows (optional)
+- Control interface with play/pause, stop, forward, and backward buttons
+- Quick navigation between paragraphs with rapid clicks
 
 ## Installation
 
@@ -27,7 +31,7 @@ A simple application to read text aloud using text-to-speech voices available on
 1. Select text in any application **OR** use text already copied to the clipboard
    **IMPORTANT:** Selection always takes priority over clipboard content. If you want to use text from the clipboard, make sure no text is selected on screen.
 2. Press **Win+Y** to start reading
-3. Use the shortcuts below to control playback
+3. Use the shortcuts below to control playback or use the control interface that appears
 
 ### Keyboard Shortcuts
 
@@ -41,6 +45,21 @@ A simple application to read text aloud using text-to-speech voices available on
 - **Numpad/**: Decrease volume
 
 **Note:** You can also view the complete list of shortcuts by right-clicking on the TTS Reader icon in the system tray and selecting "Shortcuts...".
+
+### Control Interface
+
+When reading starts, a control panel appears with:
+- ⏮: Go to previous paragraph
+- ⏸/▶: Pause/Resume reading
+- ⏹: Stop reading
+- ⏭: Skip to next paragraph
+
+The control panel can be moved by dragging it and closes automatically when reading stops.
+
+The navigation buttons support rapid clicks for faster navigation:
+- First click on ⏮: Go to the beginning of the current paragraph
+- Rapid second click on ⏮: Go to the previous paragraph
+- Subsequent rapid clicks: Continue moving backward through paragraphs
 
 ## Troubleshooting
 
