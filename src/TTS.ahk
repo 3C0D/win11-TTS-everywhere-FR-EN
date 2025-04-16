@@ -176,7 +176,7 @@ InitializeVoices() {
 InitializeVoices()
 
 ; Global variables
-global APP_VERSION := "1.0.6"  ; Updated from 1.0.5 to 1.0.6
+global APP_VERSION := "1.0.7"  ; Updated from 1.0.6 to 1.0.7
 global state := {
     isReading: false,
     isPaused: false,
@@ -519,8 +519,13 @@ getSelOrCbText() {
         }
     } else {
         ; Use the selected text
-        text := A_Clipboard
-        A_Clipboard := OldClipboard
+        trimmedClipboard := RegExReplace(A_Clipboard, "[\s\r\n]+", "")
+        if (trimmedClipboard != "") {
+            text := A_Clipboard
+        } else {
+            text := OldClipboard
+            A_Clipboard := OldClipboard
+        }
         return text
     }
 }
@@ -796,6 +801,11 @@ ShowVolumeWindow() {
 CreateControlGui() {
     global controlGui  ; Ensure we're using the global variable
 
+    ; Remove any existing mouse message handlers to prevent duplicates
+    OnMessage(0x201, GuiDragHandler, 0)  ; Remove WM_LBUTTONDOWN handler
+    OnMessage(0x200, GuiDragMoveHandler, 0)  ; Remove WM_MOUSEMOVE handler
+    OnMessage(0x202, GuiDragReleaseHandler, 0)  ; Remove WM_LBUTTONUP handler
+
     ; Destroy existing GUI if it exists
     if (controlGui) {
         controlGui.Destroy()
@@ -892,11 +902,32 @@ GuiDragMoveHandler(wParam, lParam, msg, hwnd) {
         return
 
     ; Get current mouse position
-    MouseGetPos(&mouseX, &mouseY)
+    MouseGetPos(&mouseX, &mouseY, &mouseWin)
+
+    ; Make sure we're still over our window
+    if (mouseWin != controlGui.Hwnd)
+        return
 
     ; Calculate new window position
     newX := dragState.initialWinX + (mouseX - dragState.initialX)
     newY := dragState.initialWinY + (mouseY - dragState.initialY)
+
+    ; Ensure the window stays within screen boundaries
+    screenWidth := A_ScreenWidth
+    screenHeight := A_ScreenHeight
+
+    ; Get window dimensions
+    WinGetPos(, , &winWidth, &winHeight, "ahk_id " . controlGui.Hwnd)
+
+    ; Adjust position if needed to keep window on screen
+    if (newX < 0)
+        newX := 0
+    if (newY < 0)
+        newY := 0
+    if (newX + winWidth > screenWidth)
+        newX := screenWidth - winWidth
+    if (newY + winHeight > screenHeight)
+        newY := screenHeight - winHeight
 
     ; Move the window
     WinMove(newX, newY, , , "ahk_id " . controlGui.Hwnd)
@@ -923,7 +954,15 @@ GuiDragReleaseHandler(wParam, lParam, msg, hwnd) {
 
 ; Function to close the control GUI
 CloseControlGui(*) {
-    global controlGui  ; Ensure we're using the global variable
+    global controlGui, dragState  ; Ensure we're using the global variables
+
+    ; Remove any mouse message handlers
+    OnMessage(0x201, GuiDragHandler, 0)  ; Remove WM_LBUTTONDOWN handler
+    OnMessage(0x200, GuiDragMoveHandler, 0)  ; Remove WM_MOUSEMOVE handler
+    OnMessage(0x202, GuiDragReleaseHandler, 0)  ; Remove WM_LBUTTONUP handler
+
+    ; Reset drag state
+    dragState.isMouseDown := false
 
     if (controlGui) {
         controlGui.Destroy()
@@ -939,16 +978,23 @@ CloseControlGui(*) {
 
 ; Function to update the control GUI (e.g., when pausing/resuming)
 UpdateControlGui() {
-    global controlGui  ; Ensure we're using the global variable
+    global controlGui, playPauseBtn  ; Ensure we're using the global variables
 
-    if (!controlGui || !state.controlGuiVisible)
+    if (!controlGui || !state.controlGuiVisible || !playPauseBtn)
         return
 
-    ; Update play/pause button text based on current state
+    ; Update play/pause button text based on current state without recreating the GUI
     try {
-        ; Recreate the GUI to update the button state
-        CreateControlGui()
+        ; Just update the button text
+        playPauseBtn.Text := state.isPaused ? "▶" : "⏸"
     } catch as err {
         OutputDebug("Error updating control GUI: " . err.Message)
+
+        ; If updating fails, recreate the GUI as a fallback
+        try {
+            CreateControlGui()
+        } catch {
+            ; If even recreation fails, just ignore
+        }
     }
 }
