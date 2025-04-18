@@ -328,112 +328,117 @@ UpdateHotkeys(false)
 ; play/stop
 #y:: ReadText("AUTO")
 
-; Function to jump to the next line
+; Function to jump to the next line - version corrigée pour le dernier paragraphe
 JumpToNextLine(*) {
     ; Do nothing if reading is paused
     if (state.isPaused)
         return
-
-    ; Get the currently reading text
-    text := state.currentText
-
-    ; Get the current position in the text
-    currentPos := voice.Status.InputWordPosition
-
-    ; Search for the next line after the current position
-    nextPos := -1
-    nextPos := InStr(text, "`n", true, currentPos + 1)
-
-    ; If a valid position is found
-    if (nextPos > 0) {
-        ; Stop the current reading
-        voice.Speak("", 3)  ; 3 = SVSFPurgeBeforeSpeak (stops immediately)
-
-        ; Extract remaining text starting just after the line break
-        remainingText := SubStr(text, nextPos + 1)
-
-        ; Remove any initial line breaks if present
-        remainingText := RegExReplace(remainingText, "^[\r\n]+", "")
-
-        ; Resume reading with the remaining text
-        if (remainingText != "") {
-            state.currentText := remainingText
-            voice.Rate := state.internalRate
-            voice.Speak(remainingText, 1)  ; 1 = SVSFlagsAsync (asynchronous reading)
-        } else {
-            StopReading()  ; If no more text, stop reading
-        }
-    }
-}
-
-; pause/resume
-#!y:: TogglePause()
-
-; Function to jump to the previous paragraph
-JumpToPreviousParagraph(*) {
-    if (state.isPaused)
-        return
-
-    ; Static variables to track jumps and timing
-    static lastJumpTime := 0
-    static lastPosition := 0
-    static currentParagraphStart := 0
-    static isFirstJump := true
-
-    currentTime := A_TickCount
-    timeSinceLastJump := currentTime - lastJumpTime
 
     ; Calculate the actual position in the original text
     currentPosInCurrent := voice.Status.InputWordPosition
     currentTextStart := InStr(state.originalText, state.currentText)
     currentPos := currentTextStart + currentPosInCurrent
 
-    ; Check if we're within the time window for quick jumps
-    isQuickClick := timeSinceLastJump < 1500
+    ; Trouver le prochain saut de ligne après la position actuelle
+    nextPos := InStr(state.originalText, "`n", true, currentPos + 1)
 
-    ; Record the time of this jump
-    lastJumpTime := currentTime
+    ; Si aucun saut de ligne n'est trouvé, on est dans le dernier paragraphe
+    if (!nextPos) {
+        ; Vérifier s'il reste du texte après la position actuelle
+        if (currentPos < StrLen(state.originalText)) {
+            ; Il reste du texte, continuer la lecture depuis la position actuelle
+            ; sans arrêter la lecture en cours
+            return
+        } else {
+            ; On est vraiment à la fin du texte, ne rien faire
+            return
+        }
+    }
 
     ; Stop the current reading completely (necessary to reset SAPI state)
     voice.Speak("", 3)  ; SVSFPurgeBeforeSpeak (stops immediately)
 
-    ; Determine where to jump
-    if (isQuickClick && !isFirstJump) {
-        ; For quick clicks after the first jump, go to previous paragraph
-        ; Start searching from before the current paragraph start
-        searchPos := currentParagraphStart - 1
+    ; Commencer la lecture à partir de la position suivante
+    newPos := nextPos + 1  ; Juste après le saut de ligne
 
-        ; If we're already at the beginning, stay there
-        if (searchPos < 1) {
-            newPos := 1
-        } else {
-            ; Find the previous line break
-            newPos := InStr(SubStr(state.originalText, 1, searchPos), "`n", , -1)
+    ; Create new text starting from the calculated position
+    remainingText := SubStr(state.originalText, newPos)
+    remainingText := RegExReplace(remainingText, "^[\r\n]+", "")
 
-            ; If no previous line break found, go to the beginning
-            if (!newPos)
-                newPos := 1
-        }
-
-        ; Update the current paragraph start for next jump
-        currentParagraphStart := newPos
+    if (remainingText != "") {
+        ; Update current text and start new reading
+        state.currentText := remainingText
+        voice.Rate := state.internalRate
+        voice.Volume := state.volume  ; Réappliquer le volume
+        voice.Speak(remainingText, 1)  ; Start new asynchronous reading
     } else {
-        ; For first click or slow clicks, find the beginning of the current sentence/paragraph
-        ; Look for the previous line break before the current position
-        newPos := InStr(SubStr(state.originalText, 1, currentPos), "`n", , -1)
+        StopReading()  ; If no more text, stop reading
+    }
+}
 
-        ; If no line break found, go to the beginning of the text
-        if (!newPos)
-            newPos := 1
+; pause/resume
+#!y:: TogglePause()
 
-        ; Store this position as the current paragraph start
-        currentParagraphStart := newPos
-        isFirstJump := false
+; Function to jump to the previous paragraph - version qui ignore les lignes vides
+JumpToPreviousParagraph(*) {
+    if (state.isPaused)
+        return
+
+    ; Stop the current reading completely (necessary to reset SAPI state)
+    voice.Speak("", 3)  ; SVSFPurgeBeforeSpeak (stops immediately)
+
+    ; Trouver la position actuelle dans le texte original
+    currentPosInCurrent := voice.Status.InputWordPosition
+    currentTextStart := InStr(state.originalText, state.currentText)
+    currentPos := currentTextStart + currentPosInCurrent
+
+    ; Fonction pour vérifier si une ligne est vide (ne contient que des espaces)
+    IsEmptyLine(text, startPos, endPos) {
+        lineText := SubStr(text, startPos, endPos - startPos)
+        return RegExMatch(lineText, "^\s*$") ; Vérifie si la ligne ne contient que des espaces
     }
 
-    ; Reset first jump flag if it's not a quick click
-    if (!isQuickClick) {
-        isFirstJump := true
+    ; Trouver le paragraphe précédent non vide
+    searchPos := currentPos
+    foundNonEmptyParagraph := false
+
+    while (!foundNonEmptyParagraph && searchPos > 1) {
+        ; Trouver le saut de ligne précédent
+        prevLineBreak := InStr(SubStr(state.originalText, 1, searchPos), "`n", , -1)
+
+        ; Si aucun saut de ligne n'est trouvé, aller au début du texte
+        if (!prevLineBreak) {
+            newPos := 1
+            foundNonEmptyParagraph := true
+        } else {
+            ; Chercher le saut de ligne encore avant
+            textBeforePrevBreak := SubStr(state.originalText, 1, prevLineBreak - 1)
+            prevPrevLineBreak := InStr(textBeforePrevBreak, "`n", , -1)
+
+            ; Si aucun saut de ligne précédent n'est trouvé, aller au début du texte
+            if (!prevPrevLineBreak) {
+                newPos := 1
+                foundNonEmptyParagraph := true
+            } else {
+                ; Vérifier si le paragraphe entre les deux sauts de ligne est vide
+                paraStart := prevPrevLineBreak + 1
+                paraEnd := prevLineBreak
+
+                if (!IsEmptyLine(state.originalText, paraStart, paraEnd)) {
+                    ; Paragraphe non vide trouvé
+                    newPos := paraStart
+                    foundNonEmptyParagraph := true
+                } else {
+                    ; Paragraphe vide, continuer à chercher
+                    searchPos := prevPrevLineBreak
+                }
+            }
+        }
+    }
+
+    ; Si aucun paragraphe non vide n'est trouvé, aller au début du texte
+    if (!foundNonEmptyParagraph) {
+        newPos := 1
     }
 
     ; Create new text starting from the calculated position
@@ -444,6 +449,7 @@ JumpToPreviousParagraph(*) {
         ; Update current text and start new reading
         state.currentText := remainingText
         voice.Rate := state.internalRate
+        voice.Volume := state.volume  ; Réappliquer le volume
         voice.Speak(remainingText, 1)  ; Start new asynchronous reading
     } else {
         StopReading()
@@ -550,6 +556,7 @@ ReadText(language) {
     try {
         SetVoiceLanguage(language, state.currentText)
         voice.Rate := state.internalRate
+        voice.Volume := state.volume  ; S'assurer que le volume est appliqué avant la lecture
 
         state.isReading := true
         ; Enable hotkeys when reading starts
