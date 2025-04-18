@@ -177,6 +177,9 @@ InitializeVoices()
 
 ; Global variables
 global APP_VERSION := "1.0.7"  ; Updated from 1.0.6 to 1.0.7
+; Pas besoin de fichier de configuration, tout est stocké dans l'objet state
+; qui est conservé en mémoire tant que l'application est en cours d'exécution
+
 global state := {
     isReading: false,
     isPaused: false,
@@ -537,6 +540,7 @@ getSelOrCbText() {
 }
 
 ReadText(language) {
+
     if (voice.Status.RunningState == 2 || state.isPaused) {
         StopReading()
         return
@@ -827,12 +831,25 @@ CreateControlGui() {
     ; Make the GUI draggable without click-through style
     OnMessage(0x201, GuiDragHandler)  ; WM_LBUTTONDOWN message
 
-    ; Calculate position (top-right corner, 100px from top and right)
+    ; Calculate position (use saved position or default to top-right corner)
     screenWidth := A_ScreenWidth
+    screenHeight := A_ScreenHeight
     guiWidth := 200
     guiHeight := 60
+
+    ; Position par défaut (coin supérieur droit)
     xPos := screenWidth - guiWidth - 100
     yPos := 100
+
+    ; Ensure the window is still visible on screen (in case of resolution change)
+    if (xPos + guiWidth > screenWidth)
+        xPos := screenWidth - guiWidth - 20
+    if (yPos + guiHeight > screenHeight)
+        yPos := screenHeight - guiHeight - 20
+    if (xPos < 0)
+        xPos := 20
+    if (yPos < 0)
+        yPos := 20
 
     ; Add buttons with icons using Unicode symbols
     buttonWidth := 30
@@ -944,13 +961,16 @@ GuiDragMoveHandler(wParam, lParam, msg, hwnd) {
 
 ; Function to handle GUI drag release
 GuiDragReleaseHandler(wParam, lParam, msg, hwnd) {
-    global controlGui, dragState  ; Ensure we're using the global variables
+    global controlGui, dragState, state  ; Ensure we're using the global variables
 
     if (!controlGui || !state.controlGuiVisible)
         return
 
     ; Stop dragging
     dragState.isMouseDown := false
+
+    ; Save the current position of the window
+    WinGetPos(&winX, &winY, , , "ahk_id " . controlGui.Hwnd)
 
     ; Remove handlers
     OnMessage(0x200, GuiDragMoveHandler, 0)  ; Remove WM_MOUSEMOVE handler
