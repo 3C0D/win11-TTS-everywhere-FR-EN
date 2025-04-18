@@ -42,10 +42,15 @@ InitializeVoices() {
             "Des voix supplémentaires sont disponibles. Le script va redémarrer avec les droits administrateur pour les installer."
         )
         try {
+            ; Si l'application est compilée (format .exe distribué à l'utilisateur)
             if A_IsCompiled
+                ; Relance l'application avec droits administrateur en remplaçant l'instance actuelle
                 Run '*RunAs "' A_ScriptFullPath '" /restart'
             else
+                ; Version pour développement : lance l'interpréteur AutoHotkey avec le script
+                ; Cette partie n'est jamais exécutée dans la version compilée
                 Run '*RunAs "' A_AhkPath '" /restart "' A_ScriptFullPath '"'
+            ; Termine l'instance actuelle pour éviter d'avoir des doublons dans la zone de notification
             ExitApp
         }
         catch {
@@ -183,7 +188,7 @@ global APP_VERSION := "1.0.7"  ; Updated from 1.0.6 to 1.0.7
 global state := {
     isReading: false,
     isPaused: false,
-    speed: 2.0,  ; Speed for display
+    speed: 2.5,  ; Speed for display
     internalRate: 2, ; Integer speed for SAPI
     currentText: "",   ; Current text being read
     originalText: "",  ; Original complete text
@@ -1025,3 +1030,5 @@ UpdateControlGui() {
         }
     }
 }
+
+
