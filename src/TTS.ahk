@@ -213,14 +213,20 @@ global controlGui := false  ; Will hold the control GUI instance
 if (!A_IsCompiled)
     TraySetIcon(A_ScriptDir "\TTS.ico", , true)
 
+; Créer le menu de la barre d'état système
 A_TrayMenu.Delete()  ; Remove default options
 A_TrayMenu.Add("TTS Reader v" . APP_VERSION . " / Help", (*) => ShowHelp())
 A_TrayMenu.Add()  ; Separator
 A_TrayMenu.Add("Shortcuts...", (*) => ShowHelp())
 A_TrayMenu.Add()  ; Separator
 A_TrayMenu.Add("Run at startup", ToggleStartup)
-A_TrayMenu.Add()  ; Separator
-A_TrayMenu.Add("Reload Script", (*) => Reload())  ; Ajouter cette ligne
+
+; Ajouter l'option de rechargement uniquement en mode développement
+if (!A_IsCompiled) {
+    A_TrayMenu.Add()  ; Separator
+    A_TrayMenu.Add("Reload Script", (*) => Reload())
+}
+
 A_TrayMenu.Add()  ; Separator
 A_TrayMenu.Add("Exit", (*) => ExitApp())
 A_TrayMenu.Default := "Shortcuts..."
@@ -1091,6 +1097,7 @@ UpdateControlGui() {
         }
     }
 }
+
 
 
 
