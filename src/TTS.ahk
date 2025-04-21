@@ -1,5 +1,18 @@
 ﻿#Requires AutoHotkey v2.0
 
+; Définir la version en premier
+global APP_VERSION := "1.0.7"
+
+; Message de débogage
+if (!A_IsCompiled) {
+    MsgBox("TTS.ahk script loaded - Version: " . APP_VERSION . " - " . FormatTime(, "HH:mm:ss"))
+}
+
+; Raccourci pour le développement uniquement
+if (!A_IsCompiled) {
+    #!r::Reload()  ; Win+Alt+R pour recharger le script
+}
+
 InitializeVoices() {
     ; First check if voices are missing without admin rights
     sourcePath := "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech_OneCore\Voices\Tokens"
@@ -39,7 +52,7 @@ InitializeVoices() {
     ; Request admin rights if needed
     if !A_IsAdmin {
         MsgBox(
-            "Des voix supplémentaires sont disponibles. Le script va redémarrer avec les droits administrateur pour les installer."
+            "Additional voices are available. The script will restart with administrator rights to install them."
         )
         try {
             ; Si l'application est compilée (format .exe distribué à l'utilisateur)
@@ -47,15 +60,14 @@ InitializeVoices() {
                 ; Relance l'application avec droits administrateur en remplaçant l'instance actuelle
                 Run '*RunAs "' A_ScriptFullPath '" /restart'
             else
-                ; Version pour développement : lance l'interpréteur AutoHotkey avec le script
-                ; Cette partie n'est jamais exécutée dans la version compilée
+            ; Version pour développement : lance l'interpréteur AutoHotkey avec le script
+            ; Cette partie n'est jamais exécutée dans la version compilée
                 Run '*RunAs "' A_AhkPath '" /restart "' A_ScriptFullPath '"'
             ; Termine l'instance actuelle pour éviter d'avoir des doublons dans la zone de notification
             ExitApp
         }
         catch {
-            MsgBox("Impossible d'obtenir les droits administrateur. Certaines voix pourraient ne pas être disponibles."
-            )
+            MsgBox("Unable to obtain administrator rights. Some voices may not be available.")
             return
         }
     }
@@ -166,14 +178,14 @@ InitializeVoices() {
             RunWait("net stop Audiosrv", , "Hide")
             RunWait("net start Audiosrv", , "Hide")
 
-            MsgBox(voicesAdded " voix supplémentaires ont été installées. L'application va redémarrer.")
+            MsgBox(voicesAdded " additional voices have been installed. The application will restart.")
             Reload
         } else {
-            MsgBox("Aucune nouvelle voix n'a été installée.")
+            MsgBox("No new voices were installed.")
         }
     }
     catch as err {
-        MsgBox("Erreur lors de la mise à jour des voix: " err.Message)
+        MsgBox("Error updating voices: " err.Message)
     }
 }
 
@@ -181,10 +193,6 @@ InitializeVoices() {
 InitializeVoices()
 
 ; Global variables
-global APP_VERSION := "1.0.7"  ; Updated from 1.0.6 to 1.0.7
-; Pas besoin de fichier de configuration, tout est stocké dans l'objet state
-; qui est conservé en mémoire tant que l'application est en cours d'exécution
-
 global state := {
     isReading: false,
     isPaused: false,
@@ -193,7 +201,9 @@ global state := {
     currentText: "",   ; Current text being read
     originalText: "",  ; Original complete text
     volume: 100,     ; Volume level (0-100)
-    controlGuiVisible: false  ; Track if control GUI is visible
+    controlGuiVisible: false,  ; Track if control GUI is visible
+    guiX: A_ScreenWidth - 300, ; Position X de la fenêtre (marge à droite)
+    guiY: 100                  ; Position Y de la fenêtre (marge en haut)
 }
 
 global voice := ComObject("SAPI.SpVoice")
@@ -204,11 +214,13 @@ if (!A_IsCompiled)
     TraySetIcon(A_ScriptDir "\TTS.ico", , true)
 
 A_TrayMenu.Delete()  ; Remove default options
-A_TrayMenu.Add("TTS Reader v" . APP_VERSION, (*) => ShowHelp())
+A_TrayMenu.Add("TTS Reader v" . APP_VERSION . " / Help", (*) => ShowHelp())
 A_TrayMenu.Add()  ; Separator
 A_TrayMenu.Add("Shortcuts...", (*) => ShowHelp())
 A_TrayMenu.Add()  ; Separator
 A_TrayMenu.Add("Run at startup", ToggleStartup)
+A_TrayMenu.Add()  ; Separator
+A_TrayMenu.Add("Reload Script", (*) => Reload())  ; Ajouter cette ligne
 A_TrayMenu.Add()  ; Separator
 A_TrayMenu.Add("Exit", (*) => ExitApp())
 A_TrayMenu.Default := "Shortcuts..."
@@ -575,6 +587,16 @@ ReadText(language) {
         ; Show the control GUI
         CreateControlGui()
 
+        ; Initialiser les valeurs de la dernière position
+        WinGetPos(&winX, &winY, , , "ahk_id " . controlGui.Hwnd)
+        dragState.lastSavedX := winX
+        dragState.lastSavedY := winY
+
+        ; Démarrer le timer pour surveiller la position de la fenêtre
+        ; Cela permet de mettre à jour state.guiX et state.guiY même si l'utilisateur
+        ; déplace la fenêtre sans utiliser le drag and drop (par exemple avec Win+flèches)
+        SetTimer(MonitorWindowPosition, 500)  ; Vérifier toutes les 500ms
+
         ; Monitor reading status
         SetTimer(CheckReadingStatus, 100)
     } catch as err {
@@ -665,6 +687,9 @@ StopReading() {
     voice.Speak("", 3)  ; Stop current reading
     state.currentText := "" ; Reset text
     ResetState()
+
+    ; Arrêter le timer de surveillance de la position
+    SetTimer(MonitorWindowPosition, 0)
 
     ; Close the control GUI if it's open
     if (state.controlGuiVisible) {
@@ -842,9 +867,9 @@ CreateControlGui() {
     guiWidth := 200
     guiHeight := 60
 
-    ; Position par défaut (coin supérieur droit)
-    xPos := screenWidth - guiWidth - 100
-    yPos := 100
+    ; Utiliser la position sauvegardée dans l'objet state
+    xPos := state.guiX
+    yPos := state.guiY
 
     ; Ensure the window is still visible on screen (in case of resolution change)
     if (xPos + guiWidth > screenWidth)
@@ -882,13 +907,15 @@ CreateControlGui() {
     return controlGui
 }
 
-; Variables for GUI dragging
+; Variables for GUI dragging and position tracking
 global dragState := {
     isMouseDown: false,
     initialX: 0,
     initialY: 0,
     initialWinX: 0,
-    initialWinY: 0
+    initialWinY: 0,
+    lastSavedX: 0,  ; Dernière position X sauvegardée
+    lastSavedY: 0   ; Dernière position Y sauvegardée
 }
 
 ; Function to handle GUI dragging
@@ -977,11 +1004,42 @@ GuiDragReleaseHandler(wParam, lParam, msg, hwnd) {
     ; Save the current position of the window
     WinGetPos(&winX, &winY, , , "ahk_id " . controlGui.Hwnd)
 
+    ; Mettre à jour la position dans l'objet state
+    state.guiX := winX
+    state.guiY := winY
+
+    ; Afficher dans la console de débogage
+    OutputDebug("Position mise à jour dans state: X=" winX ", Y=" winY)
+
     ; Remove handlers
     OnMessage(0x200, GuiDragMoveHandler, 0)  ; Remove WM_MOUSEMOVE handler
     OnMessage(0x202, GuiDragReleaseHandler, 0)  ; Remove WM_LBUTTONUP handler
 
     return 0
+}
+
+; Function to monitor window position and update state
+MonitorWindowPosition() {
+    global controlGui, dragState, state
+
+    if (!controlGui || !state.controlGuiVisible)
+        return
+
+    ; Get current window position
+    WinGetPos(&winX, &winY, , , "ahk_id " . controlGui.Hwnd)
+
+    ; Check if position has changed since last update
+    if (winX != dragState.lastSavedX || winY != dragState.lastSavedY) {
+        ; Update state with new position
+        state.guiX := winX
+        state.guiY := winY
+
+        ; Update last saved position
+        dragState.lastSavedX := winX
+        dragState.lastSavedY := winY
+
+        OutputDebug("Position mise à jour via timer: X=" winX ", Y=" winY)
+    }
 }
 
 ; Function to close the control GUI
@@ -992,6 +1050,9 @@ CloseControlGui(*) {
     OnMessage(0x201, GuiDragHandler, 0)  ; Remove WM_LBUTTONDOWN handler
     OnMessage(0x200, GuiDragMoveHandler, 0)  ; Remove WM_MOUSEMOVE handler
     OnMessage(0x202, GuiDragReleaseHandler, 0)  ; Remove WM_LBUTTONUP handler
+
+    ; Arrêter le timer de surveillance de la position
+    SetTimer(MonitorWindowPosition, 0)
 
     ; Reset drag state
     dragState.isMouseDown := false
@@ -1030,5 +1091,16 @@ UpdateControlGui() {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
