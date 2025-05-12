@@ -1,7 +1,8 @@
 ﻿#Requires AutoHotkey v2.0
+#SingleInstance Force
 
 ; Définir la version en premier
-global APP_VERSION := "1.0.7"
+global APP_VERSION := "1.0.8"
 
 ; Message de débogage
 if (!A_IsCompiled) {
@@ -10,7 +11,7 @@ if (!A_IsCompiled) {
 
 ; Raccourci pour le développement uniquement
 if (!A_IsCompiled) {
-    #!r::Reload()  ; Win+Alt+R pour recharger le script
+    #!r:: Reload()  ; Win+Alt+R pour recharger le script
 }
 
 InitializeVoices() {
@@ -200,6 +201,8 @@ global state := {
     internalRate: 2, ; Integer speed for SAPI
     currentText: "",   ; Current text being read
     originalText: "",  ; Original complete text
+    paragraphs: [],    ; Liste des paragraphes du texte
+    currentParagraphIndex: 0, ; Index du paragraphe actuel
     volume: 100,     ; Volume level (0-100)
     controlGuiVisible: false,  ; Track if control GUI is visible
     guiX: A_ScreenWidth - 300, ; Position X de la fenêtre (marge à droite)
@@ -354,49 +357,33 @@ UpdateHotkeys(false)
 ; play/stop
 #y:: ReadText("AUTO")
 
-; Function to jump to the next line - version corrigée pour le dernier paragraphe
+; Function to jump to the next paragraph
 JumpToNextLine(*) {
     ; Do nothing if reading is paused
     if (state.isPaused)
         return
 
-    ; Calculate the actual position in the original text
-    currentPosInCurrent := voice.Status.InputWordPosition
-    currentTextStart := InStr(state.originalText, state.currentText)
-    currentPos := currentTextStart + currentPosInCurrent
-
-    ; Trouver le prochain saut de ligne après la position actuelle
-    nextPos := InStr(state.originalText, "`n", true, currentPos + 1)
-
-    ; Si aucun saut de ligne n'est trouvé, on est dans le dernier paragraphe
-    if (!nextPos) {
-        ; Vérifier s'il reste du texte après la position actuelle
-        if (currentPos < StrLen(state.originalText)) {
-            ; Il reste du texte, continuer la lecture depuis la position actuelle
-            ; sans arrêter la lecture en cours
-            return
-        } else {
-            ; On est vraiment à la fin du texte, ne rien faire
-            return
-        }
+    ; Vérifier si nous sommes déjà au dernier paragraphe
+    if (state.currentParagraphIndex >= state.paragraphs.Length) {
+        ; Nous sommes déjà au dernier paragraphe, ne rien faire
+        return
     }
 
     ; Stop the current reading completely (necessary to reset SAPI state)
     voice.Speak("", 3)  ; SVSFPurgeBeforeSpeak (stops immediately)
 
-    ; Commencer la lecture à partir de la position suivante
-    newPos := nextPos + 1  ; Juste après le saut de ligne
+    ; Passer au paragraphe suivant
+    state.currentParagraphIndex++
 
-    ; Create new text starting from the calculated position
-    remainingText := SubStr(state.originalText, newPos)
-    remainingText := RegExReplace(remainingText, "^[\r\n]+", "")
+    ; Récupérer le texte du paragraphe suivant
+    nextParagraphText := state.paragraphs[state.currentParagraphIndex]
 
-    if (remainingText != "") {
+    if (nextParagraphText != "") {
         ; Update current text and start new reading
-        state.currentText := remainingText
+        state.currentText := nextParagraphText
         voice.Rate := state.internalRate
-        voice.Volume := state.volume  ; Réappliquer le volume
-        voice.Speak(remainingText, 1)  ; Start new asynchronous reading
+        voice.Volume := state.volume
+        voice.Speak(nextParagraphText, 1)  ; Start new asynchronous reading
     } else {
         StopReading()  ; If no more text, stop reading
     }
@@ -405,78 +392,45 @@ JumpToNextLine(*) {
 ; pause/resume
 #!y:: TogglePause()
 
-; Function to jump to the previous paragraph - version qui ignore les lignes vides
+; Function to jump to the previous paragraph
 JumpToPreviousParagraph(*) {
     if (state.isPaused)
         return
 
+    ; Vérifier si nous sommes déjà au premier paragraphe
+    if (state.currentParagraphIndex <= 1) {
+        ; Nous sommes déjà au premier paragraphe, redémarrer la lecture depuis le début
+        state.currentParagraphIndex := 1
+
+        ; Stop the current reading completely (necessary to reset SAPI state)
+        voice.Speak("", 3)  ; SVSFPurgeBeforeSpeak (stops immediately)
+
+        ; Récupérer le texte du premier paragraphe
+        firstParagraphText := state.paragraphs[1]
+
+        ; Update current text and start new reading
+        state.currentText := firstParagraphText
+        voice.Rate := state.internalRate
+        voice.Volume := state.volume
+        voice.Speak(firstParagraphText, 1)  ; Start new asynchronous reading
+        return
+    }
+
     ; Stop the current reading completely (necessary to reset SAPI state)
     voice.Speak("", 3)  ; SVSFPurgeBeforeSpeak (stops immediately)
 
-    ; Trouver la position actuelle dans le texte original
-    currentPosInCurrent := voice.Status.InputWordPosition
-    currentTextStart := InStr(state.originalText, state.currentText)
-    currentPos := currentTextStart + currentPosInCurrent
+    ; Revenir au paragraphe précédent
+    state.currentParagraphIndex--
 
-    ; Fonction pour vérifier si une ligne est vide (ne contient que des espaces)
-    IsEmptyLine(text, startPos, endPos) {
-        lineText := SubStr(text, startPos, endPos - startPos)
-        return RegExMatch(lineText, "^\s*$") ; Vérifie si la ligne ne contient que des espaces
-    }
+    ; Récupérer le texte du paragraphe précédent
+    prevParagraphText := state.paragraphs[state.currentParagraphIndex]
 
-    ; Trouver le paragraphe précédent non vide
-    searchPos := currentPos
-    foundNonEmptyParagraph := false
-
-    while (!foundNonEmptyParagraph && searchPos > 1) {
-        ; Trouver le saut de ligne précédent
-        prevLineBreak := InStr(SubStr(state.originalText, 1, searchPos), "`n", , -1)
-
-        ; Si aucun saut de ligne n'est trouvé, aller au début du texte
-        if (!prevLineBreak) {
-            newPos := 1
-            foundNonEmptyParagraph := true
-        } else {
-            ; Chercher le saut de ligne encore avant
-            textBeforePrevBreak := SubStr(state.originalText, 1, prevLineBreak - 1)
-            prevPrevLineBreak := InStr(textBeforePrevBreak, "`n", , -1)
-
-            ; Si aucun saut de ligne précédent n'est trouvé, aller au début du texte
-            if (!prevPrevLineBreak) {
-                newPos := 1
-                foundNonEmptyParagraph := true
-            } else {
-                ; Vérifier si le paragraphe entre les deux sauts de ligne est vide
-                paraStart := prevPrevLineBreak + 1
-                paraEnd := prevLineBreak
-
-                if (!IsEmptyLine(state.originalText, paraStart, paraEnd)) {
-                    ; Paragraphe non vide trouvé
-                    newPos := paraStart
-                    foundNonEmptyParagraph := true
-                } else {
-                    ; Paragraphe vide, continuer à chercher
-                    searchPos := prevPrevLineBreak
-                }
-            }
-        }
-    }
-
-    ; Si aucun paragraphe non vide n'est trouvé, aller au début du texte
-    if (!foundNonEmptyParagraph) {
-        newPos := 1
-    }
-
-    ; Create new text starting from the calculated position
-    remainingText := SubStr(state.originalText, newPos)
-    remainingText := RegExReplace(remainingText, "^[\r\n]+", "")
-
-    if (remainingText != "") {
+    if (prevParagraphText != "") {
         ; Update current text and start new reading
-        state.currentText := remainingText
+        state.currentText := prevParagraphText
         voice.Rate := state.internalRate
-        voice.Volume := state.volume  ; Réappliquer le volume
-        voice.Speak(remainingText, 1)  ; Start new asynchronous reading
+        voice.Volume := state.volume
+        voice.Speak(prevParagraphText, 1)  ; Start new asynchronous reading
     } else {
         StopReading()
     }
@@ -562,6 +516,31 @@ getSelOrCbText() {
     }
 }
 
+; Fonction pour diviser le texte en paragraphes
+SplitIntoParagraphs(text) {
+    ; Méthode simple : considérer chaque ligne comme un paragraphe
+    ; Cela garantit que le texte est lu ligne par ligne
+    paragraphs := []
+
+    ; Diviser le texte en lignes
+    lines := StrSplit(text, "`n")
+
+    ; Ajouter chaque ligne non vide comme un paragraphe
+    for line in lines {
+        ; Ignorer les lignes vides
+        if (!RegExMatch(line, "^\s*$")) {
+            paragraphs.Push(line)
+        }
+    }
+
+    ; Si aucun paragraphe n'a été trouvé, ajouter le texte entier comme un seul paragraphe
+    if (paragraphs.Length == 0 && text != "") {
+        paragraphs.Push(text)
+    }
+
+    return paragraphs
+}
+
 ReadText(language) {
 
     if (voice.Status.RunningState == 2 || state.isPaused) {
@@ -575,10 +554,15 @@ ReadText(language) {
     if (text == "")
         return
 
-    state.currentText := text
     state.originalText := text  ; Store the original text
-    state.currentText := IgnoreCharacters(state.currentText)
     state.originalText := IgnoreCharacters(state.originalText)
+
+    ; Diviser le texte en paragraphes
+    state.paragraphs := SplitIntoParagraphs(state.originalText)
+
+    ; Commencer par le premier paragraphe
+    state.currentParagraphIndex := 1
+    state.currentText := state.paragraphs[state.currentParagraphIndex]
 
     try {
         SetVoiceLanguage(language, state.currentText)
@@ -613,6 +597,25 @@ ReadText(language) {
 
 CheckReadingStatus() {
     if (voice.Status.RunningState == 1) { ; If reading is complete
+        ; Vérifier s'il y a d'autres paragraphes à lire
+        if (state.currentParagraphIndex < state.paragraphs.Length) {
+            ; Passer au paragraphe suivant
+            state.currentParagraphIndex++
+
+            ; Récupérer le texte du paragraphe suivant
+            nextParagraphText := state.paragraphs[state.currentParagraphIndex]
+
+            if (nextParagraphText != "") {
+                ; Update current text and start new reading
+                state.currentText := nextParagraphText
+                voice.Rate := state.internalRate
+                voice.Volume := state.volume
+                voice.Speak(nextParagraphText, 1)  ; Start new asynchronous reading
+                return
+            }
+        }
+
+        ; Si nous sommes arrivés ici, c'est qu'il n'y a plus de paragraphes à lire
         StopReading()
         SetTimer(CheckReadingStatus, 0) ; Stop the timer
     }
@@ -680,6 +683,8 @@ TogglePause(*) {
 ResetState() {
     state.isReading := false
     state.isPaused := false
+    state.paragraphs := []
+    state.currentParagraphIndex := 0
     UpdateHotkeys(false)
 }
 
@@ -793,11 +798,37 @@ HasVal(haystack, needle) {
 }
 
 IgnoreCharacters(text) {
-    ; Removes specific characters from text
-    charactersToIgnore := ["*", " #", "##", "# ", "\n#", "@", "//", "/"]
+    ; Ignorer d'abord les adresses web (http://, https://, www.)
+    ; Le ? après le s rend le s optionnel, donc cette règle capture http:// et https://
+    text := RegExReplace(text, "https?://[^\s]+", "")
+    ; Cette règle capture les URLs commençant par www.
+    text := RegExReplace(text, "www\.[^\s]+", "")
+
+    ; Ignorer les chemins de fichiers (contenant plusieurs slash ou antislash)
+    text := RegExReplace(text, "[A-Za-z]:\\[^\s\\/:*?" "<>|]+(?:\\[^\s\\/:*?" "<>|]+)+", "")  ; Chemins Windows
+    text := RegExReplace(text, "/(?:[^\s/]+/)+", "")  ; Chemins Unix/Linux
+
+    ; Ignorer les doubles slash (//) mais conserver les slash simples (/)
+    text := RegExReplace(text, "//", "")
+
+    ; Remplacer les antislash isolés par le mot "backslash" pour que le moteur TTS les lise
+    text := RegExReplace(text, "(?<!\S)\\(?!\S)", " backslash ")
+
+    ; Remplacer les slash isolés par le mot "slash" pour que le moteur TTS les lise de façon cohérente
+    text := RegExReplace(text, "(?<!\S)/(?!\S)", " slash ")
+
+    ; Supprimer le dièse des hashtags (#mot) mais conserver le mot
+    text := RegExReplace(text, "#(\w+)", "$1")
+
+    ; Supprimer les dièses des titres markdown (# Titre, ## Titre, etc.) mais conserver le texte
+    text := RegExReplace(text, "m)^#{1,6}\s+(.*?)$", "$1")  ; Le m) au début active le mode multiline
+
+    ; Ignorer les caractères spécifiques restants
+    charactersToIgnore := ["*", "@"]
     for char in charactersToIgnore {
         text := StrReplace(text, char, "")
     }
+
     return text
 }
 
@@ -1097,17 +1128,3 @@ UpdateControlGui() {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
