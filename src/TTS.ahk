@@ -2,7 +2,7 @@
 #SingleInstance Force
 
 ; Définir la version en premier
-global APP_VERSION := "1.0.8"
+global APP_VERSION := "1.0.9"
 
 ; Message de débogage
 if (!A_IsCompiled) {
@@ -205,12 +205,14 @@ global state := {
     currentParagraphIndex: 0, ; Index du paragraphe actuel
     volume: 100,     ; Volume level (0-100)
     controlGuiVisible: false,  ; Track if control GUI is visible
+    settingsGuiVisible: false, ; Track if settings GUI is visible
     guiX: A_ScreenWidth - 300, ; Position X de la fenêtre (marge à droite)
     guiY: 100                  ; Position Y de la fenêtre (marge en haut)
 }
 
 global voice := ComObject("SAPI.SpVoice")
 global controlGui := false  ; Will hold the control GUI instance
+global settingsGui := false  ; Will hold the settings GUI instance
 
 ; Create tray icon - only needed if not compiled with an icon
 if (!A_IsCompiled)
@@ -296,6 +298,7 @@ ShowHelp(*) {
     ⏸/▶ : Pause/Resume reading
     ⏹ : Stop reading
     ⏭ : Skip to next paragraph
+    ⚙ : Open settings (speed and volume)
 
     The control panel can be moved by dragging it.
     It closes automatically when reading stops.
@@ -635,6 +638,11 @@ AdjustSpeed(delta) {
 
     ; Display the speed window
     ShowSpeedWindow()
+
+    ; Force update of settings GUI if it's visible
+    if (state.settingsGuiVisible) {
+        UpdateSettingsValues()
+    }
 }
 
 ShowSpeedWindow() {
@@ -701,6 +709,11 @@ StopReading() {
 
     ; Arrêter le timer de surveillance de la position
     SetTimer(MonitorWindowPosition, 0)
+
+    ; Close the settings GUI if it's open
+    if (state.settingsGuiVisible) {
+        CloseSettingsGui()
+    }
 
     ; Close the control GUI if it's open
     if (state.controlGuiVisible) {
@@ -837,6 +850,11 @@ VolumeUp(*) {
         state.volume += 10
         voice.Volume := state.volume
         ShowVolumeWindow()
+
+        ; Force update of settings GUI if it's visible
+        if (state.settingsGuiVisible) {
+            UpdateSettingsValues()
+        }
     }
 }
 
@@ -845,6 +863,11 @@ VolumeDown(*) {
         state.volume -= 10
         voice.Volume := state.volume
         ShowVolumeWindow()
+
+        ; Force update of settings GUI if it's visible
+        if (state.settingsGuiVisible) {
+            UpdateSettingsValues()
+        }
     }
 }
 
@@ -901,7 +924,7 @@ CreateControlGui() {
     ; Calculate position (use saved position or default to top-right corner)
     screenWidth := A_ScreenWidth
     screenHeight := A_ScreenHeight
-    guiWidth := 200
+    guiWidth := 240  ; Increased width to accommodate the settings button
     guiHeight := 60
 
     ; Utiliser la position sauvegardée dans l'objet state
@@ -936,6 +959,9 @@ CreateControlGui() {
 
     ; Next paragraph button
     controlGui.Add("Button", "x+10 y15 " . buttonOptions, "⏭").OnEvent("Click", (*) => JumpToNextLine())
+
+    ; Settings button (gear icon)
+    controlGui.Add("Button", "x+10 y15 " . buttonOptions, "⚙").OnEvent("Click", ToggleSettingsGui)
 
     ; Show the GUI
     controlGui.Show("x" . xPos . " y" . yPos . " w" . guiWidth . " h" . guiHeight . " NoActivate")
@@ -989,7 +1015,7 @@ GuiDragHandler(wParam, lParam, msg, hwnd) {
 
 ; Function to handle GUI dragging movement
 GuiDragMoveHandler(wParam, lParam, msg, hwnd) {
-    global controlGui, dragState  ; Ensure we're using the global variables
+    global controlGui, settingsGui, dragState, state  ; Ensure we're using the global variables
 
     if (!dragState.isMouseDown || !controlGui || !state.controlGuiVisible)
         return
@@ -1025,6 +1051,16 @@ GuiDragMoveHandler(wParam, lParam, msg, hwnd) {
     ; Move the window
     WinMove(newX, newY, , , "ahk_id " . controlGui.Hwnd)
 
+    ; If settings GUI is open, move it to follow the main GUI
+    if (settingsGui && state.settingsGuiVisible) {
+        ; Calculate new position for settings GUI (below the main GUI)
+        settingsX := newX
+        settingsY := newY + winHeight
+
+        ; Move the settings GUI
+        WinMove(settingsX, settingsY, , , "ahk_id " . settingsGui.Hwnd)
+    }
+
     return 0
 }
 
@@ -1057,13 +1093,13 @@ GuiDragReleaseHandler(wParam, lParam, msg, hwnd) {
 
 ; Function to monitor window position and update state
 MonitorWindowPosition() {
-    global controlGui, dragState, state
+    global controlGui, settingsGui, dragState, state
 
     if (!controlGui || !state.controlGuiVisible)
         return
 
     ; Get current window position
-    WinGetPos(&winX, &winY, , , "ahk_id " . controlGui.Hwnd)
+    WinGetPos(&winX, &winY, &winWidth, &winHeight, "ahk_id " . controlGui.Hwnd)
 
     ; Check if position has changed since last update
     if (winX != dragState.lastSavedX || winY != dragState.lastSavedY) {
@@ -1076,6 +1112,16 @@ MonitorWindowPosition() {
         dragState.lastSavedY := winY
 
         OutputDebug("Position mise à jour via timer: X=" winX ", Y=" winY)
+
+        ; If settings GUI is open, move it to follow the main GUI
+        if (settingsGui && state.settingsGuiVisible) {
+            ; Calculate new position for settings GUI (below the main GUI)
+            settingsX := winX
+            settingsY := winY + winHeight
+
+            ; Move the settings GUI
+            WinMove(settingsX, settingsY, , , "ahk_id " . settingsGui.Hwnd)
+        }
     }
 }
 
@@ -1093,6 +1139,11 @@ CloseControlGui(*) {
 
     ; Reset drag state
     dragState.isMouseDown := false
+
+    ; Close the settings GUI if it's open
+    if (state.settingsGuiVisible) {
+        CloseSettingsGui()
+    }
 
     if (controlGui) {
         controlGui.Destroy()
@@ -1126,5 +1177,106 @@ UpdateControlGui() {
         } catch {
             ; If even recreation fails, just ignore
         }
+    }
+}
+
+; Function to toggle the settings GUI
+ToggleSettingsGui(*) {
+    global settingsGui
+
+    if (state.settingsGuiVisible) {
+        CloseSettingsGui()
+    } else {
+        CreateSettingsGui()
+    }
+}
+
+; Function to create the settings GUI
+CreateSettingsGui() {
+    global settingsGui, controlGui
+
+    ; Variables globales pour stocker les références aux contrôles de texte
+    global speedTextCtrl, volumeTextCtrl
+
+    ; Destroy existing GUI if it exists
+    if (settingsGui) {
+        settingsGui.Destroy()
+    }
+
+    ; Get position of the main control GUI
+    WinGetPos(&controlX, &controlY, &controlWidth, &controlHeight, "ahk_id " . controlGui.Hwnd)
+
+    ; Create a new GUI with a compact style
+    settingsGui := Gui("+AlwaysOnTop +ToolWindow -Caption +Owner" . controlGui.Hwnd)
+    settingsGui.SetFont("s10", "Segoe UI")
+
+    ; Calculate position (below the main control GUI)
+    settingsWidth := 240  ; Keep original width
+    settingsHeight := 120
+    settingsX := controlX
+    settingsY := controlY + controlHeight
+
+    ; Add controls for speed adjustment
+    settingsGui.Add("Text", "x10 y10 w60", "Vitesse:")
+    settingsGui.Add("Button", "x+5 y8 w30 h25", "-").OnEvent("Click", (*) => AdjustSpeedDown())
+    speedTextCtrl := settingsGui.Add("Text", "x+5 y10 w30 Center", Format("{:.1f}", state.speed))
+    settingsGui.Add("Button", "x+5 y8 w30 h25", "+").OnEvent("Click", (*) => AdjustSpeedUp())
+    settingsGui.Add("Text", "x+5 y10 w30", "Num±")
+
+    ; Add controls for volume adjustment
+    settingsGui.Add("Text", "x10 y45 w60", "Volume:")
+    settingsGui.Add("Button", "x+5 y43 w30 h25", "-").OnEvent("Click", (*) => VolumeDown())
+    volumeTextCtrl := settingsGui.Add("Text", "x+5 y45 w30 Center", state.volume . "%")
+    settingsGui.Add("Button", "x+5 y43 w30 h25", "+").OnEvent("Click", (*) => VolumeUp())
+    settingsGui.Add("Text", "x+5 y45 w30", "Num*/")
+
+    ; Add info text
+    settingsGui.Add("Text", "x10 y80 w220 Center", "Cliquez sur ⚙ pour fermer")
+
+    ; Show the GUI
+    settingsGui.Show("x" . settingsX . " y" . settingsY . " w" . settingsWidth . " h" . settingsHeight . " NoActivate")
+    state.settingsGuiVisible := true
+
+    ; Update the settings values every 100ms
+    SetTimer(UpdateSettingsValues, 100)
+
+    return settingsGui
+}
+
+; Function to update the settings values in real-time
+UpdateSettingsValues() {
+    global settingsGui, speedTextCtrl, volumeTextCtrl
+
+    if (!settingsGui || !state.settingsGuiVisible)
+        return
+
+    try {
+        ; Mettre à jour les valeurs directement
+        if (speedTextCtrl) {
+            speedTextCtrl.Text := Format("{:.1f}", state.speed)
+        }
+
+        if (volumeTextCtrl) {
+            volumeTextCtrl.Text := state.volume . "%"
+        }
+    } catch as err {
+        OutputDebug("Error updating settings GUI: " . err.Message)
+        SetTimer(UpdateSettingsValues, 0)  ; Stop the timer if there's an error
+    }
+}
+
+; Function to close the settings GUI
+CloseSettingsGui(*) {
+    global settingsGui, speedTextCtrl, volumeTextCtrl
+
+    ; Stop the update timer
+    SetTimer(UpdateSettingsValues, 0)
+
+    if (settingsGui) {
+        settingsGui.Destroy()
+        settingsGui := false
+        speedTextCtrl := false
+        volumeTextCtrl := false
+        state.settingsGuiVisible := false
     }
 }
