@@ -1,6 +1,10 @@
 ﻿#Requires AutoHotkey v2.0
 #SingleInstance Force
 
+; Todo: Videz les variables inutiles quand on stoppe. Pour ne pas les garder en mémoire
+; Ajoutez Des options de choix de langue. Ça pourrait être dans le systray.
+; Améliorer la détection des langues.
+
 ; Définir la version en premier
 global APP_VERSION := "1.0.9"
 
@@ -312,7 +316,7 @@ ShowHelp(*) {
     )"
 
     helpGui := Gui("+AlwaysOnTop")
-    helpGui.Title := "Shortcuts"
+    helpGui.Title := "Help"
     helpGui.SetFont("s10", "Segoe UI")
     helpGui.Add("Text", "w500", helpText)
     helpGui.Add("Button", "Default w100", "OK").OnEvent("Click", (*) => helpGui.Destroy())
@@ -440,48 +444,49 @@ JumpToPreviousParagraph(*) {
 }
 
 ; Helper function to find paragraph boundaries in text
-FindParagraphBoundaries(text) {
-    boundaries := []
+; FindParagraphBoundaries(text) {
+;     boundaries := []
 
-    ; Always include the start of the text
-    startPos := 1
+;     ; Always include the start of the text
+;     startPos := 1
 
-    ; Scan through the text to find paragraph boundaries
-    searchPos := 1
-    textLength := StrLen(text)
+;     ; Scan through the text to find paragraph boundaries
+;     searchPos := 1
+;     textLength := StrLen(text)
 
-    while (searchPos <= textLength) {
-        ; Look for paragraph breaks (double newlines)
-        paragraphBreak := InStr(text, "`n`n", false, searchPos)
+;     while (searchPos <= textLength) {
+;         ; Look for paragraph breaks (double newlines)
+;         paragraphBreak := InStr(text, "`n`n", false, searchPos)
 
-        ; If no more paragraph breaks, the end of text is the last boundary
-        if (!paragraphBreak) {
-            ; Add the final paragraph
-            boundaries.Push({ start: startPos, end: textLength + 1 })
-            break
-        }
+;         ; If no more paragraph breaks, the end of text is the last boundary
+;         if (!paragraphBreak) {
+;             ; Add the final paragraph
+;             boundaries.Push({ start: startPos, end: textLength + 1 })
+;             break
+;         }
 
-        ; Add this paragraph boundary
-        boundaries.Push({ start: startPos, end: paragraphBreak + 2 })
+;         ; Add this paragraph boundary
+;         boundaries.Push({ start: startPos, end: paragraphBreak + 2 })
 
-        ; Skip past any consecutive newlines
-        newPos := paragraphBreak + 2
-        while (SubStr(text, newPos, 1) == "`n" && newPos <= textLength) {
-            newPos++
-        }
+;         ; Skip past any consecutive newlines
+;         newPos := paragraphBreak + 2
+;         while (SubStr(text, newPos, 1) == "`n" && newPos <= textLength) {
+;             newPos++
+;         }
 
-        ; Start of next paragraph
-        startPos := newPos
-        searchPos := newPos
-    }
+;         ; Start of next paragraph
+;         startPos := newPos
+;         searchPos := newPos
+;     }
 
-    ; If no paragraphs were found (no double newlines), treat the entire text as one paragraph
-    if (boundaries.Length == 0) {
-        boundaries.Push({ start: 1, end: textLength + 1 })
-    }
+;     ; If no paragraphs were found (no double newlines), treat the entire text as one paragraph
+;     if (boundaries.Length == 0) {
+;         boundaries.Push({ start: 1, end: textLength + 1 })
+;     }
 
-    return boundaries
-}
+;     return boundaries
+; }
+
 AdjustSpeedUp(*) {
     AdjustSpeed(0.5)
 }
@@ -557,8 +562,7 @@ ReadText(language) {
     if (text == "")
         return
 
-    state.originalText := text  ; Store the original text
-    state.originalText := IgnoreCharacters(state.originalText)
+    state.originalText := IgnoreCharacters(text)
 
     ; Diviser le texte en paragraphes
     state.paragraphs := SplitIntoParagraphs(state.originalText)
@@ -811,6 +815,9 @@ HasVal(haystack, needle) {
 }
 
 IgnoreCharacters(text) {
+    ; Ignore les caractères répétés plus de 4 fois
+    text := RegExReplace(text, "(.)\1{4,}", "")
+    
     ; Ignorer d'abord les adresses web (http://, https://, www.)
     ; Le ? après le s rend le s optionnel, donc cette règle capture http:// et https://
     text := RegExReplace(text, "https?://[^\s]+", "")
@@ -924,7 +931,7 @@ CreateControlGui() {
     ; Calculate position (use saved position or default to top-right corner)
     screenWidth := A_ScreenWidth
     screenHeight := A_ScreenHeight
-    guiWidth := 240  ; Increased width to accommodate the settings button
+    guiWidth := 215  ; Increased width to accommodate the settings button
     guiHeight := 60
 
     ; Utiliser la position sauvegardée dans l'objet state
@@ -943,7 +950,7 @@ CreateControlGui() {
 
     ; Add buttons with icons using Unicode symbols
     buttonWidth := 30
-    buttonHeight := 30
+    buttonHeight := 28
     buttonOptions := "w" . buttonWidth . " h" . buttonHeight
 
     ; Previous paragraph button
