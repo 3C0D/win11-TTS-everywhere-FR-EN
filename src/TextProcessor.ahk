@@ -2,24 +2,24 @@
 
 ; Functions for text processing and language detection
 
-; Fonction pour diviser le texte en paragraphes
+; Function to split text into paragraphs
 SplitIntoParagraphs(text) {
-    ; Méthode simple : considérer chaque ligne comme un paragraphe
-    ; Cela garantit que le texte est lu ligne par ligne
+    ; Simple method: consider each line as a paragraph
+    ; This ensures the text is read line by line
     paragraphs := []
 
-    ; Diviser le texte en lignes
+    ; Split text into lines
     lines := StrSplit(text, "`n")
 
-    ; Ajouter chaque ligne non vide comme un paragraphe
+    ; Add each non-empty line as a paragraph
     for line in lines {
-        ; Ignorer les lignes vides
+        ; Ignore empty lines
         if (!RegExMatch(line, "^\s*$")) {
             paragraphs.Push(line)
         }
     }
 
-    ; Si aucun paragraphe n'a été trouvé, ajouter le texte entier comme un seul paragraphe
+    ; If no paragraphs were found, add the entire text as a single paragraph
     if (paragraphs.Length == 0 && text != "") {
         paragraphs.Push(text)
     }
@@ -93,29 +93,29 @@ HasVal(haystack, needle) {
 }
 
 IgnoreCharacters(text) {
-    ; Ignore les caractères répétés plus de 4 fois
+    ; Ignore characters repeated more than 4 times
     text := RegExReplace(text, "(.)\1{4,}", "")
 
-    ; Ignorer d'abord les adresses web (http://, https://, www.)
-    ; Le ? après le s rend le s optionnel, donc cette règle capture http:// et https://
+    ; First ignore web addresses (http://, https://, www.)
+    ; The ? after the s makes the s optional, so this rule captures http:// and https://
     text := RegExReplace(text, "https?://[^\s]+", "")
-    ; Cette règle capture les URLs commençant par www.
+    ; This rule captures URLs starting with www.
     text := RegExReplace(text, "www\.[^\s]+", "")
 
-    ; Ignorer les chemins de fichiers (contenant plusieurs slash ou antislash)
-    text := RegExReplace(text, "[A-Za-z]:\\[^\s\\/:*?" "<>|]+(?:\\[^\s\\/:*?" "<>|]+)+", "")  ; Chemins Windows
-    text := RegExReplace(text, "/(?:[^\s/]+/)+", "")  ; Chemins Unix/Linux
-    
-    ; Ignorer les doubles slash (//) mais conserver les slash simples (/)
+    ; Ignore file paths (containing multiple slashes or backslashes)
+    text := RegExReplace(text, "[A-Za-z]:\\[^\s\\/:*?" "<>|]+(?:\\[^\s\\/:*?" "<>|]+)+", "")  ; Windows paths
+    text := RegExReplace(text, "/(?:[^\s/]+/)+", "")  ; Unix/Linux paths
+
+    ; Ignore double slashes (//) but keep single slashes (/)
     text := RegExReplace(text, "//", "")
-    ; Remplacer les antislash isolés par le mot "backslash" pour que le moteur TTS les lise
+    ; Replace isolated backslashes with the word "backslash" so the TTS engine reads them
     text := RegExReplace(text, "(?<!\S)\\(?!\S)", " backslash ")
-    ; Remplacer les slash isolés par le mot "slash" pour que le moteur TTS les lise de façon cohérente
+    ; Replace isolated slashes with the word "slash" so the TTS engine reads them consistently
     text := RegExReplace(text, "(?<!\S)/(?!\S)", " slash ")
-    ; Supprimer le dièse des hashtags (#mot) mais conserver le mot
+    ; Remove the hash from hashtags (#word) but keep the word
     text := RegExReplace(text, "#(\w+)", "$1")
-    ; Supprimer les dièses des titres markdown (# Titre, ## Titre, etc.) mais conserver le texte
-    text := RegExReplace(text, "m)^#{1,6}\s+(.*?)$", "$1")  ; Le m) au début active le mode multiline
+    ; Remove hashes from markdown titles (# Title, ## Title, etc.) but keep the text
+    text := RegExReplace(text, "m)^#{1,6}\s+(.*?)$", "$1")  ; The m) at the beginning enables multiline mode
     ; Ignorer les caractères spécifiques restants
     charactersToIgnore := ["*", "@"]
     for char in charactersToIgnore {

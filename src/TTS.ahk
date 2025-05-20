@@ -9,24 +9,24 @@
 #Include "ClipboardManager.ahk"
 #Include "StateManager.ahk"
 
-; Todo: Videz les variables inutiles quand on stoppe. Pour ne pas les garder en mémoire
-; Ajoutez Des options de choix de langue. Ça pourrait être dans le systray.
-; Améliorer la détection des langues.
+; Todo: Clear unused variables when stopping to free up memory
+; Add language selection options. This could be in the systray.
+; Improve language detection.
 
-; Définir la version en premier
+; Define version first
 global APP_VERSION := "1.0.9"
 
-; Message de débogage
+; Debug message
 if (!A_IsCompiled) {
     MsgBox("TTS.ahk script loaded - Version: " . APP_VERSION . " - " . FormatTime(, "HH:mm:ss"))
 }
 
-; Raccourci pour le développement uniquement
+; Shortcut for development only
 if (!A_IsCompiled) {
-    #!r:: Reload()  ; Win+Alt+R pour recharger le script
+    #!r:: Reload()  ; Win+Alt+R to reload the script
 }
 
-; Initialisation des voix Windows
+; Initialize Windows voices
 InitializeVoices()
 
 global voice := ComObject("SAPI.SpVoice")
@@ -55,17 +55,17 @@ ReadText(language) {
 
     state.originalText := IgnoreCharacters(text)
 
-    ; Diviser le texte en paragraphes
+    ; Split text into paragraphs
     state.paragraphs := SplitIntoParagraphs(state.originalText)
 
-    ; Commencer par le premier paragraphe
+    ; Start with the first paragraph
     state.currentParagraphIndex := 1
     state.currentText := state.paragraphs[state.currentParagraphIndex]
 
     try {
         SetVoiceLanguage(language, state.currentText)
         voice.Rate := state.internalRate
-        voice.Volume := state.volume  ; S'assurer que le volume est appliqué avant la lecture
+        voice.Volume := state.volume  ; Ensure volume is applied before reading
 
         state.isReading := true
         ; Enable hotkeys when reading starts
@@ -75,15 +75,15 @@ ReadText(language) {
         ; Show the control GUI
         CreateControlGui()
 
-        ; Initialiser les valeurs de la dernière position
+        ; Initialize the last position values
         WinGetPos(&winX, &winY, , , "ahk_id " . controlGui.Hwnd)
         dragState.lastSavedX := winX
         dragState.lastSavedY := winY
 
-        ; Démarrer le timer pour surveiller la position de la fenêtre
-        ; Cela permet de mettre à jour state.guiX et state.guiY même si l'utilisateur
-        ; déplace la fenêtre sans utiliser le drag and drop (par exemple avec Win+flèches)
-        SetTimer(MonitorWindowPosition, 500)  ; Vérifier toutes les 500ms
+        ; Start the timer to monitor the window position
+        ; This allows updating state.guiX and state.guiY even if the user
+        ; moves the window without using drag and drop (e.g., with Win+arrows)
+        SetTimer(MonitorWindowPosition, 500)  ; Check every 500ms
 
         ; Monitor reading status
         SetTimer(CheckReadingStatus, 100)
@@ -95,12 +95,12 @@ ReadText(language) {
 
 CheckReadingStatus() {
     if (voice.Status.RunningState == 1) { ; If reading is complete
-        ; Vérifier s'il y a d'autres paragraphes à lire
+        ; Check if there are more paragraphs to read
         if (state.currentParagraphIndex < state.paragraphs.Length) {
-            ; Passer au paragraphe suivant
+            ; Move to the next paragraph
             state.currentParagraphIndex++
 
-            ; Récupérer le texte du paragraphe suivant
+            ; Get the text of the next paragraph
             nextParagraphText := state.paragraphs[state.currentParagraphIndex]
 
             if (nextParagraphText != "") {
@@ -113,7 +113,7 @@ CheckReadingStatus() {
             }
         }
 
-        ; Si nous sommes arrivés ici, c'est qu'il n'y a plus de paragraphes à lire
+        ; If we reached here, there are no more paragraphs to read
         StopReading()
         SetTimer(CheckReadingStatus, 0) ; Stop the timer
     }

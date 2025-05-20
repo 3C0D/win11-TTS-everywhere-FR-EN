@@ -48,15 +48,15 @@ InitializeVoices() {
             "Additional voices are available. The script will restart with administrator rights to install them."
         )
         try {
-            ; Si l'application est compilée (format .exe distribué à l'utilisateur)
+            ; If the application is compiled (user-distributed .exe format)
             if A_IsCompiled
-                ; Relance l'application avec droits administrateur en remplaçant l'instance actuelle
+                ; Restart the application with administrator rights, replacing the current instance
                 Run '*RunAs "' A_ScriptFullPath '" /restart'
             else
-            ; Version pour développement : lance l'interpréteur AutoHotkey avec le script
-            ; Cette partie n'est jamais exécutée dans la version compilée
+            ; Development version: launch the AutoHotkey interpreter with the script
+            ; This part is never executed in the compiled version
                 Run '*RunAs "' A_AhkPath '" /restart "' A_ScriptFullPath '"'
-            ; Termine l'instance actuelle pour éviter d'avoir des doublons dans la zone de notification
+            ; Terminate the current instance to avoid duplicates in the notification area
             ExitApp
         }
         catch {

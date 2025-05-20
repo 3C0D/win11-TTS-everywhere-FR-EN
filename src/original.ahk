@@ -1,19 +1,19 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
-; Todo: Videz les variables inutiles quand on stoppe. Pour ne pas les garder en mémoire
-; Ajoutez Des options de choix de langue. Ça pourrait être dans le systray.
-; Améliorer la détection des langues.
+; Todo: Clear unused variables when stopping to free up memory
+; Add language selection options. This could be in the systray.
+; Improve language detection.
 
-; Définir la version en premier
+; Define version first
 global APP_VERSION := "1.0.9"
 
-; Message de débogage
+; Debug message
 if (!A_IsCompiled) {
     MsgBox("TTS.ahk script loaded - Version: " . APP_VERSION . " - " . FormatTime(, "HH:mm:ss"))
 }
 
-; Raccourci pour le développement uniquement
+; Shortcut for development only
 if (!A_IsCompiled) {
     #!r:: Reload()  ; Win+Alt+R pour recharger le script
 }
@@ -60,15 +60,15 @@ InitializeVoices() {
             "Additional voices are available. The script will restart with administrator rights to install them."
         )
         try {
-            ; Si l'application est compilée (format .exe distribué à l'utilisateur)
+            ; If the application is compiled (user-distributed .exe format)
             if A_IsCompiled
-                ; Relance l'application avec droits administrateur en remplaçant l'instance actuelle
+                ; Restart the application with administrator rights, replacing the current instance
                 Run '*RunAs "' A_ScriptFullPath '" /restart'
             else
-            ; Version pour développement : lance l'interpréteur AutoHotkey avec le script
-            ; Cette partie n'est jamais exécutée dans la version compilée
+            ; Development version: launch the AutoHotkey interpreter with the script
+            ; This part is never executed in the compiled version
                 Run '*RunAs "' A_AhkPath '" /restart "' A_ScriptFullPath '"'
-            ; Termine l'instance actuelle pour éviter d'avoir des doublons dans la zone de notification
+            ; Terminate the current instance to avoid duplicates in the notification area
             ExitApp
         }
         catch {
@@ -817,7 +817,7 @@ HasVal(haystack, needle) {
 IgnoreCharacters(text) {
     ; Ignore les caractères répétés plus de 4 fois
     text := RegExReplace(text, "(.)\1{4,}", "")
-    
+
     ; Ignorer d'abord les adresses web (http://, https://, www.)
     ; Le ? après le s rend le s optionnel, donc cette règle capture http:// et https://
     text := RegExReplace(text, "https?://[^\s]+", "")

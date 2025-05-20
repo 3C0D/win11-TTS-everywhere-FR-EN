@@ -94,8 +94,8 @@ InitializeHotkeys() {
     Hotkey "NumpadDiv", VolumeDown
 
     ; Navigation and control hotkeys
-    Hotkey "#^y", HotkeyJumpToNextLine
-    Hotkey "#+y", HotkeyJumpToPreviousParagraph
+    Hotkey "#^y", JumpToNextLine
+    Hotkey "#+y", JumpToPreviousParagraph
     Hotkey "#!y", TogglePause
 
     ; Main hotkey to start reading
@@ -103,27 +103,38 @@ InitializeHotkeys() {
 }
 
 ; Navigation functions
-HotkeyJumpToNextLine(*) {
-    if (!state.isReading) {
+JumpToNextLine(*) {
+    ; Do nothing if reading is paused
+    if (state.isPaused)
+        return
+
+    ; Vérifier si nous sommes déjà au dernier paragraphe
+    if (state.currentParagraphIndex >= state.paragraphs.Length) {
+        ; Nous sommes déjà au dernier paragraphe, ne rien faire
         return
     }
 
-    ; Stop current reading
-    voice.Speak("", 3)
+    ; Stop the current reading completely (necessary to reset SAPI state)
+    voice.Speak("", 3)  ; SVSFPurgeBeforeSpeak (stops immediately)
 
-    ; Move to next paragraph if possible
-    if (state.currentParagraphIndex < state.paragraphs.Length) {
-        state.currentParagraphIndex++
-        state.currentText := state.paragraphs[state.currentParagraphIndex]
+    ; Passer au paragraphe suivant
+    state.currentParagraphIndex++
+
+    ; Récupérer le texte du paragraphe suivant
+    nextParagraphText := state.paragraphs[state.currentParagraphIndex]
+
+    if (nextParagraphText != "") {
+        ; Update current text and start new reading
+        state.currentText := nextParagraphText
         voice.Rate := state.internalRate
         voice.Volume := state.volume
-        voice.Speak(state.currentText, 1)  ; Asynchronous reading
+        voice.Speak(nextParagraphText, 1)  ; Start new asynchronous reading
     } else {
-        StopReading()
+        StopReading()  ; If no more text, stop reading
     }
 }
 
-HotkeyJumpToPreviousParagraph(*) {
+JumpToPreviousParagraph(*) {
     if (!state.isReading) {
         return
     }

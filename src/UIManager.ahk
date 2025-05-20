@@ -62,7 +62,7 @@ CreateControlGui() {
     buttonOptions := "w" . buttonWidth . " h" . buttonHeight
 
     ; Previous paragraph button
-    controlGui.Add("Button", "x15 y15 " . buttonOptions, "⏮").OnEvent("Click", HotkeyJumpToPreviousParagraph)
+    controlGui.Add("Button", "x15 y15 " . buttonOptions, "⏮").OnEvent("Click", JumpToPreviousParagraph)
 
     ; Play/Pause button
     global playPauseBtn  ; Make this global too
@@ -73,7 +73,7 @@ CreateControlGui() {
     controlGui.Add("Button", "x+10 y15 " . buttonOptions, "⏹").OnEvent("Click", (*) => CloseControlGui())
 
     ; Next paragraph button
-    controlGui.Add("Button", "x+10 y15 " . buttonOptions, "⏭").OnEvent("Click", HotkeyJumpToNextLine)
+    controlGui.Add("Button", "x+10 y15 " . buttonOptions, "⏭").OnEvent("Click", JumpToNextLine)
 
     ; Settings button (gear icon)
     controlGui.Add("Button", "x+10 y15 " . buttonOptions, "⚙").OnEvent("Click", ToggleSettingsGui)
@@ -186,7 +186,7 @@ GuiDragReleaseHandler(wParam, lParam, msg, hwnd) {
     state.guiY := winY
 
     ; Afficher dans la console de débogage
-    OutputDebug("Position mise à jour dans state: X=" winX ", Y=" winY)
+    OutputDebug("Position updated in state: X=" winX ", Y=" winY)
 
     ; Remove handlers
     OnMessage(0x200, GuiDragMoveHandler, 0)  ; Remove WM_MOUSEMOVE handler

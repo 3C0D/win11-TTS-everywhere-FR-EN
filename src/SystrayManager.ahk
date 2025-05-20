@@ -18,7 +18,7 @@ InitializeSystray() {
     A_TrayMenu.Add()  ; Separator
     A_TrayMenu.Add("Run at startup", ToggleStartup)
     A_TrayMenu.Add()  ; Separator
-    ; Ajouter l'option de rechargement uniquement en mode développement
+    ; Add reload option only in development mode
     if (!A_IsCompiled) {
         A_TrayMenu.Add("Reload Script", (*) => Reload())
         A_TrayMenu.Add()  ; Separator
