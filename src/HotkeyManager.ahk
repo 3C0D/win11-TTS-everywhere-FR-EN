@@ -108,19 +108,19 @@ JumpToNextLine(*) {
     if (state.isPaused)
         return
 
-    ; Vérifier si nous sommes déjà au dernier paragraphe
+    ; Check if we are already at the last paragraph
     if (state.currentParagraphIndex >= state.paragraphs.Length) {
-        ; Nous sommes déjà au dernier paragraphe, ne rien faire
+        ; We are already at the last paragraph, do nothing
         return
     }
 
     ; Stop the current reading completely (necessary to reset SAPI state)
     voice.Speak("", 3)  ; SVSFPurgeBeforeSpeak (stops immediately)
 
-    ; Passer au paragraphe suivant
+    ; Move to the next paragraph
     state.currentParagraphIndex++
 
-    ; Récupérer le texte du paragraphe suivant
+    ; Get the text of the next paragraph
     nextParagraphText := state.paragraphs[state.currentParagraphIndex]
 
     if (nextParagraphText != "") {

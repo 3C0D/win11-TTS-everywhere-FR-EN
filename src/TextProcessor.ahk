@@ -116,7 +116,7 @@ IgnoreCharacters(text) {
     text := RegExReplace(text, "#(\w+)", "$1")
     ; Remove hashes from markdown titles (# Title, ## Title, etc.) but keep the text
     text := RegExReplace(text, "m)^#{1,6}\s+(.*?)$", "$1")  ; The m) at the beginning enables multiline mode
-    ; Ignorer les caractères spécifiques restants
+    ; Ignore remaining specific characters
     charactersToIgnore := ["*", "@"]
     for char in charactersToIgnore {
         text := StrReplace(text, char, "")

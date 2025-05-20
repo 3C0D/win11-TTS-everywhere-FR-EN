@@ -1,19 +1,19 @@
 #Requires AutoHotkey v2.0
 
-; Création de l'interface
+; Create the interface
 MyGui := Gui()
 MyGui.Opt("+Resize")
 MyGui.Title := "Diagnostic des voix SAPI"
 
-; Onglets pour organiser l'information
+; Tabs to organize information
 Tabs := MyGui.Add("Tab3", "w600 h400", ["Voix disponibles", "Registre", "Test de voix", "Diagnostic"])
 
-; Onglet 1: Voix disponibles
+; Tab 1: Available Voices
 Tabs.UseTab(1)
 MyGui.Add("Text", "w580", "Voix SAPI détectées sur le système:")
 VoiceListBox := MyGui.Add("ListView", "r10 w580 Grid", ["Nom", "ID", "Langue", "Âge", "Genre", "Chemin"])
 
-; Récupération et affichage des voix
+; Retrieve and display voices
 voices := ComObject("SAPI.SpVoice").GetVoices()
 voiceList := ""
 
@@ -30,12 +30,12 @@ for v in voices {
     voiceList .= name . " (" . langName . ")`n"
 }
 
-; Onglet 2: Informations du registre
+; Tab 2: Registry Information
 Tabs.UseTab(2)
 MyGui.Add("Text", "w580", "Entrées de registre pour les voix SAPI:")
 RegEdit := MyGui.Add("Edit", "r15 w580 ReadOnly")
 
-; Récupération des informations du registre
+; Retrieve registry information
 regInfo := "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\`n`n"
 try {
     loop reg, "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens", "K" {
@@ -51,12 +51,12 @@ try {
 
 RegEdit.Text := regInfo
 
-; Onglet 3: Test de voix
+; Tab 3: Voice Test
 Tabs.UseTab(3)
 MyGui.Add("Text", "w580", "; Select a voice and test it:")
 VoiceCombo := MyGui.Add("ComboBox", "w580 vSelectedVoice")
 
-; Remplir la liste déroulante avec les voix disponibles
+; Populate the dropdown list with available voices
 for v in voices {
     voiceName := TryGetAttribute(v, "Name", "Voix sans nom")
     VoiceCombo.Add([voiceName])
@@ -68,7 +68,7 @@ TestText := MyGui.Add("Edit", "r5 w580 vTestText",
 TestButton := MyGui.Add("Button", "w200", "Tester la voix")
 TestButton.OnEvent("Click", TestSelectedVoice)
 
-; Ajout d'un nouvel onglet pour le diagnostic
+; Add a new tab for diagnostics
 Tabs.UseTab(4)
 MyGui.Add("Text", "w580", "Diagnostic des voix manquantes:")
 DiagnosticEdit := MyGui.Add("Edit", "r10 w580 ReadOnly vDiagnosticInfo")
@@ -77,7 +77,7 @@ ScanButton.OnEvent("Click", ScanMissingVoices)
 RegisterButton := MyGui.Add("Button", "w200 y+10", "Tenter de réenregistrer les voix")
 RegisterButton.OnEvent("Click", AttemptToRegisterVoices)
 
-; Boutons communs à tous les onglets
+; Buttons common to all tabs
 Tabs.UseTab()
 CopyButton := MyGui.Add("Button", "w200 x10 y+20", "Copier les informations")
 CopyButton.OnEvent("Click", CopyAllInfo)
@@ -89,11 +89,11 @@ MyGui.OnEvent("Escape", (*) => MyGui.Destroy())
 
 MyGui.Show()
 
-; Fonctions
+; Functions
 CopyAllInfo(*) {
     global MyGui, voiceList, regInfo, Tabs
 
-    ; Récupérer l'onglet actif pour adapter le contenu copié
+    ; Get the active tab to adapt the copied content
     activeTab := Tabs.Value
 
     fullInfo := ""
@@ -123,7 +123,7 @@ ScanMissingVoices(*) {
 
     diagnosticInfo := "; Searching for voice files in Windows...`n`n"
 
-    ; Chemins possibles pour les fichiers de voix (liste étendue)
+    ; Possible paths for voice files (extended list)
     voicePaths := [
         "C:\Windows\Speech\Engines\TTS\",
         "C:\Windows\Speech_OneCore\Engines\TTS\",
@@ -136,7 +136,7 @@ ScanMissingVoices(*) {
 
     foundVoiceFiles := []
 
-    ; Rechercher les fichiers de voix
+    ; Search for voice files
     for path in voicePaths {
         if DirExist(path) {
             diagnosticInfo .= "Vérification du dossier: " . path . "`n"
@@ -156,7 +156,7 @@ ScanMissingVoices(*) {
         }
     }
 
-    ; Recherche supplémentaire dans les dossiers Windows
+    ; Additional search in Windows folders
     diagnosticInfo .= "`n; Deep search in system folders...`n"
 
     systemPaths := [
@@ -184,7 +184,7 @@ ScanMissingVoices(*) {
         }
     }
 
-    ; Comparer avec les voix enregistrées
+    ; Compare with registered voices
     diagnosticInfo .= "`n; Comparison with registered voices...`n"
     registeredVoices := []
 
@@ -200,7 +200,7 @@ ScanMissingVoices(*) {
     diagnosticInfo .= "- Fichiers de voix trouvés: " . foundVoiceFiles.Length . "`n"
     diagnosticInfo .= "- Voix enregistrées: " . registeredVoices.Length . "`n"
 
-    ; Vérification des clés de registre supplémentaires
+    ; Check for additional registry keys
     diagnosticInfo .= "`nVérification des clés de registre alternatives...`n"
 
     alternativeRegPaths := [
@@ -229,7 +229,7 @@ ScanMissingVoices(*) {
         }
     }
 
-    ; Recommandations
+    ; Recommendations
     diagnosticInfo .= "`nRecommandations:`n"
 
     if (foundVoiceFiles.Length = 0) {
@@ -252,7 +252,7 @@ AttemptToRegisterVoices(*) {
 
     diagnosticInfo := "Tentative de réenregistrement des voix...`n`n"
 
-    ; Commandes pour réenregistrer les voix (liste étendue)
+    ; Commands to re-register voices (extended list)
     commands := [
         "regsvr32 /s C:\Windows\Speech\Engines\TTS\*.dll",
         "regsvr32 /s C:\Windows\Speech_OneCore\Engines\TTS\*.dll",
@@ -275,7 +275,7 @@ AttemptToRegisterVoices(*) {
         }
     }
 
-    ; Tentative de réparation des services liés à la synthèse vocale
+    ; Attempt to repair speech synthesis related services
     diagnosticInfo .= "`nTentative de réparation des services de synthèse vocale...`n"
 
     services := [
@@ -296,7 +296,7 @@ AttemptToRegisterVoices(*) {
         }
     }
 
-    ; Vérification des paramètres de langue
+    ; Check language settings
     diagnosticInfo .= "`nVérification des paramètres de langue...`n"
     diagnosticInfo .= "- Assurez-vous que les packs de langue sont correctement installés.`n"
     diagnosticInfo .= "- Vous pouvez ouvrir les paramètres de langue avec la commande suivante:`n"
@@ -329,7 +329,7 @@ TestSelectedVoice(*) {
     }
 }
 
-; Fonction pour obtenir le nom de la langue à partir du code
+; Function to get the language name from the code
 GetLanguageName(langID) {
     langMap := Map(
         "409", "Anglais (US)",
@@ -345,7 +345,7 @@ GetLanguageName(langID) {
     return langMap.Has(langID) ? langMap[langID] : "Inconnu (" . langID . ")"
 }
 
-; Fonction pour obtenir un attribut de manière sécurisée
+; Function to get an attribute safely
 TryGetAttribute(voiceObj, attrName, defaultValue := "") {
     try {
         return voiceObj.GetAttribute(attrName)
