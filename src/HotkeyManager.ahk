@@ -1,5 +1,6 @@
 #Requires AutoHotkey v2.0
 #Include "UIManager.ahk"
+#Include "SystrayManager.ahk"
 
 ; Module for managing hotkeys and keyboard shortcuts
 
@@ -100,61 +101,6 @@ InitializeHotkeys() {
     ; Main hotkey to start reading
     Hotkey "#y", ReadSelectedText
 }
-
-; Function to show speed adjustment window
-; ShowSpeedWindow() {
-;     static speedGui := false
-
-;     ; Destroy existing window if present
-;     if (speedGui) {
-;         speedGui.Destroy()
-;     }
-
-;     ; Create a new window
-;     speedGui := Gui("+AlwaysOnTop -Caption +ToolWindow")
-;     speedGui.SetFont("s12", "Arial")
-;     speedGui.Add("Text", , "Speed: " . Format("{:.1f}", state.speed))
-;     ; Position the window
-;     screenWidth := A_ScreenWidth
-;     screenHeight := A_ScreenHeight
-;     guiWidth := 150
-;     guiHeight := 40
-;     xPos := (screenWidth - guiWidth) / 2
-;     yPos := screenHeight - 100
-
-;     speedGui.Show("x" . xPos . " y" . yPos . " w" . guiWidth . " h" . guiHeight)
-
-;     ; Close the window after 2 seconds
-;     SetTimer () => speedGui.Destroy(), -2000
-; }
-
-; Function to show volume adjustment window
-; ShowVolumeWindow() {
-;     static volumeGui := false
-
-;     ; Destroy existing window if present
-;     if (volumeGui) {
-;         volumeGui.Destroy()
-;     }
-
-;     ; Create a new window
-;     volumeGui := Gui("+AlwaysOnTop -Caption +ToolWindow")
-;     volumeGui.SetFont("s12", "Arial")
-;     volumeGui.Add("Text", , "Volume: " . state.volume . "%")
-
-;     ; Position the window
-;     screenWidth := A_ScreenWidth
-;     screenHeight := A_ScreenHeight
-;     guiWidth := 150
-;     guiHeight := 40
-;     xPos := (screenWidth - guiWidth) / 2
-;     yPos := screenHeight - 100
-
-;     volumeGui.Show("x" . xPos . " y" . yPos . " w" . guiWidth . " h" . guiHeight)
-
-;     ; Close the window after 2 seconds
-;     SetTimer () => volumeGui.Destroy(), -2000
-; }
 
 ; Navigation functions
 HotkeyJumpToNextLine(*) {

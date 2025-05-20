@@ -4,6 +4,8 @@
 #Include "TextProcessor.ahk"
 #Include "HotkeyManager.ahk"
 #Include "UIManager.ahk"
+#Include "SystrayManager.ahk"
+#Include "StartupManager.ahk"
 
 ; Todo: Videz les variables inutiles quand on stoppe. Pour ne pas les garder en mémoire
 ; Ajoutez Des options de choix de langue. Ça pourrait être dans le systray.
@@ -46,171 +48,12 @@ global voice := ComObject("SAPI.SpVoice")
 global controlGui := false  ; Will hold the control GUI instance
 global settingsGui := false  ; Will hold the settings GUI instance
 
-; Create tray icon - only needed if not compiled with an icon
-if (!A_IsCompiled)
-    TraySetIcon(A_ScriptDir "\TTS.ico", , true)
-
-; Créer le menu de la barre d'état système
-A_TrayMenu.Delete()  ; Remove default options
-A_TrayMenu.Add("TTS Reader v" . APP_VERSION . " / Help", (*) => ShowHelp())
-A_TrayMenu.Add()  ; Separator
-A_TrayMenu.Add("Shortcuts...", (*) => ShowHelp())
-A_TrayMenu.Add()  ; Separator
-A_TrayMenu.Add("Run at startup", ToggleStartup)
-
-; Ajouter l'option de rechargement uniquement en mode développement
-if (!A_IsCompiled) {
-    A_TrayMenu.Add()  ; Separator
-    A_TrayMenu.Add("Reload Script", (*) => Reload())
-}
-
-A_TrayMenu.Add()  ; Separator
-A_TrayMenu.Add("Exit", (*) => ExitApp())
-A_TrayMenu.Default := "Shortcuts..."
-
-; Check if already set to run at startup and update menu
-startupPath := A_Startup "\TTS Reader.lnk"
-if FileExist(startupPath)
-    A_TrayMenu.Check("Run at startup")
-
-; Function to toggle startup status
-ToggleStartup(*) {
-    startupPath := A_Startup "\TTS Reader.lnk"
-
-    if FileExist(startupPath) {
-        ; Remove from startup
-        try {
-            FileDelete(startupPath)
-            A_TrayMenu.Uncheck("Run at startup")
-        } catch as err {
-            MsgBox("Error removing startup shortcut: " . err.Message)
-        }
-    } else {
-        ; Add to startup
-        try {
-            if A_IsCompiled {
-                FileCreateShortcut(A_ScriptFullPath, startupPath, A_WorkingDir)
-            } else {
-                FileCreateShortcut(A_AhkPath, startupPath, A_WorkingDir, '"' . A_ScriptFullPath . '"')
-            }
-            A_TrayMenu.Check("Run at startup")
-        } catch as err {
-            MsgBox("Error creating startup shortcut: " . err.Message)
-        }
-    }
-}
-; A_TrayMenu.Add("Play/Stop (Win+Y)", (*) => ReadText("AUTO"))
-A_TrayMenu.Add()  ; Separator
-A_TrayMenu.Add("Exit", (*) => ExitApp())
-A_TrayMenu.Default := "Shortcuts..."
-
-; Function to display shortcuts help
-ShowHelp(*) {
-    helpText := "
-    (
-    MAIN SHORTCUTS:
-    Win+Y : Play/Stop selected text
-    Win+Alt+Y : Pause/Resume reading
-
-    NAVIGATION:
-    Win+Ctrl+Y : Skip to next paragraph
-    Win+Shift+Y : Go to previous paragraph
-
-    SPEED:
-    Numpad+ : Increase speed
-    Numpad- : Decrease speed
-
-    VOLUME:
-    Numpad* : Increase volume
-    Numpad/ : Decrease volume
-
-    CONTROL INTERFACE:
-    When reading starts, a control panel appears with:
-    ⏮ : Go to previous paragraph
-    ⏸/▶ : Pause/Resume reading
-    ⏹ : Stop reading
-    ⏭ : Skip to next paragraph
-    ⚙ : Open settings (speed and volume)
-
-    The control panel can be moved by dragging it.
-    It closes automatically when reading stops.
-
-    === How to use ===
-    1. Select or copy text in any application
-    2. Press Win+Y to start reading
-    3. Use the shortcuts or control panel to control playback
-
-    Language is automatically detected (English or French).
-    )"
-
-    helpGui := Gui("+AlwaysOnTop")
-    helpGui.Title := "Help"
-    helpGui.SetFont("s10", "Segoe UI")
-    helpGui.Add("Text", "w500", helpText)
-    helpGui.Add("Button", "Default w100", "OK").OnEvent("Click", (*) => helpGui.Destroy())
-    helpGui.Show()
-}
+InitializeSystray()
 
 ; Initialize all hotkeys
 InitializeHotkeys()
 ; Disable hotkeys at start
 UpdateHotkeys(false)
-
-; play/stop
-; Main hotkey is now handled by HotkeyManager
-
-; Function to jump to the next paragraph - moved to HotkeyManager.ahk
-
-; pause/resume
-; Hotkey is now handled by HotkeyManager
-
-; Function to jump to the previous paragraph - moved to HotkeyManager.ahk
-
-; Helper function to find paragraph boundaries in text
-; FindParagraphBoundaries(text) {
-;     boundaries := []
-
-;     ; Always include the start of the text
-;     startPos := 1
-
-;     ; Scan through the text to find paragraph boundaries
-;     searchPos := 1
-;     textLength := StrLen(text)
-
-;     while (searchPos <= textLength) {
-;         ; Look for paragraph breaks (double newlines)
-;         paragraphBreak := InStr(text, "`n`n", false, searchPos)
-
-;         ; If no more paragraph breaks, the end of text is the last boundary
-;         if (!paragraphBreak) {
-;             ; Add the final paragraph
-;             boundaries.Push({ start: startPos, end: textLength + 1 })
-;             break
-;         }
-
-;         ; Add this paragraph boundary
-;         boundaries.Push({ start: startPos, end: paragraphBreak + 2 })
-
-;         ; Skip past any consecutive newlines
-;         newPos := paragraphBreak + 2
-;         while (SubStr(text, newPos, 1) == "`n" && newPos <= textLength) {
-;             newPos++
-;         }
-
-;         ; Start of next paragraph
-;         startPos := newPos
-;         searchPos := newPos
-;     }
-
-;     ; If no paragraphs were found (no double newlines), treat the entire text as one paragraph
-;     if (boundaries.Length == 0) {
-;         boundaries.Push({ start: 1, end: textLength + 1 })
-;     }
-
-;     return boundaries
-; }
-
-; Function to adjust speed is now defined in UIManager.ahk
 
 ; Helper function for clipboard operations (we copy it there again needed for compilation .exe)
 getSelOrCbText() {
@@ -376,33 +219,3 @@ SetVoiceLanguage(language, text := "") {
 
     MsgBox "Voice for language " . language . " not found. Using default voice."
 }
-
-; Create and show the control interface GUI
-; CreateControlGui est maintenant défini dans UIManager.ahk
-
-; Variables for GUI dragging and position tracking
-; dragState est maintenant défini dans UIManager.ahk
-
-; Function to handle GUI dragging
-; GuiDragHandler est maintenant défini dans UIManager.ahk
-
-; Function to handle GUI dragging movement
-; GuiDragMoveHandler est maintenant défini dans UIManager.ahk
-
-; Function to handle GUI drag release
-; GuiDragReleaseHandler est maintenant défini dans UIManager.ahk
-
-; Function to monitor window position and update state
-; MonitorWindowPosition est maintenant défini dans UIManager.ahk
-
-; CloseControlGui est maintenant défini dans UIManager.ahk
-
-; UpdateControlGui est maintenant défini dans UIManager.ahk
-
-; ToggleSettingsGui est maintenant défini dans UIManager.ahk
-
-; CreateSettingsGui est maintenant défini dans UIManager.ahk
-
-; UpdateSettingsValues est maintenant défini dans UIManager.ahk
-
-; CloseSettingsGui est maintenant défini dans UIManager.ahk

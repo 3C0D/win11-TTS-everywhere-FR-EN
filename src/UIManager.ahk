@@ -433,3 +433,50 @@ ShowVolumeWindow() {
     ; Auto-close after a short delay
     SetTimer(() => volumeGui.Destroy(), -1500)
 }
+
+; Function to display shortcuts help
+ShowHelp(*) {
+    helpText := "
+    (
+    MAIN SHORTCUTS:
+    Win+Y : Play/Stop selected text
+    Win+Alt+Y : Pause/Resume reading
+
+    NAVIGATION:
+    Win+Ctrl+Y : Skip to next paragraph
+    Win+Shift+Y : Go to previous paragraph
+
+    SPEED:
+    Numpad+ : Increase speed
+    Numpad- : Decrease speed
+
+    VOLUME:
+    Numpad* : Increase volume
+    Numpad/ : Decrease volume
+
+    CONTROL INTERFACE:
+    When reading starts, a control panel appears with:
+    ⏮ : Go to previous paragraph
+    ⏸/▶ : Pause/Resume reading
+    ⏹ : Stop reading
+    ⏭ : Skip to next paragraph
+    ⚙ : Open settings (speed and volume)
+
+    The control panel can be moved by dragging it.
+    It closes automatically when reading stops.
+
+    === How to use ===
+    1. Select or copy text in any application
+    2. Press Win+Y to start reading
+    3. Use the shortcuts or control panel to control playback
+
+    Language is automatically detected (English or French).
+    )"
+
+    helpGui := Gui("+AlwaysOnTop")
+    helpGui.Title := "Help"
+    helpGui.SetFont("s10", "Segoe UI")
+    helpGui.Add("Text", "w500", helpText)
+    helpGui.Add("Button", "Default w100", "OK").OnEvent("Click", (*) => helpGui.Destroy())
+    helpGui.Show()
+}
