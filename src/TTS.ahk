@@ -6,6 +6,7 @@
 #Include "UIManager.ahk"
 #Include "SystrayManager.ahk"
 #Include "StartupManager.ahk"
+#Include "ClipboardManager.ahk"
 
 ; Todo: Videz les variables inutiles quand on stoppe. Pour ne pas les garder en mémoire
 ; Ajoutez Des options de choix de langue. Ça pourrait être dans le systray.
@@ -54,35 +55,6 @@ InitializeSystray()
 InitializeHotkeys()
 ; Disable hotkeys at start
 UpdateHotkeys(false)
-
-; Helper function for clipboard operations (we copy it there again needed for compilation .exe)
-getSelOrCbText() {
-    OldClipboard := A_Clipboard
-    A_Clipboard := ""
-
-    Send "^c" ; Copy the selected text
-    if !ClipWait(1.0) {
-        ; If no selection, restore the clipboard and use it
-        if (OldClipboard != "") {
-            text := OldClipboard
-            A_Clipboard := OldClipboard
-            return text
-        } else {
-            MsgBox "No text selected or in the clipboard"
-            return ""
-        }
-    } else {
-        ; Use the selected text
-        trimmedClipboard := RegExReplace(A_Clipboard, "[\s\r\n]+", "")
-        if (trimmedClipboard != "") {
-            text := A_Clipboard
-        } else {
-            text := OldClipboard
-            A_Clipboard := OldClipboard
-        }
-        return text
-    }
-}
 
 ReadText(language) {
 
