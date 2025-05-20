@@ -7,6 +7,7 @@
 #Include "SystrayManager.ahk"
 #Include "StartupManager.ahk"
 #Include "ClipboardManager.ahk"
+#Include "StateManager.ahk"
 
 ; Todo: Videz les variables inutiles quand on stoppe. Pour ne pas les garder en mémoire
 ; Ajoutez Des options de choix de langue. Ça pourrait être dans le systray.
@@ -27,23 +28,6 @@ if (!A_IsCompiled) {
 
 ; Initialisation des voix Windows
 InitializeVoices()
-
-; Global variables
-global state := {
-    isReading: false,
-    isPaused: false,
-    speed: 2.5,  ; Speed for display
-    internalRate: 2, ; Integer speed for SAPI
-    currentText: "",   ; Current text being read
-    originalText: "",  ; Original complete text
-    paragraphs: [],    ; Liste des paragraphes du texte
-    currentParagraphIndex: 0, ; Index du paragraphe actuel
-    volume: 100,     ; Volume level (0-100)
-    controlGuiVisible: false,  ; Track if control GUI is visible
-    settingsGuiVisible: false, ; Track if settings GUI is visible
-    guiX: A_ScreenWidth - 300, ; Position X de la fenêtre (marge à droite)
-    guiY: 100                  ; Position Y de la fenêtre (marge en haut)
-}
 
 global voice := ComObject("SAPI.SpVoice")
 global controlGui := false  ; Will hold the control GUI instance
@@ -132,39 +116,6 @@ CheckReadingStatus() {
         ; Si nous sommes arrivés ici, c'est qu'il n'y a plus de paragraphes à lire
         StopReading()
         SetTimer(CheckReadingStatus, 0) ; Stop the timer
-    }
-}
-
-ResetState() {
-    state.isReading := false
-    state.isPaused := false
-    state.paragraphs := []
-    state.currentParagraphIndex := 0
-    UpdateHotkeys(false)
-}
-
-StopReading() {
-    global controlGui  ; Ensure we're using the global variable
-
-    if (state.isPaused) {
-        voice.Resume()
-        state.isPaused := false
-    }
-    voice.Speak("", 3)  ; Stop current reading
-    state.currentText := "" ; Reset text
-    ResetState()
-
-    ; Arrêter le timer de surveillance de la position
-    SetTimer(MonitorWindowPosition, 0)
-
-    ; Close the settings GUI if it's open
-    if (state.settingsGuiVisible) {
-        CloseSettingsGui()
-    }
-
-    ; Close the control GUI if it's open
-    if (state.controlGuiVisible) {
-        CloseControlGui()
     }
 }
 
