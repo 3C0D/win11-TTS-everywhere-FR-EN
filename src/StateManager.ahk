@@ -1,8 +1,8 @@
-; StateManager.ahk
 ; Module for managing global state and related functions
 
 #Requires AutoHotkey v2.0
 #Include "HotkeyManager.ahk"
+#Include "UIManager.ahk" ; Added for UpdateControlGui()
 
 ; Global state object
 state := {
@@ -49,4 +49,23 @@ StopReading() {
     if (state.controlGuiVisible) {
         CloseControlGui()
     }
+}
+
+; Toggle pause/resume function
+TogglePause(*) {
+    global state, voice ; Added global voice
+    if (!state.isReading) {
+        return
+    }
+
+    if (!state.isPaused) {
+        voice.Pause()
+        state.isPaused := true
+    } else {
+        voice.Resume()
+        state.isPaused := false
+    }
+
+    ; Update the control GUI to reflect the new state
+    UpdateControlGui()
 }

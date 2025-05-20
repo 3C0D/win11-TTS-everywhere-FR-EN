@@ -1,6 +1,7 @@
-#Requires AutoHotkey v2.0
-
 ; Module for voice initialization
+
+#Requires AutoHotkey v2.0
+#Include "TextProcessor.ahk" ; Required for DetectLanguage
 
 /*
  * Initializes TTS voices by copying them from OneCore to standard registry locations
@@ -180,4 +181,31 @@ InitializeVoices() {
     catch as err {
         MsgBox("Error updating voices: " err.Message)
     }
+}
+
+; Function to set the voice language
+SetVoiceLanguage(language, text := "") {
+    global voice ; Ensure voice object is accessible
+
+    if (language == "AUTO") {
+        language := DetectLanguage(text)
+    }
+
+    if (language == "EN") {
+        voiceName := "Microsoft Mark"
+    } else if (language == "FR") {
+        voiceName := "Microsoft Paul"
+    } else {
+        MsgBox "Unsupported language: " . language
+        return
+    }
+
+    for v in voice.GetVoices() {
+        if (v.GetAttribute("Name") == voiceName) {
+            voice.Voice := v
+            return
+        }
+    }
+
+    MsgBox "Voice for language " . language . " not found. Using default voice."
 }

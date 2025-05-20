@@ -47,8 +47,6 @@ ReadText(language) {
         return
     }
 
-    ResetState()
-
     text := getSelOrCbText()
     if (text == "")
         return
@@ -117,28 +115,4 @@ CheckReadingStatus() {
         StopReading()
         SetTimer(CheckReadingStatus, 0) ; Stop the timer
     }
-}
-
-SetVoiceLanguage(language, text := "") {
-    if (language == "AUTO") {
-        language := DetectLanguage(text)
-    }
-
-    if (language == "EN") {
-        voiceName := "Microsoft Mark"
-    } else if (language == "FR") {
-        voiceName := "Microsoft Paul"
-    } else {
-        MsgBox "Unsupported language: " . language
-        return
-    }
-
-    for v in voice.GetVoices() {
-        if (v.GetAttribute("Name") == voiceName) {
-            voice.Voice := v
-            return
-        }
-    }
-
-    MsgBox "Voice for language " . language . " not found. Using default voice."
 }

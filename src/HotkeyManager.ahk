@@ -67,24 +67,6 @@ VolumeDown(*) {
     }
 }
 
-; Toggle pause/resume function
-TogglePause(*) {
-    if (!state.isReading) {
-        return
-    }
-
-    if (!state.isPaused) {
-        voice.Pause()
-        state.isPaused := true
-    } else {
-        voice.Resume()
-        state.isPaused := false
-    }
-
-    ; Update the control GUI to reflect the new state
-    UpdateControlGui()
-}
-
 ; Initialize hotkeys
 InitializeHotkeys() {
     ; Speed and volume controls
