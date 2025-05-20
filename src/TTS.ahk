@@ -2,6 +2,8 @@
 #SingleInstance Force
 #Include "VoiceInitializer.ahk"
 #Include "TextProcessor.ahk"
+#Include "HotkeyManager.ahk"
+#Include "UIManager.ahk"
 
 ; Todo: Videz les variables inutiles quand on stoppe. Pour ne pas les garder en mémoire
 ; Ajoutez Des options de choix de langue. Ça pourrait être dans le systray.
@@ -149,125 +151,20 @@ ShowHelp(*) {
     helpGui.Show()
 }
 
-; Manage hotkeys
-UpdateHotkeys(enable := true) {
-    if (enable) {
-        ; Speed and volume controls
-        Hotkey "NumpadAdd", "On"
-        Hotkey "NumpadSub", "On"
-        Hotkey "NumpadMult", "On"      ; Volume Up
-        Hotkey "NumpadDiv", "On"       ; Volume Down
-
-        ; Navigation and control hotkeys
-        Hotkey "#^y", "On"              ; Next line
-        Hotkey "#+y", "On"              ; Previous paragraph
-        Hotkey "#!y", "On"              ; Pause/Resume
-    } else {
-        ; Speed and volume controls
-        Hotkey "NumpadAdd", "Off"
-        Hotkey "NumpadSub", "Off"
-        Hotkey "NumpadMult", "Off"     ; Volume Up
-        Hotkey "NumpadDiv", "Off"      ; Volume Down
-
-        ; Navigation and control hotkeys
-        Hotkey "#^y", "Off"             ; Next line
-        Hotkey "#+y", "Off"             ; Previous paragraph
-        Hotkey "#!y", "Off"             ; Pause/Resume
-    }
-}
-
-; Initialize hotkeys
-Hotkey "NumpadAdd", AdjustSpeedUp
-Hotkey "NumpadSub", AdjustSpeedDown
-Hotkey "NumpadMult", VolumeUp
-Hotkey "NumpadDiv", VolumeDown
-Hotkey "#^y", JumpToNextLine
-Hotkey "#+y", JumpToPreviousParagraph
-Hotkey "#!y", TogglePause
+; Initialize all hotkeys
+InitializeHotkeys()
 ; Disable hotkeys at start
 UpdateHotkeys(false)
 
 ; play/stop
-#y:: ReadText("AUTO")
+; Main hotkey is now handled by HotkeyManager
 
-; Function to jump to the next paragraph
-JumpToNextLine(*) {
-    ; Do nothing if reading is paused
-    if (state.isPaused)
-        return
-
-    ; Vérifier si nous sommes déjà au dernier paragraphe
-    if (state.currentParagraphIndex >= state.paragraphs.Length) {
-        ; Nous sommes déjà au dernier paragraphe, ne rien faire
-        return
-    }
-
-    ; Stop the current reading completely (necessary to reset SAPI state)
-    voice.Speak("", 3)  ; SVSFPurgeBeforeSpeak (stops immediately)
-
-    ; Passer au paragraphe suivant
-    state.currentParagraphIndex++
-
-    ; Récupérer le texte du paragraphe suivant
-    nextParagraphText := state.paragraphs[state.currentParagraphIndex]
-
-    if (nextParagraphText != "") {
-        ; Update current text and start new reading
-        state.currentText := nextParagraphText
-        voice.Rate := state.internalRate
-        voice.Volume := state.volume
-        voice.Speak(nextParagraphText, 1)  ; Start new asynchronous reading
-    } else {
-        StopReading()  ; If no more text, stop reading
-    }
-}
+; Function to jump to the next paragraph - moved to HotkeyManager.ahk
 
 ; pause/resume
-#!y:: TogglePause()
+; Hotkey is now handled by HotkeyManager
 
-; Function to jump to the previous paragraph
-JumpToPreviousParagraph(*) {
-    if (state.isPaused)
-        return
-
-    ; Vérifier si nous sommes déjà au premier paragraphe
-    if (state.currentParagraphIndex <= 1) {
-        ; Nous sommes déjà au premier paragraphe, redémarrer la lecture depuis le début
-        state.currentParagraphIndex := 1
-
-        ; Stop the current reading completely (necessary to reset SAPI state)
-        voice.Speak("", 3)  ; SVSFPurgeBeforeSpeak (stops immediately)
-
-        ; Récupérer le texte du premier paragraphe
-        firstParagraphText := state.paragraphs[1]
-
-        ; Update current text and start new reading
-        state.currentText := firstParagraphText
-        voice.Rate := state.internalRate
-        voice.Volume := state.volume
-        voice.Speak(firstParagraphText, 1)  ; Start new asynchronous reading
-        return
-    }
-
-    ; Stop the current reading completely (necessary to reset SAPI state)
-    voice.Speak("", 3)  ; SVSFPurgeBeforeSpeak (stops immediately)
-
-    ; Revenir au paragraphe précédent
-    state.currentParagraphIndex--
-
-    ; Récupérer le texte du paragraphe précédent
-    prevParagraphText := state.paragraphs[state.currentParagraphIndex]
-
-    if (prevParagraphText != "") {
-        ; Update current text and start new reading
-        state.currentText := prevParagraphText
-        voice.Rate := state.internalRate
-        voice.Volume := state.volume
-        voice.Speak(prevParagraphText, 1)  ; Start new asynchronous reading
-    } else {
-        StopReading()
-    }
-}
+; Function to jump to the previous paragraph - moved to HotkeyManager.ahk
 
 ; Helper function to find paragraph boundaries in text
 ; FindParagraphBoundaries(text) {
@@ -313,13 +210,7 @@ JumpToPreviousParagraph(*) {
 ;     return boundaries
 ; }
 
-AdjustSpeedUp(*) {
-    AdjustSpeed(0.5)
-}
-
-AdjustSpeedDown(*) {
-    AdjustSpeed(-0.5)
-}
+; Function to adjust speed is now defined in UIManager.ahk
 
 ; Helper function for clipboard operations (we copy it there again needed for compilation .exe)
 getSelOrCbText() {
@@ -429,70 +320,6 @@ CheckReadingStatus() {
     }
 }
 
-AdjustSpeed(delta) {
-    if (!state.isReading)
-        return
-
-    ; Update display speed
-    state.speed := Max(Min(state.speed + delta, 10), -10)
-    state.speed := Round(state.speed, 1)
-
-    ; Convert to integer for SAPI
-    state.internalRate := Round(state.speed)
-    voice.Rate := state.internalRate
-
-    ; Display the speed window
-    ShowSpeedWindow()
-
-    ; Force update of settings GUI if it's visible
-    if (state.settingsGuiVisible) {
-        UpdateSettingsValues()
-    }
-}
-
-ShowSpeedWindow() {
-    static speedGui := false
-
-    ; Destroy existing window if present
-    if (speedGui) {
-        speedGui.Destroy()
-    }
-
-    ; Create a new window
-    speedGui := Gui("+AlwaysOnTop -Caption +ToolWindow")
-    speedGui.SetFont("s12", "Arial")
-    speedGui.Add("Text", , "Speed: " . Format("{:.1f}", state.speed))
-    ; Position the window
-    screenWidth := A_ScreenWidth
-    screenHeight := A_ScreenHeight
-    guiWidth := 150
-    guiHeight := 40
-    xPos := (screenWidth - guiWidth) / 2
-    yPos := screenHeight - 100
-
-    speedGui.Show("x" . xPos . " y" . yPos . " w" . guiWidth . " h" . guiHeight)
-
-    ; Close the window after 2 seconds
-    SetTimer () => speedGui.Destroy(), -2000
-}
-
-TogglePause(*) {
-    if (!state.isReading) {
-        return
-    }
-
-    if (!state.isPaused) {
-        voice.Pause()
-        state.isPaused := true
-    } else {
-        voice.Resume()
-        state.isPaused := false
-    }
-
-    ; Update the control GUI to reflect the new state
-    UpdateControlGui()
-}
-
 ResetState() {
     state.isReading := false
     state.isPaused := false
@@ -550,438 +377,32 @@ SetVoiceLanguage(language, text := "") {
     MsgBox "Voice for language " . language . " not found. Using default voice."
 }
 
-VolumeUp(*) {
-    if (state.volume < 100) {
-        state.volume += 10
-        voice.Volume := state.volume
-        ShowVolumeWindow()
-
-        ; Force update of settings GUI if it's visible
-        if (state.settingsGuiVisible) {
-            UpdateSettingsValues()
-        }
-    }
-}
-
-VolumeDown(*) {
-    if (state.volume > 0) {
-        state.volume -= 10
-        voice.Volume := state.volume
-        ShowVolumeWindow()
-
-        ; Force update of settings GUI if it's visible
-        if (state.settingsGuiVisible) {
-            UpdateSettingsValues()
-        }
-    }
-}
-
-ShowVolumeWindow() {
-    static volumeGui := false
-
-    ; Destroy existing window if present
-    if (volumeGui) {
-        volumeGui.Destroy()
-    }
-
-    ; Create a new window
-    volumeGui := Gui("+AlwaysOnTop -Caption +ToolWindow")
-    volumeGui.SetFont("s12", "Arial")
-    volumeGui.Add("Text", , "Volume: " . state.volume . "%")
-
-    ; Position the window
-    screenWidth := A_ScreenWidth
-    screenHeight := A_ScreenHeight
-    guiWidth := 150
-    guiHeight := 40
-    xPos := (screenWidth - guiWidth) / 2
-    yPos := screenHeight - 100
-
-    volumeGui.Show("x" . xPos . " y" . yPos . " w" . guiWidth . " h" . guiHeight)
-
-    ; Close the window after 2 seconds
-    SetTimer () => volumeGui.Destroy(), -2000
-}
-
 ; Create and show the control interface GUI
-CreateControlGui() {
-    global controlGui  ; Ensure we're using the global variable
-
-    ; Remove any existing mouse message handlers to prevent duplicates
-    OnMessage(0x201, GuiDragHandler, 0)  ; Remove WM_LBUTTONDOWN handler
-    OnMessage(0x200, GuiDragMoveHandler, 0)  ; Remove WM_MOUSEMOVE handler
-    OnMessage(0x202, GuiDragReleaseHandler, 0)  ; Remove WM_LBUTTONUP handler
-
-    ; Destroy existing GUI if it exists
-    if (controlGui) {
-        controlGui.Destroy()
-    }
-
-    ; Create a new GUI with a compact style
-    controlGui := Gui("+AlwaysOnTop +LastFound +ToolWindow")
-    controlGui.Title := "TTS"
-    controlGui.SetFont("s10", "Segoe UI")
-    controlGui.OnEvent("Close", CloseControlGui)
-
-    ; Make the GUI draggable without click-through style
-    OnMessage(0x201, GuiDragHandler)  ; WM_LBUTTONDOWN message
-
-    ; Calculate position (use saved position or default to top-right corner)
-    screenWidth := A_ScreenWidth
-    screenHeight := A_ScreenHeight
-    guiWidth := 215  ; Increased width to accommodate the settings button
-    guiHeight := 60
-
-    ; Utiliser la position sauvegardée dans l'objet state
-    xPos := state.guiX
-    yPos := state.guiY
-
-    ; Ensure the window is still visible on screen (in case of resolution change)
-    if (xPos + guiWidth > screenWidth)
-        xPos := screenWidth - guiWidth - 20
-    if (yPos + guiHeight > screenHeight)
-        yPos := screenHeight - guiHeight - 20
-    if (xPos < 0)
-        xPos := 20
-    if (yPos < 0)
-        yPos := 20
-
-    ; Add buttons with icons using Unicode symbols
-    buttonWidth := 30
-    buttonHeight := 28
-    buttonOptions := "w" . buttonWidth . " h" . buttonHeight
-
-    ; Previous paragraph button
-    controlGui.Add("Button", "x15 y15 " . buttonOptions, "⏮").OnEvent("Click", (*) => JumpToPreviousParagraph())
-
-    ; Play/Pause button
-    global playPauseBtn  ; Make this global too
-    playPauseBtn := controlGui.Add("Button", "x+10 y15 " . buttonOptions, state.isPaused ? "▶" : "⏸")
-    playPauseBtn.OnEvent("Click", TogglePause)
-
-    ; Stop button
-    controlGui.Add("Button", "x+10 y15 " . buttonOptions, "⏹").OnEvent("Click", (*) => CloseControlGui())
-
-    ; Next paragraph button
-    controlGui.Add("Button", "x+10 y15 " . buttonOptions, "⏭").OnEvent("Click", (*) => JumpToNextLine())
-
-    ; Settings button (gear icon)
-    controlGui.Add("Button", "x+10 y15 " . buttonOptions, "⚙").OnEvent("Click", ToggleSettingsGui)
-
-    ; Show the GUI
-    controlGui.Show("x" . xPos . " y" . yPos . " w" . guiWidth . " h" . guiHeight . " NoActivate")
-    state.controlGuiVisible := true
-
-    return controlGui
-}
+; CreateControlGui est maintenant défini dans UIManager.ahk
 
 ; Variables for GUI dragging and position tracking
-global dragState := {
-    isMouseDown: false,
-    initialX: 0,
-    initialY: 0,
-    initialWinX: 0,
-    initialWinY: 0,
-    lastSavedX: 0,  ; Dernière position X sauvegardée
-    lastSavedY: 0   ; Dernière position Y sauvegardée
-}
+; dragState est maintenant défini dans UIManager.ahk
 
 ; Function to handle GUI dragging
-GuiDragHandler(wParam, lParam, msg, hwnd) {
-    global controlGui, dragState  ; Ensure we're using the global variables
-
-    if (!controlGui || !state.controlGuiVisible)
-        return
-
-    ; Get mouse position and control under cursor
-    MouseGetPos(&mouseX, &mouseY, &mouseWin, &mouseCtrl)
-
-    ; Only start dragging if we're on the window and not on a control
-    ; This allows dragging from the title bar or empty space, but not from buttons
-    if (mouseWin != controlGui.Hwnd || mouseCtrl)
-        return
-
-    ; Start dragging
-    dragState.isMouseDown := true
-    dragState.initialX := mouseX
-    dragState.initialY := mouseY
-
-    ; Get window position
-    WinGetPos(&winX, &winY, , , "ahk_id " . controlGui.Hwnd)
-    dragState.initialWinX := winX
-    dragState.initialWinY := winY
-
-    ; Set up mouse move and button up handlers
-    OnMessage(0x200, GuiDragMoveHandler)  ; WM_MOUSEMOVE
-    OnMessage(0x202, GuiDragReleaseHandler)  ; WM_LBUTTONUP
-
-    return 0  ; Prevent default handling
-}
+; GuiDragHandler est maintenant défini dans UIManager.ahk
 
 ; Function to handle GUI dragging movement
-GuiDragMoveHandler(wParam, lParam, msg, hwnd) {
-    global controlGui, settingsGui, dragState, state  ; Ensure we're using the global variables
-
-    if (!dragState.isMouseDown || !controlGui || !state.controlGuiVisible)
-        return
-
-    ; Get current mouse position
-    MouseGetPos(&mouseX, &mouseY, &mouseWin)
-
-    ; Make sure we're still over our window
-    if (mouseWin != controlGui.Hwnd)
-        return
-
-    ; Calculate new window position
-    newX := dragState.initialWinX + (mouseX - dragState.initialX)
-    newY := dragState.initialWinY + (mouseY - dragState.initialY)
-
-    ; Ensure the window stays within screen boundaries
-    screenWidth := A_ScreenWidth
-    screenHeight := A_ScreenHeight
-
-    ; Get window dimensions
-    WinGetPos(, , &winWidth, &winHeight, "ahk_id " . controlGui.Hwnd)
-
-    ; Adjust position if needed to keep window on screen
-    if (newX < 0)
-        newX := 0
-    if (newY < 0)
-        newY := 0
-    if (newX + winWidth > screenWidth)
-        newX := screenWidth - winWidth
-    if (newY + winHeight > screenHeight)
-        newY := screenHeight - winHeight
-
-    ; Move the window
-    WinMove(newX, newY, , , "ahk_id " . controlGui.Hwnd)
-
-    ; If settings GUI is open, move it to follow the main GUI
-    if (settingsGui && state.settingsGuiVisible) {
-        ; Calculate new position for settings GUI (below the main GUI)
-        settingsX := newX
-        settingsY := newY + winHeight
-
-        ; Move the settings GUI
-        WinMove(settingsX, settingsY, , , "ahk_id " . settingsGui.Hwnd)
-    }
-
-    return 0
-}
+; GuiDragMoveHandler est maintenant défini dans UIManager.ahk
 
 ; Function to handle GUI drag release
-GuiDragReleaseHandler(wParam, lParam, msg, hwnd) {
-    global controlGui, dragState, state  ; Ensure we're using the global variables
-
-    if (!controlGui || !state.controlGuiVisible)
-        return
-
-    ; Stop dragging
-    dragState.isMouseDown := false
-
-    ; Save the current position of the window
-    WinGetPos(&winX, &winY, , , "ahk_id " . controlGui.Hwnd)
-
-    ; Mettre à jour la position dans l'objet state
-    state.guiX := winX
-    state.guiY := winY
-
-    ; Afficher dans la console de débogage
-    OutputDebug("Position mise à jour dans state: X=" winX ", Y=" winY)
-
-    ; Remove handlers
-    OnMessage(0x200, GuiDragMoveHandler, 0)  ; Remove WM_MOUSEMOVE handler
-    OnMessage(0x202, GuiDragReleaseHandler, 0)  ; Remove WM_LBUTTONUP handler
-
-    return 0
-}
+; GuiDragReleaseHandler est maintenant défini dans UIManager.ahk
 
 ; Function to monitor window position and update state
-MonitorWindowPosition() {
-    global controlGui, settingsGui, dragState, state
+; MonitorWindowPosition est maintenant défini dans UIManager.ahk
 
-    if (!controlGui || !state.controlGuiVisible)
-        return
+; CloseControlGui est maintenant défini dans UIManager.ahk
 
-    ; Get current window position
-    WinGetPos(&winX, &winY, &winWidth, &winHeight, "ahk_id " . controlGui.Hwnd)
+; UpdateControlGui est maintenant défini dans UIManager.ahk
 
-    ; Check if position has changed since last update
-    if (winX != dragState.lastSavedX || winY != dragState.lastSavedY) {
-        ; Update state with new position
-        state.guiX := winX
-        state.guiY := winY
+; ToggleSettingsGui est maintenant défini dans UIManager.ahk
 
-        ; Update last saved position
-        dragState.lastSavedX := winX
-        dragState.lastSavedY := winY
+; CreateSettingsGui est maintenant défini dans UIManager.ahk
 
-        OutputDebug("Position mise à jour via timer: X=" winX ", Y=" winY)
+; UpdateSettingsValues est maintenant défini dans UIManager.ahk
 
-        ; If settings GUI is open, move it to follow the main GUI
-        if (settingsGui && state.settingsGuiVisible) {
-            ; Calculate new position for settings GUI (below the main GUI)
-            settingsX := winX
-            settingsY := winY + winHeight
-
-            ; Move the settings GUI
-            WinMove(settingsX, settingsY, , , "ahk_id " . settingsGui.Hwnd)
-        }
-    }
-}
-
-; Function to close the control GUI
-CloseControlGui(*) {
-    global controlGui, dragState  ; Ensure we're using the global variables
-
-    ; Remove any mouse message handlers
-    OnMessage(0x201, GuiDragHandler, 0)  ; Remove WM_LBUTTONDOWN handler
-    OnMessage(0x200, GuiDragMoveHandler, 0)  ; Remove WM_MOUSEMOVE handler
-    OnMessage(0x202, GuiDragReleaseHandler, 0)  ; Remove WM_LBUTTONUP handler
-
-    ; Arrêter le timer de surveillance de la position
-    SetTimer(MonitorWindowPosition, 0)
-
-    ; Reset drag state
-    dragState.isMouseDown := false
-
-    ; Close the settings GUI if it's open
-    if (state.settingsGuiVisible) {
-        CloseSettingsGui()
-    }
-
-    if (controlGui) {
-        controlGui.Destroy()
-        controlGui := false
-        state.controlGuiVisible := false
-    }
-
-    ; If we're closing the GUI, also stop reading
-    if (state.isReading) {
-        StopReading()
-    }
-}
-
-; Function to update the control GUI (e.g., when pausing/resuming)
-UpdateControlGui() {
-    global controlGui, playPauseBtn  ; Ensure we're using the global variables
-
-    if (!controlGui || !state.controlGuiVisible || !playPauseBtn)
-        return
-
-    ; Update play/pause button text based on current state without recreating the GUI
-    try {
-        ; Just update the button text
-        playPauseBtn.Text := state.isPaused ? "▶" : "⏸"
-    } catch as err {
-        OutputDebug("Error updating control GUI: " . err.Message)
-
-        ; If updating fails, recreate the GUI as a fallback
-        try {
-            CreateControlGui()
-        } catch {
-            ; If even recreation fails, just ignore
-        }
-    }
-}
-
-; Function to toggle the settings GUI
-ToggleSettingsGui(*) {
-    global settingsGui
-
-    if (state.settingsGuiVisible) {
-        CloseSettingsGui()
-    } else {
-        CreateSettingsGui()
-    }
-}
-
-; Function to create the settings GUI
-CreateSettingsGui() {
-    global settingsGui, controlGui
-
-    ; Variables globales pour stocker les références aux contrôles de texte
-    global speedTextCtrl, volumeTextCtrl
-
-    ; Destroy existing GUI if it exists
-    if (settingsGui) {
-        settingsGui.Destroy()
-    }
-
-    ; Get position of the main control GUI
-    WinGetPos(&controlX, &controlY, &controlWidth, &controlHeight, "ahk_id " . controlGui.Hwnd)
-
-    ; Create a new GUI with a compact style
-    settingsGui := Gui("+AlwaysOnTop +ToolWindow -Caption +Owner" . controlGui.Hwnd)
-    settingsGui.SetFont("s10", "Segoe UI")
-
-    ; Calculate position (below the main control GUI)
-    settingsWidth := 240  ; Keep original width
-    settingsHeight := 120
-    settingsX := controlX
-    settingsY := controlY + controlHeight
-
-    ; Add controls for speed adjustment
-    settingsGui.Add("Text", "x10 y10 w60", "Vitesse:")
-    settingsGui.Add("Button", "x+5 y8 w30 h25", "-").OnEvent("Click", (*) => AdjustSpeedDown())
-    speedTextCtrl := settingsGui.Add("Text", "x+5 y10 w30 Center", Format("{:.1f}", state.speed))
-    settingsGui.Add("Button", "x+5 y8 w30 h25", "+").OnEvent("Click", (*) => AdjustSpeedUp())
-    settingsGui.Add("Text", "x+5 y10 w30", "Num±")
-
-    ; Add controls for volume adjustment
-    settingsGui.Add("Text", "x10 y45 w60", "Volume:")
-    settingsGui.Add("Button", "x+5 y43 w30 h25", "-").OnEvent("Click", (*) => VolumeDown())
-    volumeTextCtrl := settingsGui.Add("Text", "x+5 y45 w30 Center", state.volume . "%")
-    settingsGui.Add("Button", "x+5 y43 w30 h25", "+").OnEvent("Click", (*) => VolumeUp())
-    settingsGui.Add("Text", "x+5 y45 w30", "Num*/")
-
-    ; Add info text
-    settingsGui.Add("Text", "x10 y80 w220 Center", "Cliquez sur ⚙ pour fermer")
-
-    ; Show the GUI
-    settingsGui.Show("x" . settingsX . " y" . settingsY . " w" . settingsWidth . " h" . settingsHeight . " NoActivate")
-    state.settingsGuiVisible := true
-
-    ; Update the settings values every 100ms
-    SetTimer(UpdateSettingsValues, 100)
-
-    return settingsGui
-}
-
-; Function to update the settings values in real-time
-UpdateSettingsValues() {
-    global settingsGui, speedTextCtrl, volumeTextCtrl
-
-    if (!settingsGui || !state.settingsGuiVisible)
-        return
-
-    try {
-        ; Mettre à jour les valeurs directement
-        if (speedTextCtrl) {
-            speedTextCtrl.Text := Format("{:.1f}", state.speed)
-        }
-
-        if (volumeTextCtrl) {
-            volumeTextCtrl.Text := state.volume . "%"
-        }
-    } catch as err {
-        OutputDebug("Error updating settings GUI: " . err.Message)
-        SetTimer(UpdateSettingsValues, 0)  ; Stop the timer if there's an error
-    }
-}
-
-; Function to close the settings GUI
-CloseSettingsGui(*) {
-    global settingsGui, speedTextCtrl, volumeTextCtrl
-
-    ; Stop the update timer
-    SetTimer(UpdateSettingsValues, 0)
-
-    if (settingsGui) {
-        settingsGui.Destroy()
-        settingsGui := false
-        speedTextCtrl := false
-        volumeTextCtrl := false
-        state.settingsGuiVisible := false
-    }
-}
+; CloseSettingsGui est maintenant défini dans UIManager.ahk
