@@ -109,8 +109,9 @@ JumpToNextLine(*) {
         ; Update current text and start new reading
         state.currentText := nextParagraphText
 
-        ; Detect language for the next paragraph
-        SetVoiceLanguage("AUTO", nextParagraphText)
+        ; Use the same language that was detected for the entire text
+        ; We pass the original text to maintain language consistency
+        SetVoiceLanguage("AUTO", state.originalText)
 
         voice.Rate := state.internalRate
         voice.Volume := state.volume
@@ -133,8 +134,9 @@ JumpToPreviousParagraph(*) {
         state.currentParagraphIndex--
         state.currentText := state.paragraphs[state.currentParagraphIndex]
 
-        ; Detect language for the previous paragraph
-        SetVoiceLanguage("AUTO", state.currentText)
+        ; Use the same language that was detected for the entire text
+        ; We pass the original text to maintain language consistency
+        SetVoiceLanguage("AUTO", state.originalText)
 
         voice.Rate := state.internalRate
         voice.Volume := state.volume
@@ -142,8 +144,9 @@ JumpToPreviousParagraph(*) {
     } else {
         ; If at first paragraph, restart it
 
-        ; Detect language for the current paragraph
-        SetVoiceLanguage("AUTO", state.currentText)
+        ; Use the same language that was detected for the entire text
+        ; We pass the original text to maintain language consistency
+        SetVoiceLanguage("AUTO", state.originalText)
 
         voice.Rate := state.internalRate
         voice.Volume := state.volume

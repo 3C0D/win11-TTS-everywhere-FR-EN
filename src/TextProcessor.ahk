@@ -27,7 +27,46 @@ SplitIntoParagraphs(text) {
     return paragraphs
 }
 
-DetectLanguage(text) {
+; Analyze text and determine dominant language based on word count
+DetermineDominantLanguage(text) {
+    ; Split text into paragraphs
+    paragraphs := SplitIntoParagraphs(text)
+
+    ; Initialize counters for words in each language
+    totalFrenchScore := 0
+    totalEnglishScore := 0
+    totalWordCount := 0
+
+    ; Analyze each paragraph
+    for paragraph in paragraphs {
+        ; Skip empty paragraphs
+        if (paragraph == "")
+            continue
+
+        ; Get language scores for this paragraph
+        frenchScore := 0
+        englishScore := 0
+        CalculateLanguageScores(paragraph, &frenchScore, &englishScore)
+
+        ; Add to total scores
+        totalFrenchScore += frenchScore
+        totalEnglishScore += englishScore
+
+        ; Count words in paragraph for weighting
+        words := StrSplit(paragraph, " ")
+        totalWordCount += words.Length
+    }
+
+    ; Determine dominant language based on total scores
+    if (totalEnglishScore > totalFrenchScore) {
+        return "EN"
+    } else {
+        return "FR" ; Default to French if scores are equal
+    }
+}
+
+; Calculate language scores for a given text
+CalculateLanguageScores(text, &frenchScore, &englishScore) {
     ; Language detection based on common words and patterns
     frenchWords := ["le", "la", "les", "un", "une", "des", "et", "ou", "mais", "donc", "or", "ni", "car", "que", "qui",
         "quoi", "dont", "où", "à", "au", "avec", "pour", "sur", "dans", "par", "ce", "cette", "ces", "je", "tu", "il",
@@ -75,6 +114,14 @@ DetectLanguage(text) {
         frenchScore += 3
     if (RegExMatch(text, "i)ing\s|ed\s|'s\s|'ve\s|'re\s|'ll\s"))
         englishScore += 3
+}
+
+DetectLanguage(text) {
+    ; Language detection based on common words and patterns
+    frenchScore := 0
+    englishScore := 0
+
+    CalculateLanguageScores(text, &frenchScore, &englishScore)
 
     ; Determine the language based on score
     if (englishScore > frenchScore) {

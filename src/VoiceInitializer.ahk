@@ -185,10 +185,20 @@ InitializeVoices() {
 
 ; Function to set the voice language
 SetVoiceLanguage(language, text := "") {
-    global voice ; Ensure voice object is accessible
+    global voice, state ; Ensure voice object and state are accessible
 
     if (language == "AUTO") {
-        language := DetectLanguage(text)
+        ; If we're starting a new reading (with the full text), use dominant language detection
+        if (text == state.currentText && state.originalText != "") {
+            ; We're analyzing a single paragraph during reading
+            language := DetectLanguage(text)
+        } else if (state.originalText != "" && text == state.originalText) {
+            ; We're starting a new reading with the full text
+            language := DetermineDominantLanguage(text)
+        } else {
+            ; Default case - single paragraph or unknown context
+            language := DetectLanguage(text)
+        }
     }
 
     if (language == "EN") {

@@ -61,8 +61,8 @@ ReadText(language) {
     state.currentText := state.paragraphs[state.currentParagraphIndex]
 
     try {
-        ; Detect language for the first paragraph
-        SetVoiceLanguage(language, state.currentText)
+        ; First detect dominant language for the entire text, then apply to first paragraph
+        SetVoiceLanguage(language, state.originalText)
         voice.Rate := state.internalRate
         voice.Volume := state.volume  ; Ensure volume is applied before reading
 
