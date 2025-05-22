@@ -76,12 +76,21 @@ CalculateLanguageScores(text, &frenchScore, &englishScore) {
     englishWords := ["the", "and", "or", "but", "so", "yet", "for", "nor", "that", "which", "who", "whom", "whose",
         "when", "where", "why", "how", "a", "an", "in", "on", "at", "with", "by", "this", "these", "those", "is", "are",
         "was", "were", "be", "been", "being", "have", "has", "had", "do", "does", "did", "will", "would", "shall",
-        "should"
+        "should", "we", "to", "of", "them", "it", "you", "he", "she", "they", "my", "your", "his", "her", "our",
+        "their",
+        "me", "him", "us", "as", "if", "can", "could", "may", "might", "must", "about", "from", "into", "over", "under",
+        "between", "through", "after", "before", "during", "while", "than", "then", "there", "here", "not", "no", "yes"
     ]
 
     ; Add weight to more distinctive words
-    distinctiveFrench := ["est", "sont", "être", "avoir", "fait", "très", "beaucoup", "toujours", "jamais"]
-    distinctiveEnglish := ["is", "are", "be", "have", "do", "very", "much", "always", "never"]
+    distinctiveFrench := ["est", "sont", "être", "avoir", "fait", "très", "beaucoup", "toujours", "jamais", "voilà",
+        "donc", "alors", "puis", "ainsi", "comme", "aussi", "même", "encore", "déjà", "maintenant", "aujourd'hui",
+        "demain", "hier", "ici", "là", "chose", "quelque", "chaque", "tout", "tous", "toute", "toutes", "rien",
+        "personne", "quelqu'un", "quelque chose"]
+    distinctiveEnglish := ["is", "are", "be", "have", "do", "very", "much", "always", "never", "would", "could",
+        "should", "might", "must", "shall", "will", "can", "don't", "doesn't", "didn't", "won't", "wasn't", "weren't",
+        "hasn't", "haven't", "hadn't", "isn't", "aren't", "wouldn't", "couldn't", "shouldn't", "thing", "think",
+        "thought", "something", "anything", "nothing", "everything"]
 
     frenchScore := 0
     englishScore := 0
@@ -112,8 +121,8 @@ CalculateLanguageScores(text, &frenchScore, &englishScore) {
     ; Check for language-specific patterns
     if (RegExMatch(text, "i)qu'[aeiouy]|c'est|n'[aeiouy]|l'[aeiouy]|d'[aeiouy]"))
         frenchScore += 3
-    if (RegExMatch(text, "i)ing\s|ed\s|'s\s|'ve\s|'re\s|'ll\s"))
-        englishScore += 3
+    if (RegExMatch(text, "i)ing\s|ed\s|'s\s|'ve\s|'re\s|'ll\s|'t\s|'d\s|th\s|wh\s"))
+        englishScore += 4  ; Increased weight for English patterns
 }
 
 DetectLanguage(text) {
@@ -123,11 +132,22 @@ DetectLanguage(text) {
 
     CalculateLanguageScores(text, &frenchScore, &englishScore)
 
-    ; Determine the language based on score
-    if (englishScore > frenchScore) {
+    ; Debug information (can be removed in production)
+    ; MsgBox("French score: " frenchScore ", English score: " englishScore)
+
+    ; Determine the language based on score with improved logic
+    ; For English detection, require a minimum score difference to avoid false positives
+    if (englishScore > frenchScore && (englishScore - frenchScore) >= 2) {
         return "EN"
+    } else if (frenchScore > englishScore && (frenchScore - englishScore) >= 1) {
+        return "FR"
     } else {
-        return "FR" ; Defaults to French if scores are equal or French is higher
+        ; If scores are close, check for specific patterns
+        if (RegExMatch(text, "i)the\s|and\s|of\s|to\s|in\s|is\s|are\s|that\s|it\s|for\s|with\s")) {
+            return "EN"
+        } else {
+            return "FR" ; Default to French if uncertain
+        }
     }
 }
 
