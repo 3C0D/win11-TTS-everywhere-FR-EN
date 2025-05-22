@@ -61,6 +61,7 @@ ReadText(language) {
     state.currentText := state.paragraphs[state.currentParagraphIndex]
 
     try {
+        ; Detect language for the first paragraph
         SetVoiceLanguage(language, state.currentText)
         voice.Rate := state.internalRate
         voice.Volume := state.volume  ; Ensure volume is applied before reading
@@ -104,6 +105,10 @@ CheckReadingStatus() {
             if (nextParagraphText != "") {
                 ; Update current text and start new reading
                 state.currentText := nextParagraphText
+
+                ; Detect language for each paragraph individually
+                SetVoiceLanguage("AUTO", nextParagraphText)
+
                 voice.Rate := state.internalRate
                 voice.Volume := state.volume
                 voice.Speak(nextParagraphText, 1)  ; Start new asynchronous reading

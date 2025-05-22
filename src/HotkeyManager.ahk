@@ -108,6 +108,10 @@ JumpToNextLine(*) {
     if (nextParagraphText != "") {
         ; Update current text and start new reading
         state.currentText := nextParagraphText
+
+        ; Detect language for the next paragraph
+        SetVoiceLanguage("AUTO", nextParagraphText)
+
         voice.Rate := state.internalRate
         voice.Volume := state.volume
         voice.Speak(nextParagraphText, 1)  ; Start new asynchronous reading
@@ -128,11 +132,19 @@ JumpToPreviousParagraph(*) {
     if (state.currentParagraphIndex > 1) {
         state.currentParagraphIndex--
         state.currentText := state.paragraphs[state.currentParagraphIndex]
+
+        ; Detect language for the previous paragraph
+        SetVoiceLanguage("AUTO", state.currentText)
+
         voice.Rate := state.internalRate
         voice.Volume := state.volume
         voice.Speak(state.currentText, 1)  ; Asynchronous reading
     } else {
         ; If at first paragraph, restart it
+
+        ; Detect language for the current paragraph
+        SetVoiceLanguage("AUTO", state.currentText)
+
         voice.Rate := state.internalRate
         voice.Volume := state.volume
         voice.Speak(state.currentText, 1)  ; Asynchronous reading
