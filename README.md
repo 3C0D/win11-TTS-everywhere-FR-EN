@@ -7,7 +7,7 @@ A simple application to read text aloud using text-to-speech voices available on
 ## Features
 
 - Read selected text or text copied to the clipboard
-- Automatic language detection (English or French)
+- Automatic language detection (English or French) or manual selection in the settings menu
 - Control reading speed and volume
 - Navigate by paragraph
 - Pause and resume reading
@@ -53,8 +53,10 @@ When reading starts, a control panel appears with:
 - ⏸/▶: Pause/Resume reading
 - ⏹: Stop reading
 - ⏭: Skip to next paragraph
+- ⚙ : Open settings (speed, volume, and language)
 
-The control panel can be moved by dragging it and closes automatically when reading stops.
+The control panel can be moved by dragging it.
+It closes automatically when reading stops.
 
 The navigation buttons support rapid clicks for faster navigation:
 - First click on ⏮: Go to the beginning of the current paragraph
@@ -82,7 +84,7 @@ The application will automatically create a shortcut in the Windows startup fold
 
 ## Supported Languages
 
-The application automatically detects whether the text is in French or English and uses the appropriate voice.
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
 
 ## System Requirements
 
@@ -92,3 +94,2794 @@ The application automatically detects whether the text is in French or English a
 ## License
 
 This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices installed (the application can install missing voices)
+
+## License
+
+This software is distributed under the MIT license.
+
+## Supported Languages
+
+The application automatically detects whether the text is in French or English and uses the appropriate voice. You can also manually select the language (Auto, English, or French) in the settings menu.
+
+## System Requirements
+
+- Windows 11 or higher
+- Microsoft voices

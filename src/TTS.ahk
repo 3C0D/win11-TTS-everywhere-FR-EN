@@ -1,4 +1,4 @@
-﻿#Requires AutoHotkey v2.0
+#Requires AutoHotkey v2.0
 #SingleInstance Force
 #Include "VoiceInitializer.ahk"
 #Include "TextProcessor.ahk"
@@ -9,12 +9,8 @@
 #Include "ClipboardManager.ahk"
 #Include "StateManager.ahk"
 
-; Todo: Clear unused variables when stopping to free up memory
-; Add language selection options. This could be in the systray.
-; Improve language detection.
-
 ; Define version first
-global APP_VERSION := "1.0.9"
+global APP_VERSION := "1.1.0"
 
 ; Debug message
 if (!A_IsCompiled) {
@@ -40,7 +36,7 @@ InitializeHotkeys()
 ; Disable hotkeys at start
 UpdateHotkeys(false)
 
-ReadText(language) {
+ReadText() {
 
     if (voice.Status.RunningState == 2 || state.isPaused) {
         StopReading()
@@ -61,8 +57,8 @@ ReadText(language) {
     state.currentText := state.paragraphs[state.currentParagraphIndex]
 
     try {
-        ; First detect dominant language for the entire text, then apply to first paragraph
-        SetVoiceLanguage(language, state.originalText)
+        ; Use the selected language mode from settings
+        SetVoiceLanguage(state.languageMode, state.originalText)
         voice.Rate := state.internalRate
         voice.Volume := state.volume  ; Ensure volume is applied before reading
 
@@ -105,8 +101,8 @@ CheckReadingStatus() {
                 ; Update current text and start new reading
                 state.currentText := nextParagraphText
 
-                ; Detect language for each paragraph individually
-                SetVoiceLanguage("AUTO", nextParagraphText)
+                ; Use the selected language mode for each paragraph
+                SetVoiceLanguage(state.languageMode, nextParagraphText)
 
                 voice.Rate := state.internalRate
                 voice.Volume := state.volume

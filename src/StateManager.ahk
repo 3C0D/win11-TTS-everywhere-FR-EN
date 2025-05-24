@@ -18,7 +18,8 @@ state := {
     controlGuiVisible: false,
     settingsGuiVisible: false,
     guiX: A_ScreenWidth - 300,
-    guiY: 100
+    guiY: 100,
+    languageMode: "AUTO"  ; Language selection: "AUTO", "EN", "FR"
 }
 
 ; Reset the state to initial values

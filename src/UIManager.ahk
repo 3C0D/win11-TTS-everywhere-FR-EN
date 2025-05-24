@@ -9,8 +9,8 @@ global dragState := {
     initialY: 0,
     initialWinX: 0,
     initialWinY: 0,
-    lastSavedX: 0,  ; Dernière position X sauvegardée
-    lastSavedY: 0   ; Dernière position Y sauvegardée
+    lastSavedX: 0,  ; last saved X position
+    lastSavedY: 0   ; last saved Y position
 }
 
 ; Configuration for optimized drag handling
@@ -284,7 +284,7 @@ CreateSettingsGui() {
     global settingsGui, controlGui
 
     ; Variables globales pour stocker les références aux contrôles de texte
-    global speedTextCtrl, volumeTextCtrl
+    global speedTextCtrl, volumeTextCtrl, languageDropDown
 
     ; Destroy existing GUI if it exists
     if (settingsGui) {
@@ -312,12 +312,18 @@ CreateSettingsGui() {
     volumeTextCtrl := settingsGui.Add("Text", "x105 y40 w40 Center", state.volume)
     settingsGui.Add("Button", "x150 y38 w30 h25", "+").OnEvent("Click", (*) => AdjustVolume(10))
 
+    ; Add language selection
+    settingsGui.Add("Text", "x10 y70 w60", "Language:")
+    languageDropDown := settingsGui.Add("DropDownList", "x75 y68 w100 Choose" . GetLanguageIndex(), ["Auto", "English",
+        "Français"])
+    languageDropDown.OnEvent("Change", OnLanguageChange)
+
     ; Calculate position (below the control GUI)
     settingsX := controlX
     settingsY := controlY + controlHeight
 
     ; Show the GUI
-    settingsGui.Show("x" . settingsX . " y" . settingsY . " w190 h75 NoActivate")
+    settingsGui.Show("x" . settingsX . " y" . settingsY . " w190 h105 NoActivate")
     state.settingsGuiVisible := true
 }
 
@@ -334,7 +340,7 @@ CloseSettingsGui(*) {
 
 ; Function to update the settings values
 UpdateSettingsValues() {
-    global speedTextCtrl, volumeTextCtrl
+    global speedTextCtrl, volumeTextCtrl, languageDropDown
 
     if (!state.settingsGuiVisible)
         return
@@ -342,6 +348,7 @@ UpdateSettingsValues() {
     try {
         speedTextCtrl.Text := state.speed
         volumeTextCtrl.Text := state.volume
+        languageDropDown.Choose(GetLanguageIndex())
     } catch as err {
         OutputDebug("Error updating settings values: " . err.Message)
     }
@@ -444,7 +451,7 @@ ShowHelp(*) {
     ⏸/▶ : Pause/Resume reading
     ⏹ : Stop reading
     ⏭ : Skip to next paragraph
-    ⚙ : Open settings (speed and volume)
+    ⚙ : Open settings (speed, volume, and language)
 
     The control panel can be moved by dragging it.
     It closes automatically when reading stops.
@@ -453,8 +460,9 @@ ShowHelp(*) {
     1. Select or copy text in any application
     2. Press Win+Y to start reading
     3. Use the shortcuts or control panel to control playback
+    4. Change the reading language in the settings menu if needed.
 
-    Language is automatically detected (English or French).
+    By default, language is automatically detected (English or French).
     )"
 
     helpGui := Gui("+AlwaysOnTop")
@@ -463,4 +471,74 @@ ShowHelp(*) {
     helpGui.Add("Text", "w500", helpText)
     helpGui.Add("Button", "Default w100", "OK").OnEvent("Click", (*) => helpGui.Destroy())
     helpGui.Show()
+}
+
+; Function to get the current language index for the dropdown
+GetLanguageIndex() {
+    switch state.languageMode {
+        case "AUTO":
+            return 1
+        case "EN":
+            return 2
+        case "FR":
+            return 3
+        default:
+            return 1
+    }
+}
+
+; Function to handle language change from dropdown
+OnLanguageChange(*) {
+    global languageDropDown, voice, state
+
+    ; Get selected language
+    selectedIndex := languageDropDown.Value
+    switch selectedIndex {
+        case 1:
+            newLanguage := "AUTO"
+        case 2:
+            newLanguage := "EN"
+        case 3:
+            newLanguage := "FR"
+        default:
+            newLanguage := "AUTO"
+    }
+
+    ; Update state
+    state.languageMode := newLanguage
+
+    ; If currently reading, change language on the fly
+    if (state.isReading) {
+        ChangeLanguageOnTheFly(newLanguage)
+    }
+}
+
+; Function to change language during reading
+ChangeLanguageOnTheFly(newLanguage) {
+    global voice, state
+
+    ; Store current reading position and state
+    wasReading := state.isReading
+    wasPaused := state.isPaused
+    currentText := state.currentText
+    currentParagraphIndex := state.currentParagraphIndex
+
+    ; Stop current reading
+    if (wasPaused) {
+        voice.Resume()
+        state.isPaused := false
+    }
+    voice.Speak("", 3)  ; Stop immediately
+
+    ; Set new voice language
+    SetVoiceLanguage(newLanguage, currentText)
+
+    ; Apply current settings
+    voice.Rate := state.internalRate
+    voice.Volume := state.volume
+
+    ; Resume reading from current position if it was reading
+    if (wasReading && !wasPaused) {
+        voice.Speak(currentText, 1)  ; Resume asynchronous reading
+    }
 }
