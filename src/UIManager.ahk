@@ -13,6 +13,11 @@ global dragState := {
     lastSavedY: 0   ; Dernière position Y sauvegardée
 }
 
+; Configuration for optimized drag handling
+global DRAG_CONFIG := {
+    saveDelay: 100  ; Optimal delay for position saving after drag
+}
+
 ; Create and show the control interface GUI
 CreateControlGui() {
     global controlGui  ; Ensure we're using the global variable
@@ -33,7 +38,7 @@ CreateControlGui() {
     controlGui.SetFont("s10", "Segoe UI")
     controlGui.OnEvent("Close", CloseControlGui)
 
-    ; Make the GUI draggable without click-through style
+    ; Make the GUI draggable - only WM_LBUTTONDOWN handler at startup
     OnMessage(0x201, GuiDragHandler)  ; WM_LBUTTONDOWN message
 
     ; Calculate position (use saved position or default to top-right corner)
@@ -110,11 +115,39 @@ GuiDragHandler(wParam, lParam, msg, hwnd) {
     dragState.initialWinX := winX
     dragState.initialWinY := winY
 
-    ; Set up mouse move and button up handlers
+    ; Set up mouse move and button up handlers ONLY during drag
     OnMessage(0x200, GuiDragMoveHandler)  ; WM_MOUSEMOVE
     OnMessage(0x202, GuiDragReleaseHandler)  ; WM_LBUTTONUP
 
     return 0  ; Prevent default handling
+}
+
+; Function to handle GUI drag release
+GuiDragReleaseHandler(wParam, lParam, msg, hwnd) {
+    global controlGui, dragState, state  ; Ensure we're using the global variables
+
+    if (!controlGui || !state.controlGuiVisible)
+        return
+
+    ; Stop dragging
+    dragState.isMouseDown := false
+
+    ; Save the current position of the window
+    WinGetPos(&winX, &winY, , , "ahk_id " . controlGui.Hwnd)
+
+    ; Update position in state object
+    state.guiX := winX
+    state.guiY := winY
+    dragState.lastSavedX := winX
+    dragState.lastSavedY := winY
+
+    OutputDebug("Position updated in state: X=" winX ", Y=" winY)
+
+    ; Remove handlers immediately after drag ends
+    OnMessage(0x200, GuiDragMoveHandler, 0)  ; Remove WM_MOUSEMOVE handler
+    OnMessage(0x202, GuiDragReleaseHandler, 0)  ; Remove WM_LBUTTONUP handler
+
+    return 0
 }
 
 ; Function to handle GUI dragging movement
@@ -135,31 +168,21 @@ GuiDragMoveHandler(wParam, lParam, msg, hwnd) {
     newX := dragState.initialWinX + (mouseX - dragState.initialX)
     newY := dragState.initialWinY + (mouseY - dragState.initialY)
 
-    ; Ensure the window stays within screen boundaries
-    screenWidth := A_ScreenWidth
-    screenHeight := A_ScreenHeight
+    ; Apply screen constraints
+    pos := ValidateGuiPosition(newX, newY)
 
-    ; Get window dimensions
-    WinGetPos(, , &winWidth, &winHeight, "ahk_id " . controlGui.Hwnd)
+    ; Move the window to the new position
+    WinMove(pos.x, pos.y, , , "ahk_id " . controlGui.Hwnd)
 
-    ; Adjust position if needed to keep window on screen
-    if (newX < 0)
-        newX := 0
-    if (newY < 0)
-        newY := 0
-    if (newX + winWidth > screenWidth)
-        newX := screenWidth - winWidth
-    if (newY + winHeight > screenHeight)
-        newY := screenHeight - winHeight
-
-    ; Move the window
-    WinMove(newX, newY, , , "ahk_id " . controlGui.Hwnd)
+    ; Update state immediately during drag
+    state.guiX := pos.x
+    state.guiY := pos.y
 
     ; If settings GUI is open, move it to follow the main GUI
     if (settingsGui && state.settingsGuiVisible) {
         ; Calculate new position for settings GUI (below the main GUI)
-        settingsX := newX
-        settingsY := newY + winHeight
+        settingsX := pos.x
+        settingsY := pos.y + 60  ; guiHeight
 
         ; Move the settings GUI
         WinMove(settingsX, settingsY, , , "ahk_id " . settingsGui.Hwnd)
@@ -168,78 +191,77 @@ GuiDragMoveHandler(wParam, lParam, msg, hwnd) {
     return 0
 }
 
-; Function to handle GUI drag release
-GuiDragReleaseHandler(wParam, lParam, msg, hwnd) {
-    global controlGui, dragState, state  ; Ensure we're using the global variables
+; === OPTIMIZED DRAG HANDLING FUNCTIONS ===
 
-    if (!controlGui || !state.controlGuiVisible)
-        return
-
-    ; Stop dragging
-    dragState.isMouseDown := false
-
-    ; Save the current position of the window
-    WinGetPos(&winX, &winY, , , "ahk_id " . controlGui.Hwnd)
-
-    ; Mettre à jour la position dans l'objet state
-    state.guiX := winX
-    state.guiY := winY
-
-    ; Afficher dans la console de débogage
-    OutputDebug("Position updated in state: X=" winX ", Y=" winY)
-
-    ; Remove handlers
-    OnMessage(0x200, GuiDragMoveHandler, 0)  ; Remove WM_MOUSEMOVE handler
-    OnMessage(0x202, GuiDragReleaseHandler, 0)  ; Remove WM_LBUTTONUP handler
-
-    return 0
+; Setup or remove optimized drag handlers
+SetupOptimizedDragHandlers(enable) {
+    if (enable) {
+        OnMessage(0x200, GuiDragMoveHandler)    ; WM_MOUSEMOVE
+        OnMessage(0x202, GuiDragReleaseHandler) ; WM_LBUTTONUP
+    } else {
+        OnMessage(0x200, GuiDragMoveHandler, 0)
+        OnMessage(0x202, GuiDragReleaseHandler, 0)
+    }
 }
 
-; Function to monitor window position and update state
-MonitorWindowPosition() {
-    global controlGui, settingsGui, dragState, state
+; Validate GUI position to ensure it stays within screen bounds
+ValidateGuiPosition(x, y) {
+    ; Get GUI dimensions
+    guiWidth := 215
+    guiHeight := 60
+
+    ; Ensure the window stays within screen bounds
+    maxX := A_ScreenWidth - guiWidth
+    maxY := A_ScreenHeight - guiHeight
+
+    validX := Max(0, Min(x, maxX))
+    validY := Max(0, Min(y, maxY))
+
+    return { x: validX, y: validY }
+}
+
+; Update GUI position in memory after drag completion
+UpdateGuiPositionInMemory() {
+    global controlGui, state, dragState
 
     if (!controlGui || !state.controlGuiVisible)
         return
 
-    ; Get current window position
-    WinGetPos(&winX, &winY, &winWidth, &winHeight, "ahk_id " . controlGui.Hwnd)
-
-    ; Check if position has changed since last update
-    if (winX != dragState.lastSavedX || winY != dragState.lastSavedY) {
-        ; Update state with new position
+    try {
+        WinGetPos(&winX, &winY, , , "ahk_id " . controlGui.Hwnd)
         state.guiX := winX
         state.guiY := winY
 
-        ; Update last saved position
+        ; Update last saved position for reference
         dragState.lastSavedX := winX
         dragState.lastSavedY := winY
 
-        OutputDebug("Position mise à jour via timer: X=" winX ", Y=" winY)
-
-        ; If settings GUI is open, move it to follow the main GUI
-        if (settingsGui && state.settingsGuiVisible) {
-            ; Calculate new position for settings GUI (below the main GUI)
-            settingsX := winX
-            settingsY := winY + winHeight
-
-            ; Move the settings GUI
-            WinMove(settingsX, settingsY, , , "ahk_id " . settingsGui.Hwnd)
-        }
+        OutputDebug("Position updated after drag: X=" winX ", Y=" winY)
+    } catch OSError {
+        ; In case of error, keep previous values
     }
+}
+
+; Delayed position update function called by timer
+DelayedGuiPositionUpdate() {
+    UpdateGuiPositionInMemory()
 }
 
 ; Function to close the control GUI
 CloseControlGui(*) {
     global controlGui, dragState  ; Ensure we're using the global variables
 
-    ; Remove any mouse message handlers
-    OnMessage(0x201, GuiDragHandler, 0)  ; Remove WM_LBUTTONDOWN handler
-    OnMessage(0x200, GuiDragMoveHandler, 0)  ; Remove WM_MOUSEMOVE handler
-    OnMessage(0x202, GuiDragReleaseHandler, 0)  ; Remove WM_LBUTTONUP handler
+    ; Stop any pending delayed position update timer
+    SetTimer(DelayedGuiPositionUpdate, 0)
 
-    ; Arrêter le timer de surveillance de la position
-    SetTimer(MonitorWindowPosition, 0)
+    ; Final position save before closing
+    if (controlGui && state.controlGuiVisible) {
+        UpdateGuiPositionInMemory()
+    }
+
+    ; Remove optimized drag handlers
+    SetupOptimizedDragHandlers(false)
+    OnMessage(0x201, GuiDragHandler, 0)  ; Remove WM_LBUTTONDOWN handler
 
     ; Reset drag state
     dragState.isMouseDown := false

@@ -42,7 +42,7 @@ StopReading() {
     voice.Speak("", 3)
     state.currentText := ""
     ResetState()
-    SetTimer(MonitorWindowPosition, 0)
+    ; Timer removed - using optimized event-based position tracking
     if (state.settingsGuiVisible) {
         CloseSettingsGui()
     }

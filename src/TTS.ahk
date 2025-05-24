@@ -74,15 +74,14 @@ ReadText(language) {
         ; Show the control GUI
         CreateControlGui()
 
-        ; Initialize the last position values
+        ; Initialize the last position values for reference
         WinGetPos(&winX, &winY, , , "ahk_id " . controlGui.Hwnd)
         dragState.lastSavedX := winX
         dragState.lastSavedY := winY
 
-        ; Start the timer to monitor the window position
-        ; This allows updating state.guiX and state.guiY even if the user
-        ; moves the window without using drag and drop (e.g., with Win+arrows)
-        SetTimer(MonitorWindowPosition, 500)  ; Check every 500ms
+        ; Update state with current position
+        state.guiX := winX
+        state.guiY := winY
 
         ; Monitor reading status
         SetTimer(CheckReadingStatus, 100)
