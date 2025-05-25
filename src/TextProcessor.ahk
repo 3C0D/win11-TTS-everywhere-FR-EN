@@ -125,7 +125,7 @@ CalculateLanguageScores(text, &frenchScore, &englishScore) {
         englishScore += 4  ; Increased weight for English patterns
 }
 
-DetectLanguage(text) {
+DetectLanguage(text, contextLanguage := "") {
     ; Language detection based on common words and patterns
     frenchScore := 0
     englishScore := 0
@@ -142,10 +142,25 @@ DetectLanguage(text) {
     } else if (frenchScore > englishScore && (frenchScore - englishScore) >= 1) {
         return "FR"
     } else {
-        ; If scores are close, check for specific patterns
+        ; If scores are close or equal, use context-aware logic
+        if (contextLanguage != "") {
+            ; If we have context information, prefer the context language for ambiguous lines
+            ; This helps with code lines that don't have clear language indicators
+            if (contextLanguage == "EN" && englishScore >= frenchScore) {
+                return "EN"
+            } else if (contextLanguage == "FR" && frenchScore >= englishScore) {
+                return "FR"
+            }
+        }
+
+        ; Fallback to pattern-based detection
         if (RegExMatch(text, "i)the\s|and\s|of\s|to\s|in\s|is\s|are\s|that\s|it\s|for\s|with\s")) {
             return "EN"
         } else {
+            ; If context suggests English but no clear indicators, lean towards English
+            if (contextLanguage == "EN") {
+                return "EN"
+            }
             return "FR" ; Default to French if uncertain
         }
     }

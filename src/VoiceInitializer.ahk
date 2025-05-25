@@ -190,14 +190,22 @@ SetVoiceLanguage(language, text := "") {
     if (language == "AUTO") {
         ; If we're starting a new reading (with the full text), use dominant language detection
         if (text == state.currentText && state.originalText != "") {
-            ; We're analyzing a single paragraph during reading
-            language := DetectLanguage(text)
+            ; We're analyzing a single paragraph during reading - use context from dominant language
+            dominantLanguage := DetermineDominantLanguage(state.originalText)
+            language := DetectLanguage(text, dominantLanguage)
         } else if (state.originalText != "" && text == state.originalText) {
             ; We're starting a new reading with the full text
             language := DetermineDominantLanguage(text)
         } else {
             ; Default case - single paragraph or unknown context
-            language := DetectLanguage(text)
+            ; Try to determine if we have enough context to infer dominant language
+            if (StrLen(text) > 100) {
+                ; For longer texts, use dominant language detection
+                language := DetermineDominantLanguage(text)
+            } else {
+                ; For shorter texts, use regular detection without context
+                language := DetectLanguage(text)
+            }
         }
     }
 
