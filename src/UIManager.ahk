@@ -303,7 +303,7 @@ CreateSettingsGui() {
     settingsGui.OnEvent("Close", CloseSettingsGui)
 
     ; Create tab control
-    settingsTab := settingsGui.Add("Tab3", "x5 y5 w240 h125", ["General", "Voices"])
+    settingsTab := settingsGui.Add("Tab3", "x5 y5 w205 h125", ["General", "Voices"])
 
     ; Tab 1: General settings
     settingsTab.UseTab(1)
@@ -343,7 +343,7 @@ CreateSettingsGui() {
             enVoiceIndex := i
         }
     }
-    voiceENDropDown := settingsGui.Add("DropDownList", "x15 y55 w210 Choose" . enVoiceIndex, enVoiceList)
+    voiceENDropDown := settingsGui.Add("DropDownList", "x15 y55 w175 Choose" . enVoiceIndex, enVoiceList)
     voiceENDropDown.OnEvent("Change", OnVoiceENChange)
 
     ; Add French voice selection
@@ -357,7 +357,7 @@ CreateSettingsGui() {
             frVoiceIndex := i
         }
     }
-    voiceFRDropDown := settingsGui.Add("DropDownList", "x15 y105 w210 Choose" . frVoiceIndex, frVoiceList)
+    voiceFRDropDown := settingsGui.Add("DropDownList", "x15 y105 w175 Choose" . frVoiceIndex, frVoiceList)
     voiceFRDropDown.OnEvent("Change", OnVoiceFRChange)
 
     ; Reset tab selection
@@ -367,8 +367,8 @@ CreateSettingsGui() {
     settingsX := controlX
     settingsY := controlY + controlHeight
 
-    ; Show the GUI with original height
-    settingsGui.Show("x" . settingsX . " y" . settingsY . " w250 h140 NoActivate")
+    ; Show the GUI with same width as control GUI
+    settingsGui.Show("x" . settingsX . " y" . settingsY . " w215 h140 NoActivate")
     state.settingsGuiVisible := true
 }
 
