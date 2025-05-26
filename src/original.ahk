@@ -6,7 +6,7 @@
 ; Improve language detection.
 
 ; Define version first
-global APP_VERSION := "1.0.9"
+global APP_VERSION := "1.2.0"
 
 ; Debug message
 if (!A_IsCompiled) {

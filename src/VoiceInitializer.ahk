@@ -2,6 +2,7 @@
 
 #Requires AutoHotkey v2.0
 #Include "TextProcessor.ahk" ; Required for DetectLanguage
+#Include "VoiceManager.ahk" ; Required for voice management functions
 
 /*
  * Initializes TTS voices by copying them from OneCore to standard registry locations
@@ -210,9 +211,9 @@ SetVoiceLanguage(language, text := "") {
     }
 
     if (language == "EN") {
-        voiceName := "Microsoft Mark"
+        voiceName := state.selectedVoiceEN
     } else if (language == "FR") {
-        voiceName := "Microsoft Paul"
+        voiceName := state.selectedVoiceFR
     } else {
         MsgBox "Unsupported language: " . language
         return

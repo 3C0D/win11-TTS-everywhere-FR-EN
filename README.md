@@ -53,7 +53,9 @@ When reading starts, a control panel appears with:
 - ⏸/▶: Pause/Resume reading
 - ⏹: Stop reading
 - ⏭: Skip to next paragraph
-- ⚙ : Open settings (speed, volume, and language)
+- ⚙ : Open settings with two tabs:
+  - General: speed, volume, and language settings
+  - Voices: select preferred voice for each language
 
 The control panel can be moved by dragging it.
 It closes automatically when reading stops.

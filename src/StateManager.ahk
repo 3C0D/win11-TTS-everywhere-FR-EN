@@ -19,7 +19,9 @@ state := {
     settingsGuiVisible: false,
     guiX: A_ScreenWidth - 300,
     guiY: 100,
-    languageMode: "AUTO"  ; Language selection: "AUTO", "EN", "FR"
+    languageMode: "AUTO",  ; Language selection: "AUTO", "EN", "FR"
+    selectedVoiceEN: "Microsoft Mark",  ; Selected English voice
+    selectedVoiceFR: "Microsoft Paul"   ; Selected French voice
 }
 
 ; Reset the state to initial values

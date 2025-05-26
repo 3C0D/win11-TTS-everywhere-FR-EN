@@ -1,4 +1,6 @@
 #Requires AutoHotkey v2.0
+#Include "StateManager.ahk"
+#Include "VoiceManager.ahk"
 
 ; Module for managing UI elements and interactions
 
@@ -283,8 +285,8 @@ ToggleSettingsGui(*) {
 CreateSettingsGui() {
     global settingsGui, controlGui
 
-    ; Variables globales pour stocker les références aux contrôles de texte
-    global speedTextCtrl, volumeTextCtrl, languageDropDown
+    ; Variables globales pour stocker les références aux contrôles
+    global speedTextCtrl, volumeTextCtrl, languageDropDown, voiceENDropDown, voiceFRDropDown, settingsTab
 
     ; Destroy existing GUI if it exists
     if (settingsGui) {
@@ -300,30 +302,73 @@ CreateSettingsGui() {
     settingsGui.SetFont("s10", "Segoe UI")
     settingsGui.OnEvent("Close", CloseSettingsGui)
 
+    ; Create tab control
+    settingsTab := settingsGui.Add("Tab3", "x5 y5 w240 h125", ["General", "Voices"])
+
+    ; Tab 1: General settings
+    settingsTab.UseTab(1)
+
     ; Add speed controls
-    settingsGui.Add("Text", "x10 y10 w60", "Speed:")
-    settingsGui.Add("Button", "x70 y8 w30 h25", "-").OnEvent("Click", (*) => AdjustSpeed(-0.5))
-    speedTextCtrl := settingsGui.Add("Text", "x105 y10 w40 Center", state.speed)
-    settingsGui.Add("Button", "x150 y8 w30 h25", "+").OnEvent("Click", (*) => AdjustSpeed(0.5))
+    settingsGui.Add("Text", "x15 y35 w60", "Speed:")
+    settingsGui.Add("Button", "x75 y33 w30 h25", "-").OnEvent("Click", (*) => AdjustSpeed(-0.5))
+    speedTextCtrl := settingsGui.Add("Text", "x110 y35 w40 Center", state.speed)
+    settingsGui.Add("Button", "x155 y33 w30 h25", "+").OnEvent("Click", (*) => AdjustSpeed(0.5))
 
     ; Add volume controls
-    settingsGui.Add("Text", "x10 y40 w60", "Volume:")
-    settingsGui.Add("Button", "x70 y38 w30 h25", "-").OnEvent("Click", (*) => AdjustVolume(-10))
-    volumeTextCtrl := settingsGui.Add("Text", "x105 y40 w40 Center", state.volume)
-    settingsGui.Add("Button", "x150 y38 w30 h25", "+").OnEvent("Click", (*) => AdjustVolume(10))
+    settingsGui.Add("Text", "x15 y65 w60", "Volume:")
+    settingsGui.Add("Button", "x75 y63 w30 h25", "-").OnEvent("Click", (*) => AdjustVolume(-10))
+    volumeTextCtrl := settingsGui.Add("Text", "x110 y65 w40 Center", state.volume)
+    settingsGui.Add("Button", "x155 y63 w30 h25", "+").OnEvent("Click", (*) => AdjustVolume(10))
 
     ; Add language selection
-    settingsGui.Add("Text", "x10 y70 w60", "Language:")
-    languageDropDown := settingsGui.Add("DropDownList", "x75 y68 w100 Choose" . GetLanguageIndex(), ["Auto", "English",
+    settingsGui.Add("Text", "x15 y95 w60", "Language:")
+    languageDropDown := settingsGui.Add("DropDownList", "x80 y93 w100 Choose" . GetLanguageIndex(), ["Auto", "English",
         "Français"])
     languageDropDown.OnEvent("Change", OnLanguageChange)
+
+    ; Tab 2: Voice settings
+    settingsTab.UseTab(2)
+
+    ; Get available voices
+    availableVoices := GetAvailableVoices()
+
+    ; Add English voice selection
+    settingsGui.Add("Text", "x15 y35 w80", "English Voice:")
+    enVoiceList := []
+    enVoiceIndex := 1
+    for i, voiceName in availableVoices.EN {
+        displayName := GetVoiceDisplayName(voiceName)
+        enVoiceList.Push(displayName)
+        if (voiceName == state.selectedVoiceEN) {
+            enVoiceIndex := i
+        }
+    }
+    voiceENDropDown := settingsGui.Add("DropDownList", "x15 y55 w210 Choose" . enVoiceIndex, enVoiceList)
+    voiceENDropDown.OnEvent("Change", OnVoiceENChange)
+
+    ; Add French voice selection
+    settingsGui.Add("Text", "x15 y85 w80", "French Voice:")
+    frVoiceList := []
+    frVoiceIndex := 1
+    for i, voiceName in availableVoices.FR {
+        displayName := GetVoiceDisplayName(voiceName)
+        frVoiceList.Push(displayName)
+        if (voiceName == state.selectedVoiceFR) {
+            frVoiceIndex := i
+        }
+    }
+    voiceFRDropDown := settingsGui.Add("DropDownList", "x15 y105 w210 Choose" . frVoiceIndex, frVoiceList)
+    voiceFRDropDown.OnEvent("Change", OnVoiceFRChange)
+
+    ; Reset tab selection
+    settingsTab.UseTab()
 
     ; Calculate position (below the control GUI)
     settingsX := controlX
     settingsY := controlY + controlHeight
 
-    ; Show the GUI
-    settingsGui.Show("x" . settingsX . " y" . settingsY . " w190 h105 NoActivate")
+    ; Show the GUI with original height
+    settingsGui.Show("x" . settingsX . " y" . settingsY . " w250 h140 NoActivate")
     state.settingsGuiVisible := true
 }
 
@@ -460,9 +505,10 @@ ShowHelp(*) {
     1. Select or copy text in any application
     2. Press Win+Y to start reading
     3. Use the shortcuts or control panel to control playback
-    4. Change the reading language in the settings menu if needed.
+    4. Change the reading language and voices in the settings menu if needed.
 
     By default, language is automatically detected (English or French).
+    You can select your preferred voice for each language in the Voices tab of the settings.
     )"
 
     helpGui := Gui("+AlwaysOnTop")
@@ -510,6 +556,36 @@ OnLanguageChange(*) {
     ; If currently reading, change language on the fly
     if (state.isReading) {
         ChangeLanguageOnTheFly(newLanguage)
+    }
+}
+
+; Function to handle English voice selection change
+OnVoiceENChange(*) {
+    global voiceENDropDown
+
+    if (!voiceENDropDown)
+        return
+
+    selectedIndex := voiceENDropDown.Value
+    availableVoices := GetAvailableVoices()
+
+    if (selectedIndex > 0 && selectedIndex <= availableVoices.EN.Length) {
+        state.selectedVoiceEN := availableVoices.EN[selectedIndex]
+    }
+}
+
+; Function to handle French voice selection change
+OnVoiceFRChange(*) {
+    global voiceFRDropDown
+
+    if (!voiceFRDropDown)
+        return
+
+    selectedIndex := voiceFRDropDown.Value
+    availableVoices := GetAvailableVoices()
+
+    if (selectedIndex > 0 && selectedIndex <= availableVoices.FR.Length) {
+        state.selectedVoiceFR := availableVoices.FR[selectedIndex]
     }
 }
 
