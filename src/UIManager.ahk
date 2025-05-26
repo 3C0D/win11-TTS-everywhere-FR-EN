@@ -415,6 +415,9 @@ AdjustVolume(delta) {
     if (state.settingsGuiVisible) {
         UpdateSettingsValues()
     }
+
+    ; Save settings to INI file
+    SaveVoiceSettings()
 }
 
 AdjustSpeed(delta) {
@@ -436,6 +439,9 @@ AdjustSpeed(delta) {
     if (state.settingsGuiVisible) {
         UpdateSettingsValues()
     }
+
+    ; Save settings to INI file
+    SaveVoiceSettings()
 }
 
 ; Function to display a temporary speed window
@@ -553,6 +559,9 @@ OnLanguageChange(*) {
     ; Update state
     state.languageMode := newLanguage
 
+    ; Save settings to INI file
+    SaveVoiceSettings()
+
     ; If currently reading, change language on the fly
     if (state.isReading) {
         ChangeLanguageOnTheFly(newLanguage)
@@ -571,6 +580,9 @@ OnVoiceENChange(*) {
 
     if (selectedIndex > 0 && selectedIndex <= availableVoices.EN.Length) {
         state.selectedVoiceEN := availableVoices.EN[selectedIndex]
+
+        ; Save settings to INI file
+        SaveVoiceSettings()
     }
 }
 
@@ -586,6 +598,9 @@ OnVoiceFRChange(*) {
 
     if (selectedIndex > 0 && selectedIndex <= availableVoices.FR.Length) {
         state.selectedVoiceFR := availableVoices.FR[selectedIndex]
+
+        ; Save settings to INI file
+        SaveVoiceSettings()
     }
 }
 

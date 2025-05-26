@@ -2,6 +2,10 @@
 
 ; Module for managing voice selection and detection
 
+; Constants for settings file
+global SETTINGS_FILE := A_ScriptDir . "\settingsTTS.ini"
+global SETTINGS_SECTION := "VoiceSettings"
+
 ; Function to get available voices by language
 GetAvailableVoices() {
     global voice
@@ -86,4 +90,50 @@ GetFullVoiceName(displayName) {
         return "Microsoft " . displayName
     }
     return displayName
+}
+
+; Function to save voice settings to INI file
+SaveVoiceSettings() {
+    global state, SETTINGS_FILE, SETTINGS_SECTION
+
+    ; Create directory if it doesn't exist
+    SplitPath(SETTINGS_FILE, , &dir)
+    if (!DirExist(dir))
+        DirCreate(dir)
+
+    ; Save voice selections
+    IniWrite(state.selectedVoiceEN, SETTINGS_FILE, SETTINGS_SECTION, "SelectedVoiceEN")
+    IniWrite(state.selectedVoiceFR, SETTINGS_FILE, SETTINGS_SECTION, "SelectedVoiceFR")
+    IniWrite(state.languageMode, SETTINGS_FILE, SETTINGS_SECTION, "LanguageMode")
+
+    ; Save other persistent settings if needed
+    IniWrite(state.speed, SETTINGS_FILE, SETTINGS_SECTION, "Speed")
+    IniWrite(state.volume, SETTINGS_FILE, SETTINGS_SECTION, "Volume")
+
+    OutputDebug("Voice settings saved to " . SETTINGS_FILE)
+}
+
+; Function to load voice settings from INI file
+LoadVoiceSettings() {
+    global state, SETTINGS_FILE, SETTINGS_SECTION
+
+    ; Check if settings file exists
+    if (!FileExist(SETTINGS_FILE)) {
+        OutputDebug("Settings file not found, using defaults")
+        return
+    }
+
+    ; Load voice selections with defaults if not found
+    state.selectedVoiceEN := IniRead(SETTINGS_FILE, SETTINGS_SECTION, "SelectedVoiceEN", state.selectedVoiceEN)
+    state.selectedVoiceFR := IniRead(SETTINGS_FILE, SETTINGS_SECTION, "SelectedVoiceFR", state.selectedVoiceFR)
+    state.languageMode := IniRead(SETTINGS_FILE, SETTINGS_SECTION, "LanguageMode", state.languageMode)
+
+    ; Load other persistent settings
+    state.speed := Number(IniRead(SETTINGS_FILE, SETTINGS_SECTION, "Speed", state.speed))
+    state.volume := Number(IniRead(SETTINGS_FILE, SETTINGS_SECTION, "Volume", state.volume))
+
+    ; Update internal rate based on loaded speed
+    state.internalRate := Round(state.speed)
+
+    OutputDebug("Voice settings loaded from " . SETTINGS_FILE)
 }

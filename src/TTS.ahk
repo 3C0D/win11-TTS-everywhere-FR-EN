@@ -10,7 +10,7 @@
 #Include "StateManager.ahk"
 
 ; Define version first
-global APP_VERSION := "1.1.0"
+global APP_VERSION := "1.1.1"
 
 ; Debug message
 if (!A_IsCompiled) {
@@ -28,6 +28,9 @@ InitializeVoices()
 global voice := ComObject("SAPI.SpVoice")
 global controlGui := false  ; Will hold the control GUI instance
 global settingsGui := false  ; Will hold the settings GUI instance
+
+; Load saved settings from INI file
+LoadVoiceSettings()
 
 InitializeSystray()
 
