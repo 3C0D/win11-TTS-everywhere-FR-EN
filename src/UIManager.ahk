@@ -581,6 +581,24 @@ OnVoiceENChange(*) {
     if (selectedIndex > 0 && selectedIndex <= availableVoices.EN.Length) {
         state.selectedVoiceEN := availableVoices.EN[selectedIndex]
 
+        ; If reading is in progress and current language is English, apply voice change immediately
+        if (state.isReading && !state.isPaused) {
+            currentLanguage := (state.languageMode == "AUTO") ? DetermineDominantLanguage(state.originalText) : state.languageMode
+            if (currentLanguage == "EN") {
+                ; Stop current reading completely
+                voice.Speak("", 3)
+
+                ; Apply new voice and restart reading from current text
+                SetVoiceLanguage("EN", state.currentText)
+                voice.Rate := state.internalRate
+                voice.Volume := state.volume
+                voice.Speak(state.currentText, 1)  ; Restart reading with new voice
+
+                ; Update control GUI
+                UpdateControlGui()
+            }
+        }
+
         ; Save settings to INI file
         SaveVoiceSettings()
     }
@@ -598,6 +616,24 @@ OnVoiceFRChange(*) {
 
     if (selectedIndex > 0 && selectedIndex <= availableVoices.FR.Length) {
         state.selectedVoiceFR := availableVoices.FR[selectedIndex]
+
+        ; If reading is in progress and current language is French, apply voice change immediately
+        if (state.isReading && !state.isPaused) {
+            currentLanguage := (state.languageMode == "AUTO") ? DetermineDominantLanguage(state.originalText) : state.languageMode
+            if (currentLanguage == "FR") {
+                ; Stop current reading completely
+                voice.Speak("", 3)
+
+                ; Apply new voice and restart reading from current text
+                SetVoiceLanguage("FR", state.currentText)
+                voice.Rate := state.internalRate
+                voice.Volume := state.volume
+                voice.Speak(state.currentText, 1)  ; Restart reading with new voice
+
+                ; Update control GUI
+                UpdateControlGui()
+            }
+        }
 
         ; Save settings to INI file
         SaveVoiceSettings()
