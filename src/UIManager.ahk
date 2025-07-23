@@ -449,11 +449,11 @@ ShowSpeedWindow() {
     ; Create a temporary GUI to show the current speed
     speedGui := Gui("+AlwaysOnTop +ToolWindow -Caption +E0x20")
     speedGui.BackColor := "333333"
-    speedGui.SetFont("s14 c00FF00 Bold", "Segoe UI")
+    speedGui.SetFont("s17 c00FF00 Bold", "Segoe UI")
     speedGui.Add("Text", "x10 y10", "Speed: " . state.speed)
 
     ; Position in the center of the screen
-    speedGui.Show("w150 h40 NoActivate")
+    speedGui.Show("w180 h50 NoActivate")
     WinSetTransparent(200, "ahk_id " . speedGui.Hwnd)
 
     ; Auto-close after a short delay
@@ -465,11 +465,11 @@ ShowVolumeWindow() {
     ; Create a temporary GUI to show the current volume
     volumeGui := Gui("+AlwaysOnTop +ToolWindow -Caption +E0x20")
     volumeGui.BackColor := "333333"
-    volumeGui.SetFont("s14 c00FF00 Bold", "Segoe UI")
+    volumeGui.SetFont("s17 c00FF00 Bold", "Segoe UI")
     volumeGui.Add("Text", "x10 y10", "Volume: " . state.volume)
 
     ; Position in the center of the screen
-    volumeGui.Show("w150 h40 NoActivate")
+    volumeGui.Show("w180 h50 NoActivate")
     WinSetTransparent(200, "ahk_id " . volumeGui.Hwnd)
 
     ; Auto-close after a short delay
