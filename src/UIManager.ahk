@@ -149,14 +149,14 @@ ShowMinimizedNotification() {
     
     ; Create a small notification GUI
     minimizedGui := Gui("+AlwaysOnTop +ToolWindow -Caption +E0x20")
-    minimizedGui.BackColor := "333333"
+    minimizedGui.BackColor := "144d87"
     minimizedGui.SetFont("s12 cWhite Bold", "Segoe UI")
     minimizedGui.Add("Text", "x5 y2 w80 Center BackgroundTrans", "TTS Running").OnEvent("Click", RestoreControlGui)
     
     ; Position in top-right corner
     screenWidth := A_ScreenWidth
     minimizedGui.Show("x" . (screenWidth - 90) . " y10 w90 h20 NoActivate")
-    WinSetTransparent(180, "ahk_id " . minimizedGui.Hwnd)
+    WinSetTransparent(200, "ahk_id " . minimizedGui.Hwnd)
     
     ; Make the notification clickable
     OnMessage(0x201, MinimizedGuiClickHandler)
@@ -408,7 +408,7 @@ ToggleSettingsGui(*) {
 CreateSettingsGui() {
     global settingsGui, controlGui
 
-    ; Variables globales pour stocker les références aux contrôles
+    ; Global variables to store references to controls
     global speedTextCtrl, volumeTextCtrl, languageDropDown, voiceENDropDown, voiceFRDropDown, settingsTab, startMinimizedCheckbox
 
     ; Destroy existing GUI if it exists
@@ -450,7 +450,7 @@ CreateSettingsGui() {
     languageDropDown.OnEvent("Change", OnLanguageChange)
 
     ; Add start minimized checkbox
-    startMinimizedCheckbox := settingsGui.Add("Checkbox", "x15 y120 w175", "Démarrer réduite")
+    startMinimizedCheckbox := settingsGui.Add("Checkbox", "x15 y120 w175", "Start minimized (Win+Space! to toggle minimized)")
     startMinimizedCheckbox.Value := state.startMinimized
     startMinimizedCheckbox.OnEvent("Click", OnStartMinimizedChange)
 
