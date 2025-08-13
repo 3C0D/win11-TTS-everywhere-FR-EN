@@ -15,9 +15,13 @@ global dragState := {
     lastSavedY: 0   ; last saved Y position
 }
 
+; Global variable for minimized notification GUI
+global minimizedGui := false
+
 ; Configuration for optimized drag handling
 global DRAG_CONFIG := {
-    saveDelay: 100  ; Optimal delay for position saving after drag
+    saveDelay: 100,  ; Optimal delay for position saving after drag
+    dragZoneHeight: 28  ; Height of the draggable zone (top area only)
 }
 
 ; Create and show the control interface GUI
@@ -47,49 +51,132 @@ CreateControlGui() {
     screenWidth := A_ScreenWidth
     screenHeight := A_ScreenHeight
     guiWidth := 215  ; Increased width to accommodate the settings button
-    guiHeight := 60
+    guiHeight := 70  ; Optimized height
 
     ; Utiliser la position sauvegardée dans l'objet state
     xPos := state.guiX
     yPos := state.guiY
 
+    ; If no saved position, use default (top-right with 40px margin from edges)
+    if (xPos == 0 && yPos == 0) {
+        xPos := screenWidth - guiWidth - 60  ; 60px from right edge
+        yPos := 40  ; 40px from top edge
+    }
+
     ; Ensure the window is still visible on screen (in case of resolution change)
     if (xPos + guiWidth > screenWidth)
-        xPos := screenWidth - guiWidth - 20
+        xPos := screenWidth - guiWidth - 60
     if (yPos + guiHeight > screenHeight)
-        yPos := screenHeight - guiHeight - 20
-    if (xPos < 0)
+        yPos := screenHeight - guiHeight - 40
+    if (xPos < 20)
         xPos := 20
-    if (yPos < 0)
+    if (yPos < 20)
         yPos := 20
+
+    ; Add minimize button in top-right corner
+    controlGui.Add("Button", "x185 y5 w20 h18", "−").OnEvent("Click", MinimizeControlGui)
 
     ; Add buttons with icons using Unicode symbols
     buttonWidth := 30
-    buttonHeight := 28
+    buttonHeight := 26  ; Slightly reduced height
     buttonOptions := "w" . buttonWidth . " h" . buttonHeight
 
     ; Previous paragraph button
-    controlGui.Add("Button", "x15 y15 " . buttonOptions, "⏮").OnEvent("Click", JumpToPreviousParagraph)
+    controlGui.Add("Button", "x15 y30 " . buttonOptions, "⏮").OnEvent("Click", JumpToPreviousParagraph)
 
     ; Play/Pause button
     global playPauseBtn  ; Make this global too
-    playPauseBtn := controlGui.Add("Button", "x+10 y15 " . buttonOptions, state.isPaused ? "▶" : "⏸")
+    playPauseBtn := controlGui.Add("Button", "x+10 y30 " . buttonOptions, state.isPaused ? "▶" : "⏸")
     playPauseBtn.OnEvent("Click", TogglePause)
 
     ; Stop button
-    controlGui.Add("Button", "x+10 y15 " . buttonOptions, "⏹").OnEvent("Click", (*) => CloseControlGui())
+    controlGui.Add("Button", "x+10 y30 " . buttonOptions, "⏹").OnEvent("Click", (*) => CloseControlGui())
 
     ; Next paragraph button
-    controlGui.Add("Button", "x+10 y15 " . buttonOptions, "⏭").OnEvent("Click", JumpToNextLine)
+    controlGui.Add("Button", "x+10 y30 " . buttonOptions, "⏭").OnEvent("Click", JumpToNextLine)
 
     ; Settings button (gear icon)
-    controlGui.Add("Button", "x+10 y15 " . buttonOptions, "⚙").OnEvent("Click", ToggleSettingsGui)
+    controlGui.Add("Button", "x+10 y30 " . buttonOptions, "⚙").OnEvent("Click", ToggleSettingsGui)
 
     ; Show the GUI
     controlGui.Show("x" . xPos . " y" . yPos . " w" . guiWidth . " h" . guiHeight . " NoActivate")
     state.controlGuiVisible := true
 
     return controlGui
+}
+
+; Function to minimize the control GUI
+MinimizeControlGui(*) {
+    global controlGui
+
+    if (controlGui && state.controlGuiVisible) {
+        ; Hide the GUI instead of destroying it
+        controlGui.Hide()
+        state.controlGuiVisible := false
+        
+        ; Close settings GUI if it's open
+        if (state.settingsGuiVisible) {
+            CloseSettingsGui()
+        }
+        
+        ; Show a small notification that can be clicked to restore
+        ShowMinimizedNotification()
+    }
+}
+
+; Function to show a small notification when minimized
+ShowMinimizedNotification() {
+    global minimizedGui
+    
+    ; Destroy existing notification if it exists
+    if (minimizedGui) {
+        minimizedGui.Destroy()
+    }
+    
+    ; Create a small notification GUI
+    minimizedGui := Gui("+AlwaysOnTop +ToolWindow -Caption +E0x20")
+    minimizedGui.BackColor := "333333"
+    minimizedGui.SetFont("s12 cWhite Bold", "Segoe UI")
+    minimizedGui.Add("Text", "x5 y2 w80 Center BackgroundTrans", "TTS Running").OnEvent("Click", RestoreControlGui)
+    
+    ; Position in top-right corner
+    screenWidth := A_ScreenWidth
+    minimizedGui.Show("x" . (screenWidth - 90) . " y10 w90 h20 NoActivate")
+    WinSetTransparent(180, "ahk_id " . minimizedGui.Hwnd)
+    
+    ; Make the notification clickable
+    OnMessage(0x201, MinimizedGuiClickHandler)
+}
+
+; Function to handle clicks on the minimized notification
+MinimizedGuiClickHandler(wParam, lParam, msg, hwnd) {
+    global minimizedGui
+    
+    if (minimizedGui && hwnd == minimizedGui.Hwnd) {
+        RestoreControlGui()
+        return 0
+    }
+}
+
+; Function to restore the minimized GUI (you can call this from a hotkey or other trigger)
+RestoreControlGui(*) {
+    global controlGui, minimizedGui
+
+    ; Hide the minimized notification
+    if (minimizedGui) {
+        minimizedGui.Destroy()
+        minimizedGui := false
+        ; Remove the click handler
+        OnMessage(0x201, MinimizedGuiClickHandler, 0)
+    }
+
+    if (controlGui && !state.controlGuiVisible) {
+        controlGui.Show("NoActivate")
+        state.controlGuiVisible := true
+    } else if (!controlGui && state.isReading) {
+        ; Recreate GUI if it was destroyed but we're still reading
+        CreateControlGui()
+    }
 }
 
 ; Function to handle GUI dragging
@@ -102,26 +189,33 @@ GuiDragHandler(wParam, lParam, msg, hwnd) {
     ; Get mouse position and control under cursor
     MouseGetPos(&mouseX, &mouseY, &mouseWin, &mouseCtrl)
 
-    ; Only start dragging if we're on the window and not on a control
-    ; This allows dragging from the title bar or empty space, but not from buttons
-    if (mouseWin != controlGui.Hwnd || mouseCtrl)
+    ; Only proceed if we're on the main control window
+    if (mouseWin != controlGui.Hwnd)
         return
 
-    ; Start dragging
-    dragState.isMouseDown := true
-    dragState.initialX := mouseX
-    dragState.initialY := mouseY
-
-    ; Get window position
+    ; Get relative mouse position within the window
     WinGetPos(&winX, &winY, , , "ahk_id " . controlGui.Hwnd)
-    dragState.initialWinX := winX
-    dragState.initialWinY := winY
+    relativeY := mouseY - winY
 
-    ; Set up mouse move and button up handlers ONLY during drag
-    OnMessage(0x200, GuiDragMoveHandler)  ; WM_MOUSEMOVE
-    OnMessage(0x202, GuiDragReleaseHandler)  ; WM_LBUTTONUP
+    ; Check if click is in the drag zone (top area only, excluding buttons)
+    ; Drag zone is only the top 28 pixels and not on any control
+    if (relativeY <= DRAG_CONFIG.dragZoneHeight && !mouseCtrl) {
+        ; Start dragging
+        dragState.isMouseDown := true
+        dragState.initialX := mouseX
+        dragState.initialY := mouseY
+        dragState.initialWinX := winX
+        dragState.initialWinY := winY
 
-    return 0  ; Prevent default handling
+        ; Set up mouse move and button up handlers ONLY during drag
+        OnMessage(0x200, GuiDragMoveHandler)  ; WM_MOUSEMOVE
+        OnMessage(0x202, GuiDragReleaseHandler)  ; WM_LBUTTONUP
+
+        return 0  ; Prevent default handling
+    }
+
+    ; If we're not in the drag zone, let the click pass through normally
+    return
 }
 
 ; Function to handle GUI drag release
@@ -209,7 +303,14 @@ GuiDragMoveHandler(wParam, lParam, msg, hwnd) {
 
 ; Function to close the control GUI
 CloseControlGui(*) {
-    global controlGui, dragState, state  ; Ensure we're using the global variables
+    global controlGui, dragState, state, minimizedGui  ; Ensure we're using the global variables
+
+    ; Clean up minimized notification if it exists
+    if (minimizedGui) {
+        minimizedGui.Destroy()
+        minimizedGui := false
+        OnMessage(0x201, MinimizedGuiClickHandler, 0)
+    }
 
     ; Final position save before closing
     if (controlGui && state.controlGuiVisible) {
@@ -303,7 +404,7 @@ CreateSettingsGui() {
     settingsGui.OnEvent("Close", CloseSettingsGui)
 
     ; Create tab control
-    settingsTab := settingsGui.Add("Tab3", "x5 y5 w205 h125", ["General", "Voices"])
+    settingsTab := settingsGui.Add("Tab3", "x5 y5 w205 h125", ["General", "Voices", "Shortcuts"])
 
     ; Tab 1: General settings
     settingsTab.UseTab(1)
@@ -360,6 +461,20 @@ CreateSettingsGui() {
     voiceFRDropDown := settingsGui.Add("DropDownList", "x15 y105 w175 Choose" . frVoiceIndex, frVoiceList)
     voiceFRDropDown.OnEvent("Change", OnVoiceFRChange)
 
+    ; Tab 3: Shortcuts
+    settingsTab.UseTab(3)
+    
+    ; Add shortcuts information (read-only)
+    settingsGui.Add("Text", "x10 y30 w190 h90", 
+        "Main Controls:`n" .
+        "Win+Y - Start/Stop reading`n" .
+        "Win+Alt - Pause/Resume`n" .
+        "Win+F - Show/Hide panel`n`n" .
+        "Navigation:`n" .
+        "Win+N - Next paragraph`n" .
+        "Win+P - Previous paragraph`n`n" .
+        "Speed: Numpad+/- | Volume: Numpad*//")
+
     ; Reset tab selection
     settingsTab.UseTab()
 
@@ -368,7 +483,7 @@ CreateSettingsGui() {
     settingsY := controlY + controlHeight
 
     ; Show the GUI with same width as control GUI
-    settingsGui.Show("x" . settingsX . " y" . settingsY . " w215 h140 NoActivate")
+    settingsGui.Show("x" . settingsX . " y" . settingsY . " w215 h150 NoActivate")
     state.settingsGuiVisible := true
 }
 
@@ -482,11 +597,11 @@ ShowHelp(*) {
     (
     MAIN SHORTCUTS:
     Win+Y : Play/Stop selected text
-    Win+Alt+Y : Pause/Resume reading
+    Win+Alt : Pause/Resume reading
 
     NAVIGATION:
-    Win+Ctrl+Y : Skip to next paragraph
-    Win+Shift+Y : Go to previous paragraph
+    Win+N : Skip to next paragraph (Next)
+    Win+P : Go to previous paragraph (Previous)
 
     SPEED:
     Numpad+ : Increase speed
@@ -497,24 +612,38 @@ ShowHelp(*) {
     Numpad/ : Decrease volume
 
     CONTROL INTERFACE:
+    Win+F : Show/Hide control panel (Full screen toggle)
+
     When reading starts, a control panel appears with:
+    − : Minimize control panel (click notification to restore)
     ⏮ : Go to previous paragraph
     ⏸/▶ : Pause/Resume reading
     ⏹ : Stop reading
     ⏭ : Skip to next paragraph
-    ⚙ : Open settings (speed, volume, and language)
+    ⚙ : Open settings (speed, volume, voices, and shortcuts)
 
-    The control panel can be moved by dragging it.
+    The control panel can be moved by dragging the top area (title bar).
     It closes automatically when reading stops.
+    Use Win+F to toggle the control panel visibility.
+    Click on the top area of the control panel to close settings if they're open.
+
+    === Settings Panel ===
+    The settings panel has three tabs:
+    • General: Adjust speed, volume, and language detection
+    • Voices: Select preferred voices for English and French
+    • Shortcuts: View all available keyboard shortcuts
 
     === How to use ===
     1. Select or copy text in any application
     2. Press Win+Y to start reading
     3. Use the shortcuts or control panel to control playback
-    4. Change the reading language and voices in the settings menu if needed.
+    4. Press Win+F to hide/show the control panel during reading
+    5. Access settings via the gear (⚙) button for voice and language preferences
+    6. Drag the control panel by its top area to reposition it
 
     By default, language is automatically detected (English or French).
     You can select your preferred voice for each language in the Voices tab of the settings.
+    All shortcuts are listed in the Shortcuts tab for easy reference.
     )"
 
     helpGui := Gui("+AlwaysOnTop")

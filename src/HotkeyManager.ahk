@@ -14,9 +14,10 @@ UpdateHotkeys(enable := true) {
         Hotkey "NumpadDiv", "On"       ; Volume Down
 
         ; Navigation and control hotkeys
-        Hotkey "#^y", "On"              ; Next line
-        Hotkey "#+y", "On"              ; Previous paragraph
-        Hotkey "#!y", "On"              ; Pause/Resume
+        Hotkey "#n", "On"               ; Next paragraph (Win+N)
+        Hotkey "#p", "On"               ; Previous paragraph (Win+P)
+        Hotkey "#!", "On"               ; Pause/Resume (Win+Alt)
+        Hotkey "#f", "On"               ; Show/Hide control GUI (Win+F for "full screen toggle")
     } else {
         ; Speed and volume controls
         Hotkey "NumpadAdd", "Off"
@@ -25,9 +26,10 @@ UpdateHotkeys(enable := true) {
         Hotkey "NumpadDiv", "Off"      ; Volume Down
 
         ; Navigation and control hotkeys
-        Hotkey "#^y", "Off"             ; Next line
-        Hotkey "#+y", "Off"             ; Previous paragraph
-        Hotkey "#!y", "Off"             ; Pause/Resume
+        Hotkey "#n", "Off"              ; Next paragraph
+        Hotkey "#p", "Off"              ; Previous paragraph
+        Hotkey "#!", "Off"              ; Pause/Resume
+        Hotkey "#f", "Off"              ; Show/Hide control GUI
     }
 }
 
@@ -51,6 +53,9 @@ VolumeUp(*) {
         if (state.settingsGuiVisible) {
             UpdateSettingsValues()
         }
+
+        ; Save settings to INI file
+        SaveVoiceSettings()
     }
 }
 
@@ -64,6 +69,26 @@ VolumeDown(*) {
         if (state.settingsGuiVisible) {
             UpdateSettingsValues()
         }
+
+        ; Save settings to INI file
+        SaveVoiceSettings()
+    }
+}
+
+; Function to toggle control GUI visibility
+ToggleControlGui(*) {
+    global controlGui
+
+    if (!state.isReading) {
+        return  ; Don't show GUI if not reading
+    }
+
+    if (state.controlGuiVisible) {
+        ; If GUI is visible, minimize it
+        MinimizeControlGui()
+    } else {
+        ; If GUI is hidden, restore it
+        RestoreControlGui()
     }
 }
 
@@ -76,9 +101,10 @@ InitializeHotkeys() {
     Hotkey "NumpadDiv", VolumeDown
 
     ; Navigation and control hotkeys
-    Hotkey "#^y", JumpToNextLine
-    Hotkey "#+y", JumpToPreviousParagraph
-    Hotkey "#!y", TogglePause
+    Hotkey "#n", JumpToNextLine        ; Win+N for Next
+    Hotkey "#p", JumpToPreviousParagraph  ; Win+P for Previous
+    Hotkey "#!", TogglePause           ; Win+Alt for Pause/Resume
+    Hotkey "#f", ToggleControlGui      ; Win+F to show/hide control GUI
 
     ; Main hotkey to start reading
     Hotkey "#y", ReadSelectedText
