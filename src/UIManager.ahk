@@ -98,9 +98,18 @@ CreateControlGui() {
     ; Settings button (gear icon)
     controlGui.Add("Button", "x+10 y30 " . buttonOptions, "⚙").OnEvent("Click", ToggleSettingsGui)
 
-    ; Show the GUI
-    controlGui.Show("x" . xPos . " y" . yPos . " w" . guiWidth . " h" . guiHeight . " NoActivate")
-    state.controlGuiVisible := true
+    ; Show the GUI - check if should start minimized
+    if (state.startMinimized && !state.controlGuiVisible) {
+        ; Start minimized - show and then minimize after a short delay
+        controlGui.Show("x" . xPos . " y" . yPos . " w" . guiWidth . " h" . guiHeight . " NoActivate")
+        state.controlGuiVisible := true
+        ; We use a timer to delay the minimization, preventing a focus issue.
+        SetTimer(MinimizeControlGui, -50) ; Calls MinimizeControlGui once after 150ms
+    } else {
+        ; Show normally
+        controlGui.Show("x" . xPos . " y" . yPos . " w" . guiWidth . " h" . guiHeight . " NoActivate")
+        state.controlGuiVisible := true
+    }
 
     return controlGui
 }
@@ -130,7 +139,12 @@ ShowMinimizedNotification() {
     
     ; Destroy existing notification if it exists
     if (minimizedGui) {
-        minimizedGui.Destroy()
+        try {
+            minimizedGui.Destroy()
+            minimizedGui := false
+        } catch {
+            ; Ignore errors
+        }
     }
     
     ; Create a small notification GUI
@@ -163,12 +177,7 @@ RestoreControlGui(*) {
     global controlGui, minimizedGui
 
     ; Hide the minimized notification
-    if (minimizedGui) {
-        minimizedGui.Destroy()
-        minimizedGui := false
-        ; Remove the click handler
-        OnMessage(0x201, MinimizedGuiClickHandler, 0)
-    }
+    CleanupMinimizedNotification()
 
     if (controlGui && !state.controlGuiVisible) {
         controlGui.Show("NoActivate")
@@ -176,6 +185,23 @@ RestoreControlGui(*) {
     } else if (!controlGui && state.isReading) {
         ; Recreate GUI if it was destroyed but we're still reading
         CreateControlGui()
+    }
+}
+
+; Function to clean up the minimized notification
+CleanupMinimizedNotification() {
+    global minimizedGui
+    
+    if (minimizedGui) {
+        try {
+            minimizedGui.Destroy()
+            minimizedGui := false
+            ; Remove the click handler
+            OnMessage(0x201, MinimizedGuiClickHandler, 0)
+        } catch {
+            ; Ignore errors during cleanup
+            minimizedGui := false
+        }
     }
 }
 
@@ -303,14 +329,10 @@ GuiDragMoveHandler(wParam, lParam, msg, hwnd) {
 
 ; Function to close the control GUI
 CloseControlGui(*) {
-    global controlGui, dragState, state, minimizedGui  ; Ensure we're using the global variables
+    global controlGui, dragState, state  ; Ensure we're using the global variables
 
     ; Clean up minimized notification if it exists
-    if (minimizedGui) {
-        minimizedGui.Destroy()
-        minimizedGui := false
-        OnMessage(0x201, MinimizedGuiClickHandler, 0)
-    }
+    CleanupMinimizedNotification()
 
     ; Final position save before closing
     if (controlGui && state.controlGuiVisible) {
@@ -387,7 +409,7 @@ CreateSettingsGui() {
     global settingsGui, controlGui
 
     ; Variables globales pour stocker les références aux contrôles
-    global speedTextCtrl, volumeTextCtrl, languageDropDown, voiceENDropDown, voiceFRDropDown, settingsTab
+    global speedTextCtrl, volumeTextCtrl, languageDropDown, voiceENDropDown, voiceFRDropDown, settingsTab, startMinimizedCheckbox
 
     ; Destroy existing GUI if it exists
     if (settingsGui) {
@@ -397,14 +419,14 @@ CreateSettingsGui() {
     ; Get position of the main control GUI
     WinGetPos(&controlX, &controlY, &controlWidth, &controlHeight, "ahk_id " . controlGui.Hwnd)
 
-    ; Create a new GUI with a compact style
+    ; Create a new GUI with a compact style - increased height for new option
     settingsGui := Gui("+AlwaysOnTop +ToolWindow +Owner" . controlGui.Hwnd)
     settingsGui.Title := "Settings"
     settingsGui.SetFont("s10", "Segoe UI")
     settingsGui.OnEvent("Close", CloseSettingsGui)
 
-    ; Create tab control
-    settingsTab := settingsGui.Add("Tab3", "x5 y5 w205 h125", ["General", "Voices", "Shortcuts"])
+    ; Create tab control - increased height
+    settingsTab := settingsGui.Add("Tab3", "x5 y5 w205 h155", ["General", "Voices", "Shortcuts"])
 
     ; Tab 1: General settings
     settingsTab.UseTab(1)
@@ -426,6 +448,11 @@ CreateSettingsGui() {
     languageDropDown := settingsGui.Add("DropDownList", "x80 y93 w100 Choose" . GetLanguageIndex(), ["Auto", "English",
         "Français"])
     languageDropDown.OnEvent("Change", OnLanguageChange)
+
+    ; Add start minimized checkbox
+    startMinimizedCheckbox := settingsGui.Add("Checkbox", "x15 y120 w175", "Démarrer réduite")
+    startMinimizedCheckbox.Value := state.startMinimized
+    startMinimizedCheckbox.OnEvent("Click", OnStartMinimizedChange)
 
     ; Tab 2: Voice settings
     settingsTab.UseTab(2)
@@ -464,8 +491,8 @@ CreateSettingsGui() {
     ; Tab 3: Shortcuts
     settingsTab.UseTab(3)
     
-    ; Add shortcuts information (read-only)
-    settingsGui.Add("Edit", "x10 y30 w190 h90 ReadOnly +VScroll", 
+    ; Add shortcuts information (read-only) - adjusted for new height
+    settingsGui.Add("Edit", "x10 y30 w190 h120 ReadOnly +VScroll", 
         "Win+Y - Start/Stop reading`n" .
         "Win+Alt - Pause/Resume`n" .
         "Win+F - Show/Hide panel`n" .
@@ -481,8 +508,8 @@ CreateSettingsGui() {
     settingsX := controlX
     settingsY := controlY + controlHeight
 
-    ; Show the GUI with same width as control GUI
-    settingsGui.Show("x" . settingsX . " y" . settingsY . " w215 h150 NoActivate")
+    ; Show the GUI with same width as control GUI - increased height
+    settingsGui.Show("x" . settingsX . " y" . settingsY . " w215 h180 NoActivate")
     state.settingsGuiVisible := true
 }
 
@@ -499,7 +526,7 @@ CloseSettingsGui(*) {
 
 ; Function to update the settings values
 UpdateSettingsValues() {
-    global speedTextCtrl, volumeTextCtrl, languageDropDown
+    global speedTextCtrl, volumeTextCtrl, languageDropDown, startMinimizedCheckbox
 
     if (!state.settingsGuiVisible)
         return
@@ -508,8 +535,22 @@ UpdateSettingsValues() {
         speedTextCtrl.Text := state.speed
         volumeTextCtrl.Text := state.volume
         languageDropDown.Choose(GetLanguageIndex())
+        if (startMinimizedCheckbox)
+            startMinimizedCheckbox.Value := state.startMinimized
     } catch as err {
         OutputDebug("Error updating settings values: " . err.Message)
+    }
+}
+
+; Function to handle start minimized checkbox change
+OnStartMinimizedChange(*) {
+    global startMinimizedCheckbox
+
+    if (startMinimizedCheckbox) {
+        state.startMinimized := startMinimizedCheckbox.Value
+        
+        ; Save settings to INI file
+        SaveVoiceSettings()
     }
 }
 
@@ -628,7 +669,7 @@ ShowHelp(*) {
 
     === Settings Panel ===
     The settings panel has three tabs:
-    • General: Adjust speed, volume, and language detection
+    • General: Adjust speed, volume, language detection, and startup options
     • Voices: Select preferred voices for English and French
     • Shortcuts: View all available keyboard shortcuts
 
@@ -643,6 +684,7 @@ ShowHelp(*) {
     By default, language is automatically detected (English or French).
     You can select your preferred voice for each language in the Voices tab of the settings.
     All shortcuts are listed in the Shortcuts tab for easy reference.
+    You can set the application to start minimized in the General tab.
     )"
 
     helpGui := Gui("+AlwaysOnTop")

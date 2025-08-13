@@ -21,7 +21,8 @@ state := {
     guiY: 70,
     languageMode: "AUTO",  ; Language selection: "AUTO", "EN", "FR"
     selectedVoiceEN: "Microsoft Mark",  ; Selected English voice
-    selectedVoiceFR: "Microsoft Paul"   ; Selected French voice
+    selectedVoiceFR: "Microsoft Paul",   ; Selected French voice
+    startMinimized: false  ; New option: start minimized
 }
 
 ; Reset the state to initial values
@@ -37,7 +38,7 @@ ResetState() {
 
 ; Stop reading and reset state
 StopReading() {
-    global state, voice
+    global state, voice, minimizedGui
     if (state.isPaused) {
         voice.Resume()
         state.isPaused := false
@@ -45,6 +46,18 @@ StopReading() {
     voice.Speak("", 3)
     state.currentText := ""
     ResetState()
+    
+    ; Clean up minimized notification if it exists
+    if (minimizedGui) {
+        try {
+            minimizedGui.Destroy()
+            minimizedGui := false
+            OnMessage(0x201, MinimizedGuiClickHandler, 0)
+        } catch {
+            ; Ignore errors during cleanup
+        }
+    }
+    
     ; Timer removed - using optimized event-based position tracking
     if (state.settingsGuiVisible) {
         CloseSettingsGui()

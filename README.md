@@ -18,6 +18,7 @@ A powerful and user-friendly Text-to-Speech application with advanced features i
 - **📱 Compact Interface**: Minimizable control panel with drag-and-drop positioning
 - **🔧 Persistent Settings**: Your preferences are saved automatically
 - **📋 Integrated Help**: Built-in shortcuts reference in the settings panel
+- **🆕 Start Minimized Option**: Option to start the control panel minimized
 
 ## 🎯 Keyboard Shortcuts
 
@@ -42,17 +43,18 @@ A powerful and user-friendly Text-to-Speech application with advanced features i
 
 The control panel appears automatically when reading starts and includes:
 
-- **−** - Minimize panel (click the "TTS Running" notification to restore)
-- **⏮** - Previous paragraph
+- **∔** - Minimize panel (click the "TTS Running" notification to restore)
+- **⮌** - Previous paragraph
 - **⏸/▶** - Pause/Resume
 - **⏹** - Stop reading
-- **⏭** - Next paragraph
+- **⭢** - Next paragraph
 - **⚙** - Settings menu
 
 ### **Draggable Interface**
 - **Drag the top area** of the control panel to reposition it anywhere on your screen
 - Position is remembered for next use
 - Minimize when you need screen space
+- **Notification when minimized**: A small "TTS Running" notification appears in the top-right corner when minimized - click it to restore the panel
 
 ## ⚙️ Settings Panel
 
@@ -62,6 +64,7 @@ Access settings through the gear icon (⚙) in the control panel. The settings p
 - **Speed Control**: Adjust reading speed from -10 to +10
 - **Volume Control**: Set volume from 0 to 100
 - **Language Mode**: Choose Auto-detection, English only, or French only
+- **🆕 Start Minimized**: Option to automatically start the control panel minimized when reading begins
 
 ### **Voices Tab**
 - **English Voices**: Select from available English TTS voices
@@ -105,11 +108,18 @@ Force a specific language through the settings:
 - **Drag Zone**: Only the top area (28px) of the control panel is draggable
 - **Button Protection**: Buttons remain fully functional and don't interfere with dragging
 - **Auto-positioning**: Settings panel follows the main panel when moved
+- **Minimize/Restore**: Clean notification system with proper cleanup
 
 ### **Smart Text Processing**
 - Handles clipboard and selected text
 - Processes various text formats
 - Optimized for natural speech patterns
+
+### **🆕 Enhanced Minimization**
+- **Start Minimized**: Choose to start reading with the panel already minimized
+- **Clean Notification**: The minimized notification properly disappears when reading stops
+- **Easy Restore**: Click the notification or use Win+F to restore the panel
+- **Automatic Cleanup**: No persistent notifications after reading ends
 
 ## 🎭 Use Cases
 
@@ -118,10 +128,11 @@ Force a specific language through the settings:
 - **📧 Emails**: Quickly listen to important messages
 - **📝 Documents**: Proof-read your writing by hearing it
 - **🌐 Web Content**: Make any webpage accessible through audio
-- **📑 Research**: Listen to research papers while taking notes
+- **🔍 Research**: Listen to research papers while taking notes
 - **🎓 Learning**: Reference shortcuts anytime in the built-in help tab
+- **🤫 Discreet Reading**: Use the start minimized option for unobtrusive listening
 
-## 📧 Technical Requirements
+## 🔧 Technical Requirements
 
 - **Windows 10/11** with SAPI (Speech API) support
 - **AutoHotkey v2.0** runtime
@@ -155,6 +166,11 @@ Force a specific language through the settings:
 - Check Windows accessibility settings
 - Refer to the Shortcuts tab in settings for a complete list
 
+### **🆕 Minimized Notification Issues**
+- The notification should automatically disappear when reading stops
+- If it persists, click it or use Win+F to clear it
+- The notification cleanup is now improved and more reliable
+
 ## 📋 File Structure
 
 ```
@@ -174,11 +190,20 @@ TTS Application/
 - ✅ **Built-in Shortcuts Reference**: Never forget a shortcut again
 - ✅ **Smart Drag Zone**: Precise control over dragging behavior
 - ✅ **Better Visual Feedback**: Clear separation between interactive areas
+- ✅ **Start Minimized Option**: Choose to begin reading with panel minimized
+- ✅ **Improved Notification Cleanup**: No more persistent notifications after reading ends
 
 ### **Technical Enhancements**
 - ✅ **Optimized Event Handling**: More responsive drag and drop
 - ✅ **Enhanced Position Management**: Better window positioning and memory
 - ✅ **Improved Error Handling**: More robust GUI state management
+- ✅ **Better Resource Cleanup**: Proper disposal of minimized notifications
+- ✅ **State Management**: Added startMinimized option with persistence
+
+### **Bug Fixes**
+- ✅ **Fixed**: Minimized notification now properly disappears when reading stops
+- ✅ **Fixed**: Better cleanup when stopping reading while minimized
+- ✅ **Fixed**: Improved error handling for GUI destruction
 
 ## 🤝 Contributing
 
@@ -186,7 +211,8 @@ TTS Application/
 2. Create a feature branch
 3. Test with various text types and languages
 4. Test the new drag zone and settings interaction
-5. Submit a pull request
+5. Test the start minimized option and notification cleanup
+6. Submit a pull request
 
 ## 📄 License
 
@@ -198,4 +224,4 @@ Built with AutoHotkey v2.0 and Windows SAPI for reliable cross-system compatibil
 
 ---
 
-**🎧 Happy Listening!** Transform any text into an engaging audio experience with intuitive controls, smart features, and built-in help that's always at your fingertips.
+**🎧 Happy Listening!** Transform any text into an engaging audio experience with intuitive controls, smart features, built-in help that's always at your fingertips, and now with the convenience of starting minimized for discreet operation.

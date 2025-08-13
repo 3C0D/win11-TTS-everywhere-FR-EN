@@ -137,3 +137,39 @@ LoadVoiceSettings() {
 
     OutputDebug("Voice settings loaded from " . SETTINGS_FILE)
 }
+
+
+; Function to load voice settings from INI file
+; LoadVoiceSettings() {
+;     global state
+    
+;     try {
+;         settingsFile := A_AppData . "\TTSApp\settings.ini"
+        
+;         if (!FileExist(settingsFile)) {
+;             OutputDebug("Settings file not found, using defaults")
+;             return
+;         }
+        
+;         ; Load settings with defaults if not found
+;         state.speed := IniRead(settingsFile, "General", "Speed", 2.5)
+;         state.volume := IniRead(settingsFile, "General", "Volume", 100)
+;         state.languageMode := IniRead(settingsFile, "General", "LanguageMode", "AUTO")
+;         state.selectedVoiceEN := IniRead(settingsFile, "Voices", "EnglishVoice", "Microsoft Mark")
+;         state.selectedVoiceFR := IniRead(settingsFile, "Voices", "FrenchVoice", "Microsoft Paul")
+;         state.guiX := IniRead(settingsFile, "Interface", "WindowX", A_ScreenWidth - 400)
+;         state.guiY := IniRead(settingsFile, "Interface", "WindowY", 70)
+        
+;         ; Load start minimized setting (convert string to boolean)
+;         startMinimizedValue := IniRead(settingsFile, "Interface", "StartMinimized", "0")
+;         state.startMinimized := (startMinimizedValue == "1")
+        
+;         ; Convert speed to internal rate
+;         state.internalRate := Round(state.speed)
+        
+;         OutputDebug("Settings loaded successfully")
+;         OutputDebug("Start minimized: " . (state.startMinimized ? "true" : "false"))
+;     } catch as err {
+;         OutputDebug("Error loading settings: " . err.Message)
+;     }
+; }
