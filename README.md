@@ -24,7 +24,7 @@ A powerful and user-friendly Text-to-Speech application with advanced features i
 
 ### **Main Controls**
 - **Win+Y** - Start/Stop reading selected text
-- **Win+Alt** - Pause/Resume reading
+- **Win+Space** - Pause/Resume reading
 - **Win+F** - Show/Hide control panel (Full screen toggle)
 
 ### **Navigation**

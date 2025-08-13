@@ -16,7 +16,7 @@ UpdateHotkeys(enable := true) {
         ; Navigation and control hotkeys
         Hotkey "#n", "On"               ; Next paragraph (Win+N)
         Hotkey "#p", "On"               ; Previous paragraph (Win+P)
-        Hotkey "#!", "On"               ; Pause/Resume (Win+Alt)
+        Hotkey "#space", "On"               ; Pause/Resume (Win+Space)
         Hotkey "#f", "On"               ; Show/Hide control GUI (Win+F for "full screen toggle")
     } else {
         ; Speed and volume controls
@@ -28,7 +28,7 @@ UpdateHotkeys(enable := true) {
         ; Navigation and control hotkeys
         Hotkey "#n", "Off"              ; Next paragraph
         Hotkey "#p", "Off"              ; Previous paragraph
-        Hotkey "#!", "Off"              ; Pause/Resume
+        Hotkey "#space", "Off"              ; Pause/Resume
         Hotkey "#f", "Off"              ; Show/Hide control GUI
     }
 }
@@ -103,7 +103,7 @@ InitializeHotkeys() {
     ; Navigation and control hotkeys
     Hotkey "#n", JumpToNextLine        ; Win+N for Next
     Hotkey "#p", JumpToPreviousParagraph  ; Win+P for Previous
-    Hotkey "#!", TogglePause           ; Win+Alt for Pause/Resume
+    Hotkey "#space", TogglePause           ; Win+space for Pause/Resume
     Hotkey "#f", ToggleControlGui      ; Win+F to show/hide control GUI
 
     ; Main hotkey to start reading

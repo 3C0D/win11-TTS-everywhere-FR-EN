@@ -494,7 +494,7 @@ CreateSettingsGui() {
     ; Add shortcuts information (read-only) - adjusted for new height
     settingsGui.Add("Edit", "x10 y30 w190 h120 ReadOnly +VScroll", 
         "Win+Y - Start/Stop reading`n" .
-        "Win+Alt - Pause/Resume`n" .
+        "Win+Space - Pause/Resume`n" .
         "Win+F - Show/Hide panel`n" .
         "Win+N - Next §`n" .
         "Win+P - Previous §`n" .
@@ -637,7 +637,7 @@ ShowHelp(*) {
     (
     MAIN SHORTCUTS:
     Win+Y : Play/Stop selected text
-    Win+Alt : Pause/Resume reading
+    Win+Space : Pause/Resume reading
 
     NAVIGATION:
     Win+N : Skip to next paragraph (Next)
