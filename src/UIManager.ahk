@@ -465,15 +465,14 @@ CreateSettingsGui() {
     settingsTab.UseTab(3)
     
     ; Add shortcuts information (read-only)
-    settingsGui.Add("Text", "x10 y30 w190 h90", 
-        "Main Controls:`n" .
+    settingsGui.Add("Edit", "x10 y30 w190 h90 ReadOnly +VScroll", 
         "Win+Y - Start/Stop reading`n" .
         "Win+Alt - Pause/Resume`n" .
-        "Win+F - Show/Hide panel`n`n" .
-        "Navigation:`n" .
-        "Win+N - Next paragraph`n" .
-        "Win+P - Previous paragraph`n`n" .
-        "Speed: Numpad+/- | Volume: Numpad*//")
+        "Win+F - Show/Hide panel`n" .
+        "Win+N - Next §`n" .
+        "Win+P - Previous §`n" .
+        "Speed: ↑ Numpad+`n       ↓ Numpad-`n" .
+        "Volume: ↑ Numpad*`n      ↓ Numpad/")
 
     ; Reset tab selection
     settingsTab.UseTab()

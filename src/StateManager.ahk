@@ -17,8 +17,8 @@ state := {
     volume: 100,
     controlGuiVisible: false,
     settingsGuiVisible: false,
-    guiX: A_ScreenWidth - 300,
-    guiY: 100,
+    guiX: A_ScreenWidth - 400,
+    guiY: 70,
     languageMode: "AUTO",  ; Language selection: "AUTO", "EN", "FR"
     selectedVoiceEN: "Microsoft Mark",  ; Selected English voice
     selectedVoiceFR: "Microsoft Paul"   ; Selected French voice
