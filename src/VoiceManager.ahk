@@ -110,6 +110,10 @@ SaveVoiceSettings() {
     IniWrite(state.speed, SETTINGS_FILE, SETTINGS_SECTION, "Speed")
     IniWrite(state.volume, SETTINGS_FILE, SETTINGS_SECTION, "Volume")
 
+    ; Save start minimized setting (this was missing - bug fix)
+    IniWrite(state.startMinimized, SETTINGS_FILE, SETTINGS_SECTION, "StartMinimized")
+    OutputDebug("DEBUG: Start minimized setting saved as: " . state.startMinimized)
+
     OutputDebug("Voice settings saved to " . SETTINGS_FILE)
 }
 
@@ -131,6 +135,11 @@ LoadVoiceSettings() {
     ; Load other persistent settings
     state.speed := Number(IniRead(SETTINGS_FILE, SETTINGS_SECTION, "Speed", state.speed))
     state.volume := Number(IniRead(SETTINGS_FILE, SETTINGS_SECTION, "Volume", state.volume))
+
+    ; Load start minimized setting (this was missing - bug fix)
+    loadedStartMinimized := IniRead(SETTINGS_FILE, SETTINGS_SECTION, "StartMinimized", state.startMinimized)
+    state.startMinimized := (loadedStartMinimized == "1" || loadedStartMinimized == 1)
+    OutputDebug("DEBUG: Start minimized setting loaded as: " . state.startMinimized)
 
     ; Update internal rate based on loaded speed
     state.internalRate := Round(state.speed)
