@@ -353,3 +353,93 @@ TryGetAttribute(voiceObj, attrName, defaultValue := "") {
         return defaultValue
     }
 }
+
+; Ajoutez cette fonction pour tester spécifiquement Mark et David
+DiagnoseSpecificVoices(*) {
+    try {
+        voice := ComObject("SAPI.SpVoice")
+        voices := voice.GetVoices()
+        
+        diagnosticInfo := "Diagnostic spécifique des voix anglaises :`n`n"
+        
+        for v in voices {
+            voiceName := TryGetAttribute(v, "Name", "Inconnu")
+            voiceID := TryGetAttribute(v, "Id", "Inconnu") 
+            voiceLang := TryGetAttribute(v, "Language", "Inconnu")
+            
+            ; Focus sur les voix anglaises problématiques
+            if (InStr(voiceName, "Mark") || InStr(voiceName, "David") || InStr(voiceName, "Zira")) {
+                diagnosticInfo .= "=== " . voiceName . " ===`n"
+                diagnosticInfo .= "ID: " . voiceID . "`n"
+                diagnosticInfo .= "Langue: " . voiceLang . "`n"
+                
+                ; Tenter d'obtenir plus d'attributs
+                attributes := ["Gender", "Age", "Vendor", "Version", "Language", "Path"]
+                for attr in attributes {
+                    try {
+                        value := v.GetAttribute(attr)
+                        diagnosticInfo .= attr . ": " . value . "`n"
+                    } catch {
+                        diagnosticInfo .= attr . ": Non disponible`n"
+                    }
+                }
+                
+                ; Test de sélection de la voix
+                try {
+                    voice.Voice := v
+                    diagnosticInfo .= "Sélection: OK`n"
+                    
+                    ; Test de synthèse très courte
+                    try {
+                        voice.Speak("Hi", 1)  ; 1 = mode asynchrone
+                        diagnosticInfo .= "Test synthèse: OK`n"
+                    } catch as e2 {
+                        diagnosticInfo .= "Test synthèse: ERREUR (" . e2.Number . ": " . e2.Message . ")`n"
+                    }
+                    
+                } catch as e1 {
+                    diagnosticInfo .= "Sélection: ERREUR (" . e1.Number . ": " . e1.Message . ")`n"
+                }
+                
+                diagnosticInfo .= "`n"
+            }
+        }
+        
+        ; Vérification des clés de registre spécifiques
+        diagnosticInfo .= "=== VERIFICATION REGISTRE ===`n"
+        
+        voiceKeys := [
+            "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_EN-US_MARK_11.0",
+            "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\MSTTS_V110_enUS_MarkM", 
+            "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\MSTTS_V110_enUS_DavidM",
+            "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_EN-US_ZIRA_11.0"
+        ]
+        
+        for key in voiceKeys {
+            try {
+                value := RegRead(key, "")
+                diagnosticInfo .= key . " : " . value . "`n"
+                
+                ; Vérifier la clé CLSID
+                try {
+                    clsid := RegRead(key . "\Attributes", "CLSID")
+                    diagnosticInfo .= "  CLSID: " . clsid . "`n"
+                } catch {
+                    diagnosticInfo .= "  CLSID: Manquant`n"
+                }
+                
+            } catch {
+                diagnosticInfo .= key . " : CLES MANQUANTE`n"
+            }
+        }
+        
+        MsgBox(diagnosticInfo, "Diagnostic détaillé", "OK")
+        
+    } catch as e {
+        MsgBox("Erreur lors du diagnostic: " . e.Message)
+    }
+}
+
+; Ajoutez un bouton pour lancer ce diagnostic dans votre interface
+DiagButton := MyGui.Add("Button", "w200 x10 y+10", "Diagnostic Mark/David")
+DiagButton.OnEvent("Click", DiagnoseSpecificVoices)

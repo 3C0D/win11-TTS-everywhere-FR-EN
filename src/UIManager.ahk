@@ -450,7 +450,7 @@ CreateSettingsGui() {
     languageDropDown.OnEvent("Change", OnLanguageChange)
 
     ; Add start minimized checkbox
-    startMinimizedCheckbox := settingsGui.Add("Checkbox", "x15 y120 w175", "Start minimized (Win+Space! to toggle minimized)")
+    startMinimizedCheckbox := settingsGui.Add("Checkbox", "x15 y120 w175", "Start minimized (or Win+F don't forget it!)")
     startMinimizedCheckbox.Value := state.startMinimized
     startMinimizedCheckbox.OnEvent("Click", OnStartMinimizedChange)
 

@@ -1,3 +1,15 @@
+# 📢 **IMPORTANT : TTS Voice Installation Required**
+
+**For optimal experience, make sure you have installed the necessary Windows language packs for TTS voices (for example, install English if you are in France).**
+
+**For detailed installation instructions, see the [Voice Installation for Regional Support](#voice-installation-for-regional-support) section below.**
+
+**Pour les utilisateurs francophones :** Veuillez consulter le fichier [README_fr.md](README_fr.md) pour des instructions détaillées et spécifiques à votre langue.
+
+---
+
+A powerful and user-friendly Text-to-Speech application with advanced features including language auto-detection, customizable voices, and intuitive keyboard controls.
+
 # 🗣️ Text-to-Speech Application
 
 A powerful and user-friendly Text-to-Speech application with advanced features including language auto-detection, customizable voices, and intuitive keyboard controls.
@@ -165,6 +177,15 @@ Force a specific language through the settings:
 - Try running as administrator if needed
 - Check Windows accessibility settings
 - Refer to the Shortcuts tab in settings for a complete list
+
+### **Voice Installation for Regional Support**
+- **Problem**: Certain TTS voices (e.g., specific Mark and David voices) may not be available by default for your region.
+- **Solution**: To access a wider range of voices, ensure you have installed the necessary language packs for your region. For example, if you are in France and need specific English voices, you may need to install the English (United States) language pack and its associated TTS voices through Windows Settings.
+    - Go to `Settings > Time & language > Language & region`.
+    - Under "Preferred languages", click "Add a language".
+    - Search for and add the desired language (e.g., "English (United States)").
+    - Once added, click the three dots next to the language and select "Language options".
+    - Under "Speech", ensure "Text-to-speech" is installed.
 
 ### **🆕 Minimized Notification Issues**
 - The notification should automatically disappear when reading stops
