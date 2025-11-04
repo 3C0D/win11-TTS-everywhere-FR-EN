@@ -1,6 +1,7 @@
 #Requires AutoHotkey v2.0
 #Include "UIManager.ahk"
 #Include "SystrayManager.ahk"
+#Include "VoiceManager.ahk"
 
 ; Module for managing hotkeys and keyboard shortcuts
 
@@ -18,6 +19,7 @@ UpdateHotkeys(enable := true) {
         Hotkey "#p", "On"               ; Previous paragraph (Win+P)
         Hotkey "#space", "On"               ; Pause/Resume (Win+Space)
         Hotkey "#f", "On"               ; Show/Hide control GUI (Win+F for "full screen toggle")
+        Hotkey "#NumpadDot", "On"       ; Cycle language (Win+.)
     } else {
         ; Speed and volume controls
         Hotkey "NumpadAdd", "Off"
@@ -30,6 +32,7 @@ UpdateHotkeys(enable := true) {
         Hotkey "#p", "Off"              ; Previous paragraph
         Hotkey "#space", "Off"              ; Pause/Resume
         Hotkey "#f", "Off"              ; Show/Hide control GUI
+        Hotkey "#NumpadDot", "Off"      ; Cycle language
     }
 }
 
@@ -105,6 +108,7 @@ InitializeHotkeys() {
     Hotkey "#p", JumpToPreviousParagraph  ; Win+P for Previous
     Hotkey "#space", TogglePause           ; Win+space for Pause/Resume
     Hotkey "#f", ToggleControlGui      ; Win+F to show/hide control GUI
+    Hotkey "#NumpadDot", CycleLanguage     ; Win+. to cycle through languages
 
     ; Main hotkey to start reading
     Hotkey "#y", ReadSelectedText
@@ -184,4 +188,68 @@ JumpToPreviousParagraph(*) {
 ReadSelectedText(*) {
     ; Use the selected language mode from settings
     ReadText()
+}
+
+; Function to cycle through languages (Auto -> English -> French -> Auto)
+CycleLanguage(*) {
+    global state, voice
+
+    ; Cycle through language modes
+    switch state.languageMode {
+        case "AUTO":
+            state.languageMode := "EN"
+        case "EN":
+            state.languageMode := "FR"
+        case "FR":
+            state.languageMode := "AUTO"
+        default:
+            state.languageMode := "AUTO"
+    }
+
+    ; Show the language window
+    ShowLanguageWindow()
+
+    ; Save settings to INI file
+    SaveVoiceSettings()
+
+    ; If currently reading, change language on the fly
+    if (state.isReading) {
+        ChangeLanguageOnTheFly(state.languageMode)
+    }
+
+    ; Force update of settings GUI if it's visible
+    if (state.settingsGuiVisible) {
+        UpdateSettingsValues()
+    }
+}
+
+; Function to display a temporary language window
+ShowLanguageWindow() {
+    global state
+
+    ; Create a temporary GUI to show the current language
+    languageGui := Gui("+AlwaysOnTop +ToolWindow -Caption +E0x20")
+    languageGui.BackColor := "333333"
+    languageGui.SetFont("s17 c00FF00 Bold", "Segoe UI")
+
+    ; Get display text for current language
+    switch state.languageMode {
+        case "AUTO":
+            langText := "Language: Auto"
+        case "EN":
+            langText := "Language: English"
+        case "FR":
+            langText := "Language: Français"
+        default:
+            langText := "Language: Auto"
+    }
+
+    languageGui.Add("Text", "x10 y10", langText)
+
+    ; Position in the center of the screen
+    languageGui.Show("w250 h50 NoActivate")
+    WinSetTransparent(200, "ahk_id " . languageGui.Hwnd)
+
+    ; Auto-close after a short delay
+    SetTimer(() => languageGui.Destroy(), -1500)
 }

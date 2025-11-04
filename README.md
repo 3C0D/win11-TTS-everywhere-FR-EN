@@ -19,6 +19,7 @@ A powerful and user-friendly Text-to-Speech application with advanced features i
 1. **Select or copy text** in any application
 2. **Press Win+Y** to start reading
 3. **Use keyboard shortcuts** or the control panel to manage playback
+   - **Win+.**: Cycle through language modes during reading
 4. **Customize settings** through the gear icon in the control panel
 
 ## ✨ Features
@@ -42,6 +43,9 @@ A powerful and user-friendly Text-to-Speech application with advanced features i
 ### **Navigation**
 - **Win+N** - Skip to **N**ext paragraph
 - **Win+P** - Go to **P**revious paragraph
+
+### **Language Control**
+- **Win+.** - Cycle through language modes (Auto → English → Français → Auto)
 
 ### **Speed Control**
 - **Numpad+** - Increase reading speed
@@ -113,8 +117,17 @@ Force a specific language through the settings:
 ### **Real-time Adjustments**
 - Change speed and volume while reading
 - Switch voices on-the-fly
+- Cycle through language modes instantly with Win+.
 - Visual feedback with temporary overlay windows
 - Settings changes are applied instantly
+
+### **🆕 Language Mode Quick Cycling**
+- **Instant Language Switching**: Press Win+. to cycle through language modes (Auto → English → French → Auto)
+- **Visual Feedback**: See current language mode in a temporary overlay window
+- **Works During Reading**: Change language modes even while text is being read
+- **Seamless Integration**: Language changes are applied immediately without disrupting your reading flow
+- **Smart State Management**: Language preference is automatically saved for next use
+- **Perfect for Mixed Content**: Quickly switch between different language texts without stopping
 
 ### **Smart Interface Design**
 - **Drag Zone**: Only the top area (28px) of the control panel is draggable
@@ -137,12 +150,14 @@ Force a specific language through the settings:
 
 - **📚 Reading Articles**: Speed through long articles with navigation controls
 - **📖 E-books**: Listen to digital books with bookmark-like paragraph jumping
+- **🌍 Multi-language Content**: Switch between language modes with Win+. for mixed-language texts
 - **📧 Emails**: Quickly listen to important messages
 - **📝 Documents**: Proof-read your writing by hearing it
 - **🌐 Web Content**: Make any webpage accessible through audio
 - **🔍 Research**: Listen to research papers while taking notes
 - **🎓 Learning**: Reference shortcuts anytime in the built-in help tab
 - **🤫 Discreet Reading**: Use the start minimized option for unobtrusive listening
+- **🔄 Language Switching**: Use Win+. to cycle through language modes during reading
 
 ## 🔧 Technical Requirements
 
@@ -213,6 +228,7 @@ TTS Application/
 - ✅ **Better Visual Feedback**: Clear separation between interactive areas
 - ✅ **Start Minimized Option**: Choose to begin reading with panel minimized
 - ✅ **Improved Notification Cleanup**: No more persistent notifications after reading ends
+- ✅ **Language Cycling**: Win+. to quickly cycle through language modes with visual feedback
 
 ### **Technical Enhancements**
 - ✅ **Optimized Event Handling**: More responsive drag and drop
