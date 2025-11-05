@@ -68,10 +68,16 @@ DetermineDominantLanguage(text) {
 ; Calculate language scores for a given text
 CalculateLanguageScores(text, &frenchScore, &englishScore) {
     ; Language detection based on common words and patterns
+    ; Extended French dictionary to balance with English (80+ words)
     frenchWords := ["le", "la", "les", "un", "une", "des", "et", "ou", "mais", "donc", "or", "ni", "car", "que", "qui",
         "quoi", "dont", "où", "à", "au", "avec", "pour", "sur", "dans", "par", "ce", "cette", "ces", "je", "tu", "il",
-        "elle",
-        "nous", "vous", "ils", "elles", "mon", "ton", "son", "notre", "votre", "leur"
+        "elle", "nous", "vous", "ils", "elles", "mon", "ton", "son", "notre", "votre", "leur", "développement",
+        "programmation", "système", "application", "interface", "recherche", "expérience", "théorie", "méthode",
+        "analyse", "entreprise", "management", "stratégie", "performance", "communication", "information",
+        "technologie", "ordinateur", "internet", "réseau", "données", "fichier", "document", "projet", "équipe",
+        "service", "client", "produit", "solution", "problème", "question", "réponse", "proposition", "demande",
+        "travail", "mission", "objectif", "résultat", "conviction", "opinion", "position", "côté", "exemple",
+        "modèle", "cas", "situation", "contexte", "moment", "époque", "période", "temps", "durée", "instant"
     ]
     englishWords := ["the", "and", "or", "but", "so", "yet", "for", "nor", "that", "which", "who", "whom", "whose",
         "when", "where", "why", "how", "a", "an", "in", "on", "at", "with", "by", "this", "these", "those", "is", "are",
@@ -126,43 +132,109 @@ CalculateLanguageScores(text, &frenchScore, &englishScore) {
 }
 
 DetectLanguage(text, contextLanguage := "") {
-    ; Language detection based on common words and patterns
+    ; Enhanced language detection with adaptive thresholds
     frenchScore := 0
     englishScore := 0
 
     CalculateLanguageScores(text, &frenchScore, &englishScore)
 
-    ; Debug information (can be removed in production)
-    ; MsgBox("French score: " frenchScore ", English score: " englishScore)
-
-    ; Determine the language based on score with improved logic
-    ; For English detection, require a minimum score difference to avoid false positives
-    if (englishScore > frenchScore && (englishScore - frenchScore) >= 2) {
-        return "EN"
-    } else if (frenchScore > englishScore && (frenchScore - englishScore) >= 1) {
-        return "FR"
+    textLength := StrLen(text)
+    
+    ; Adaptive thresholds based on text length
+    if (textLength <= 10) {
+        ; Short text (1-10 chars): higher thresholds to reduce false positives
+        englishThreshold := 3
+        frenchThreshold := 2
+        confidenceRequired := 0.8
+    } else if (textLength <= 50) {
+        ; Medium text (11-50 chars): standard thresholds
+        englishThreshold := 2
+        frenchThreshold := 1
+        confidenceRequired := 0.7
     } else {
-        ; If scores are close or equal, use context-aware logic
+        ; Long text (50+ chars): lower thresholds for better detection
+        englishThreshold := 1
+        frenchThreshold := 1
+        confidenceRequired := 0.6
+    }
+    
+    ; Calculate confidence score
+    totalScore := frenchScore + englishScore
+    if (totalScore > 0) {
+        confidence := Max(frenchScore, englishScore) / totalScore
+    } else {
+        confidence := 0.5
+    }
+    
+    ; Debug information (can be removed in production)
+    ; Uncomment for debugging: MsgBox("Length: " textLength ", French: " frenchScore ", English: " englishScore ", Confidence: " confidence)
+    
+    ; Determine language based on adaptive thresholds
+    if (englishScore > frenchScore && (englishScore - frenchScore) >= englishThreshold) {
+        if (confidence >= confidenceRequired) {
+            return "EN"
+        } else {
+            ; Low confidence - use context if available
+            if (contextLanguage == "EN") {
+                return "EN"
+            }
+            return "UNCERTAIN"
+        }
+    } else if (frenchScore > englishScore && (frenchScore - englishScore) >= frenchThreshold) {
+        if (confidence >= confidenceRequired) {
+            return "FR"
+        } else {
+            ; Low confidence - use context if available
+            if (contextLanguage == "FR") {
+                return "FR"
+            }
+            return "UNCERTAIN"
+        }
+    } else {
+        ; Scores are close - use context-aware logic
         if (contextLanguage != "") {
             ; If we have context information, prefer the context language for ambiguous lines
-            ; This helps with code lines that don't have clear language indicators
-            if (contextLanguage == "EN" && englishScore >= frenchScore) {
+            if (contextLanguage == "EN" && englishScore >= frenchScore && confidence >= 0.6) {
                 return "EN"
-            } else if (contextLanguage == "FR" && frenchScore >= englishScore) {
+            } else if (contextLanguage == "FR" && frenchScore >= englishScore && confidence >= 0.6) {
                 return "FR"
             }
         }
 
         ; Fallback to pattern-based detection
         if (RegExMatch(text, "i)the\s|and\s|of\s|to\s|in\s|is\s|are\s|that\s|it\s|for\s|with\s")) {
-            return "EN"
-        } else {
-            ; If context suggests English but no clear indicators, lean towards English
-            if (contextLanguage == "EN") {
+            if (contextLanguage == "EN" || contextLanguage == "") {
                 return "EN"
             }
-            return "FR" ; Default to French if uncertain
+        } else {
+            ; If context suggests French or no clear English indicators
+            if (contextLanguage == "FR" || contextLanguage == "") {
+                return "FR"
+            }
         }
+        
+        return "UNCERTAIN" ; Unable to determine with sufficient confidence
+    }
+}
+
+; Get confidence score for language detection
+GetLanguageConfidence(text, language) {
+    frenchScore := 0
+    englishScore := 0
+    
+    CalculateLanguageScores(text, &frenchScore, &englishScore)
+    
+    totalScore := frenchScore + englishScore
+    if (totalScore == 0) {
+        return 0.5
+    }
+    
+    if (language == "FR") {
+        return frenchScore / totalScore
+    } else if (language == "EN") {
+        return englishScore / totalScore
+    } else {
+        return 0.5
     }
 }
 
@@ -177,6 +249,9 @@ HasVal(haystack, needle) {
 IgnoreCharacters(text) {
     ; Ignore characters repeated more than 4 times
     text := RegExReplace(text, "(.)\1{4,}", "")
+
+    ; Ignore dashes (---) that are read as "--" - replace with nothing for section separators
+    text := RegExReplace(text, "---+", "")
 
     ; First ignore web addresses (http://, https://, www.)
     ; The ? after the s makes the s optional, so this rule captures http:// and https://
@@ -198,6 +273,10 @@ IgnoreCharacters(text) {
     text := RegExReplace(text, "#(\w+)", "$1")
     ; Remove hashes from markdown titles (# Title, ## Title, etc.) but keep the text
     text := RegExReplace(text, "m)^#{1,6}\s+(.*?)$", "$1")  ; The m) at the beginning enables multiline mode
+
+    ; Ignore underscores in all words (not just at start/end)
+    text := StrReplace(text, "_", " ")
+
     ; Ignore remaining specific characters
     charactersToIgnore := ["*", "@"]
     for char in charactersToIgnore {

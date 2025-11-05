@@ -215,7 +215,8 @@ SetVoiceLanguage(language, text := "") {
     } else if (language == "FR") {
         voiceName := state.selectedVoiceFR
     } else {
-        MsgBox "Unsupported language: " . language
+        ; Debug: Uncomment to see unsupported languages
+        ; MsgBox "Unsupported language: " . language
         return
     }
 

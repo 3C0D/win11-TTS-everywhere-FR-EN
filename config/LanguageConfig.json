@@ -1,0 +1,105 @@
+{
+  "language_detection": {
+    "version": "2.0",
+    "phase": "Phase 1 - Enhanced Dictionary Detection",
+    
+    "dictionaries": {
+      "french": {
+        "base_words": 80,
+        "distinctive_words": 30,
+        "total_words": 110,
+        "last_updated": "2025-11-05",
+        "categories": {
+          "common": 40,
+          "technical": 25,
+          "business": 15,
+          "academic": 15,
+          "colloquial": 15
+        }
+      },
+      "english": {
+        "base_words": 95,
+        "distinctive_words": 35,
+        "total_words": 130,
+        "last_updated": "2025-11-05",
+        "categories": {
+          "common": 45,
+          "technical": 30,
+          "business": 20,
+          "academic": 20,
+          "colloquial": 15
+        }
+      }
+    },
+    
+    "adaptive_thresholds": {
+      "short_text": {
+        "max_length": 10,
+        "english_threshold": 3,
+        "french_threshold": 2,
+        "confidence_required": 0.8,
+        "description": "High thresholds for short text to reduce false positives"
+      },
+      "medium_text": {
+        "min_length": 11,
+        "max_length": 50,
+        "english_threshold": 2,
+        "french_threshold": 1,
+        "confidence_required": 0.7,
+        "description": "Standard thresholds for medium-length text"
+      },
+      "long_text": {
+        "min_length": 51,
+        "english_threshold": 1,
+        "french_threshold": 1,
+        "confidence_required": 0.6,
+        "description": "Lower thresholds for long text to improve detection"
+      }
+    },
+    
+    "performance_targets": {
+      "accuracy_target": "90-92%",
+      "precision_target": ">= 90%",
+      "recall_target": ">= 88%",
+      "f1_score_target": ">= 0.89",
+      "average_detection_time": "<= 5ms",
+      "cache_hit_ratio": ">= 80%",
+      "fallback_rate": "<= 5%"
+    },
+    
+    "cache_settings": {
+      "enabled": true,
+      "max_entries": 1000,
+      "ttl_minutes": 60,
+      "strategy": "first_50_chars"
+    },
+    
+    "monitoring": {
+      "metrics_enabled": true,
+      "log_level": "info",
+      "health_check_interval": 300,
+      "alert_thresholds": {
+        "fallback_rate": 10,
+        "cache_size": 1000,
+        "detection_time": 10,
+        "accuracy_drop": 5
+      }
+    },
+    
+    "fallback_strategy": {
+      "enabled": true,
+      "max_fallback_attempts": 3,
+      "include_context": true,
+      "pattern_matching": true,
+      "default_language": "FR"
+    },
+    
+    "testing": {
+      "test_suite_enabled": true,
+      "auto_validate": false,
+      "report_generation": true,
+      "csv_export": true,
+      "min_success_rate": 85
+    }
+  }
+}
