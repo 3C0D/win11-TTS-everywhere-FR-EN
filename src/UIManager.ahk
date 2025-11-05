@@ -53,7 +53,7 @@ CreateControlGui() {
     guiWidth := 215  ; Increased width to accommodate the settings button
     guiHeight := 70  ; Optimized height
 
-    ; Utiliser la position sauvegardée dans l'objet state
+    ; Use saved position from state object
     xPos := state.guiX
     yPos := state.guiY
 
@@ -226,7 +226,7 @@ GuiDragHandler(wParam, lParam, msg, hwnd) {
     ; Check if click is in the drag zone (top area only, excluding buttons)
     ; Drag zone is only the top 28 pixels and not on any control
     if (relativeY <= DRAG_CONFIG.dragZoneHeight && !mouseCtrl) {
-        ; Start dragging
+        ; Start dragging only when in drag zone
         dragState.isMouseDown := true
         dragState.initialX := mouseX
         dragState.initialY := mouseY

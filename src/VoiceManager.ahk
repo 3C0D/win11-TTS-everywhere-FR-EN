@@ -114,6 +114,11 @@ SaveVoiceSettings() {
     IniWrite(state.startMinimized, SETTINGS_FILE, SETTINGS_SECTION, "StartMinimized")
     OutputDebug("DEBUG: Start minimized setting saved as: " . state.startMinimized)
 
+    ; Save GUI position to INI file
+    IniWrite(state.guiX, SETTINGS_FILE, SETTINGS_SECTION, "GuiX")
+    IniWrite(state.guiY, SETTINGS_FILE, SETTINGS_SECTION, "GuiY")
+    OutputDebug("Position saved: X=" . state.guiX . ", Y=" . state.guiY)
+
     OutputDebug("Voice settings saved to " . SETTINGS_FILE)
 }
 
@@ -143,6 +148,11 @@ LoadVoiceSettings() {
 
     ; Update internal rate based on loaded speed
     state.internalRate := Round(state.speed)
+
+    ; Load GUI position from INI file
+    state.guiX := Number(IniRead(SETTINGS_FILE, SETTINGS_SECTION, "GuiX", state.guiX))
+    state.guiY := Number(IniRead(SETTINGS_FILE, SETTINGS_SECTION, "GuiY", state.guiY))
+    OutputDebug("Position loaded: X=" . state.guiX . ", Y=" . state.guiY)
 
     OutputDebug("Voice settings loaded from " . SETTINGS_FILE)
 }

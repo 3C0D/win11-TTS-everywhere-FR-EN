@@ -39,6 +39,9 @@ InitializeHotkeys()
 ; Disable hotkeys at start
 UpdateHotkeys(false)
 
+; Exit handler to save all settings before application closure
+OnExit(SaveSettingsOnExit)
+
 ReadText() {
 
     if (voice.Status.RunningState == 2 || state.isPaused) {
@@ -118,4 +121,11 @@ CheckReadingStatus() {
         StopReading()
         SetTimer(CheckReadingStatus, 0) ; Stop the timer
     }
+}
+
+; Function to save settings on application exit
+SaveSettingsOnExit(*) {
+    OutputDebug("Application closing, saving settings...")
+    SaveVoiceSettings()
+    ExitApp()
 }
