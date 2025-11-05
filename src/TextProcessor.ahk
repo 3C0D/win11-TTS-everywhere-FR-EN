@@ -105,7 +105,7 @@ CalculateLanguageScores(text, &frenchScore, &englishScore) {
     frenchChars := "éèêëàâäôöùûüçÉÈÊËÀÂÄÔÖÙÛÜÇ"
     for char in StrSplit(text) {
         if InStr(frenchChars, char)
-            frenchScore += 0.5  ; Give moderate weight to accented characters
+            frenchScore += 2  ; Strong weight to accented characters - very French-specific
     }
 
     ; Split text into words, normalize to lowercase for accurate counting
@@ -140,22 +140,22 @@ DetectLanguage(text, contextLanguage := "") {
 
     textLength := StrLen(text)
     
-    ; Adaptive thresholds based on text length
+    ; Adaptive thresholds based on text length - Balanced for French preference
     if (textLength <= 10) {
-        ; Short text (1-10 chars): higher thresholds to reduce false positives
-        englishThreshold := 3
-        frenchThreshold := 2
-        confidenceRequired := 0.8
-    } else if (textLength <= 50) {
-        ; Medium text (11-50 chars): standard thresholds
+        ; Short text (1-10 chars): balanced thresholds with French advantage
         englishThreshold := 2
         frenchThreshold := 1
         confidenceRequired := 0.7
-    } else {
-        ; Long text (50+ chars): lower thresholds for better detection
-        englishThreshold := 1
-        frenchThreshold := 1
+    } else if (textLength <= 50) {
+        ; Medium text (11-50 chars): French advantage for mixed technical content
+        englishThreshold := 2
+        frenchThreshold := 0  ; Any French score wins
         confidenceRequired := 0.6
+    } else {
+        ; Long text (50+ chars): Strong French advantage for technical mixed content
+        englishThreshold := 1
+        frenchThreshold := 0  ; Any French score with accents wins
+        confidenceRequired := 0.5
     }
     
     ; Calculate confidence score
@@ -169,21 +169,33 @@ DetectLanguage(text, contextLanguage := "") {
     ; Debug information (can be removed in production)
     ; Uncomment for debugging: MsgBox("Length: " textLength ", French: " frenchScore ", English: " englishScore ", Confidence: " confidence)
     
-    ; Determine language based on adaptive thresholds
+    ; Determine language based on adaptive thresholds with French bias for technical content
     if (englishScore > frenchScore && (englishScore - frenchScore) >= englishThreshold) {
         if (confidence >= confidenceRequired) {
             return "EN"
         } else {
+            ; For texts with French words and accents, prefer French even with low confidence
+            hasFrenchChars := RegExMatch(text, "[éèêëàâäôöùûüç]")
+            hasFrenchWords := RegExMatch(text, "i)\s(et|du|la|le|les|des|un|une|que|qui|avec|par|dans|pour)\s")
+            if (hasFrenchChars || hasFrenchWords) {
+                return "FR"
+            }
             ; Low confidence - use context if available
             if (contextLanguage == "EN") {
                 return "EN"
             }
             return "UNCERTAIN"
         }
-    } else if (frenchScore > englishScore && (frenchScore - englishScore) >= frenchThreshold) {
+    } else if (frenchScore > englishScore && (frenchScore - frenchScore) >= frenchThreshold) {
         if (confidence >= confidenceRequired) {
             return "FR"
         } else {
+            ; Lower threshold for French - if any French score with French chars/words, accept it
+            hasFrenchChars := RegExMatch(text, "[éèêëàâäôöùûüç]")
+            hasFrenchWords := RegExMatch(text, "i)\s(et|du|la|le|les|des|un|une|que|qui|avec|par|dans|pour)\s")
+            if (hasFrenchChars || hasFrenchWords) {
+                return "FR"
+            }
             ; Low confidence - use context if available
             if (contextLanguage == "FR") {
                 return "FR"
@@ -191,14 +203,12 @@ DetectLanguage(text, contextLanguage := "") {
             return "UNCERTAIN"
         }
     } else {
-        ; Scores are close - use context-aware logic
-        if (contextLanguage != "") {
-            ; If we have context information, prefer the context language for ambiguous lines
-            if (contextLanguage == "EN" && englishScore >= frenchScore && confidence >= 0.6) {
-                return "EN"
-            } else if (contextLanguage == "FR" && frenchScore >= englishScore && confidence >= 0.6) {
-                return "FR"
-            }
+        ; Scores are close - heavily bias towards French for technical mixed content
+        hasFrenchChars := RegExMatch(text, "[éèêëàâäôöùûüç]")
+        hasFrenchWords := RegExMatch(text, "i)\s(et|du|la|le|les|des|un|une|que|qui|avec|par|dans|pour)\s")
+        
+        if (hasFrenchChars || hasFrenchWords) {
+            return "FR"
         }
 
         ; Fallback to pattern-based detection
