@@ -1,5 +1,9 @@
 # 🗣️ TTS Reader - Text-to-Speech
 
+**📁 French help available:** [HELP_FR.md](HELP_FR.md) (Aide en français)
+
+---
+
 ## ⚠️ IMPORTANT: Install voices first!
 
 **For the application to work properly, install Windows TTS voices:**
@@ -58,7 +62,3 @@ Complete list of available keyboard shortcuts.
 ---
 
 **That's it! The interface is intuitive, you'll discover the rest by using it.**
-
----
-
-**📁 Complete documentation:** See [HELP_FR.md](HELP_FR.md) for detailed French guide
