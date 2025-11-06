@@ -499,7 +499,7 @@ CreateSettingsGui() {
                 Win+F: Show/Hide panel
                 Win+N: Next §
                 Win+P: Previous §
-                Win+.: Cycle language
+                Win+. (Numpad): Cycle language
                 Speed:  ↑ Numpad+
                         ↓ Numpad-
                 Volume: ↑ Numpad*
@@ -651,7 +651,7 @@ ShowHelp(*) {
     Win+P : Go to previous paragraph (Previous)
 
     LANGUAGE:
-    Win+. : Cycle through languages (Auto -> English -> French)
+    Win+. (Numpad): Cycle through languages (Auto -> English -> French)
 
     SPEED:
     Numpad+ : Increase speed
@@ -687,7 +687,7 @@ ShowHelp(*) {
     1. Select or copy text in any application
     2. Press Win+Y to start reading
     3. Use the shortcuts or control panel to control playback
-    4. Press Win+. to cycle through language modes during reading
+    4. Press Win+. (Numpad) to cycle through language modes during reading
     5. Press Win+F to hide/show the control panel during reading
     6. Access settings via the gear (⚙) button for voice and language preferences
     7. Drag the control panel by its top area to reposition it

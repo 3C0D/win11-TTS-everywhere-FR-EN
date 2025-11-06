@@ -33,15 +33,15 @@ Double-click **tts.exe** to launch the application. An icon appears in the syste
 
 ## 🎯 Essential shortcuts
 
-**Win+Y** → Start/Stop reading  
-**Win+Space** → Pause/Resume  
+**Win+Y** → Start/Stop reading   
 **Win+F** → Show/Hide interface  
-**Win+N** / **Win+P** → Next/Previous paragraph  
-**Win+.** → Change language (Auto → English → French)
-
-**Numpad** during reading:  
+**Win+Space** → Pause/Resume  
+**Win+N** / **Win+P** → Next/Previous paragraph
+  
+**Numpad:**  
 **+** / **-** → Speed  
-**\*** / **/** → Volume
+**\*** / **/** → Volume  
+**Win+.** → Change language (Auto → English → French)
 
 *(All shortcuts are in the "Shortcuts" tab of the interface)*
 

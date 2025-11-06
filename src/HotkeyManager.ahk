@@ -19,7 +19,7 @@ UpdateHotkeys(enable := true) {
         Hotkey "#p", "On"               ; Previous paragraph (Win+P)
         Hotkey "#space", "On"               ; Pause/Resume (Win+Space)
         Hotkey "#f", "On"               ; Show/Hide control GUI (Win+F for "full screen toggle")
-        Hotkey "#NumpadDot", "On"       ; Cycle language (Win+.)
+        Hotkey "#NumpadDot", "On"       ; Cycle language (Win+. - Numpad)
     } else {
         ; Speed and volume controls
         Hotkey "NumpadAdd", "Off"

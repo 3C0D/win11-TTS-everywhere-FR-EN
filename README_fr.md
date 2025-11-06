@@ -29,15 +29,15 @@ Double-cliquez sur **tts.exe** pour lancer l'application. Une icône apparaît d
 
 ## 🎯 Les raccourcis essentiels
 
-**Win+Y** → Démarrer/Stopper la lecture  
-**Win+Espace** → Pause/Reprendre  
-**Win+F** → Afficher/Masquer l'interface  
-**Win+N** / **Win+P** → Paragraphe suivant/précédent  
-**Win+.** → Changer la langue (Auto → Anglais → Français)
-
-**Pavé numérique** pendant la lecture :  
-**+** / **-** → Vitesse  
+**Win+Y** → Démarrer/Stopper la lecture
+**Win+F** → Afficher/Masquer l'interface
+**Win+Espace** → Pause/Reprendre
+**Win+N** / **Win+P** → Paragraphe précédent/suivant
+  
+**Pavé numérique :**
+**+** / **-** → Vitesse
 **\*** / **/** → Volume
+**Win+.** → Changer la langue (Auto → Anglais → Français)
 
 *(Tous les raccourcis sont dans l'onglet "Shortcuts" de l'interface)*
 
