@@ -1,290 +1,176 @@
-# 📢 **IMPORTANT : TTS Voice Installation Required**
+# 🗣️ TTS Text-to-Speech Application
 
-**For optimal experience, make sure you have installed the necessary Windows language packs for TTS voices (for example, install English if you are in France).**
+## ⚠️ VOICE INSTALLATION (REQUIRED)
 
-**For detailed installation instructions, see the [Voice Installation for Regional Support](#voice-installation-for-regional-support) section below.**
+**Without Windows voices, the application won't work!**
 
-**For comprehensive user documentation:** Check out our detailed guides:
-- 📖 **[Full User Documentation](DOCUMENTATION_UTILISATEUR_TTS.md)** - Complete reference and troubleshooting
-- ⚡ **[Quick Reference Guide](GUIDE_RAPIDE_TTS.md)** - Fast setup and essential controls
-- 🧪 **[Settings Persistence Tests](tests/README_SettingsPersistenceTest.md)** - Technical validation details
+### Essential steps:
+1. **Windows Settings** → "Time & language" → "Voices"
+2. **Add voices**:
+   - French (France)
+   - English (United States)
+3. **Click "Install"** for each voice
+4. **Test** installed voices
 
-**Pour les utilisateurs francophones :** Veuillez consulter le fichier [README_fr.md](README_fr.md) pour des instructions détaillées et spécifiques à votre langue.
+For optimal experience, install Windows TTS voices (French + English). **Detailed help**: See [HELP_FR.md](HELP_FR.md) for complete French guide.
 
 ---
-
-A powerful and user-friendly Text-to-Speech application with advanced features including language auto-detection, customizable voices, and intuitive keyboard controls.
-
-# 🗣️ Text-to-Speech Application
-
-A powerful and user-friendly Text-to-Speech application with advanced features including language auto-detection, customizable voices, and intuitive keyboard controls.
 
 ## 🚀 Quick Start
 
 1. **Select or copy text** in any application
 2. **Press Win+Y** to start reading
-3. **Use keyboard shortcuts** or the control panel to manage playback
-   - **Win+.**: Cycle through language modes during reading
-4. **Customize settings** through the gear icon in the control panel
+3. **Use shortcuts** or control panel to manage playback
+4. **Customize** through gear icon (⚙) in control panel
 
 ## ✨ Features
 
-- **🤖 Multi-Language Support**: Automatic detection of English and French text with enhanced accent recognition
-- **🎵 Voice Customization**: Select different voices for each language with real-time switching
-- **⚡ Global Hotkeys**: Control from anywhere without switching windows
+- **🤖 Multi-Language Support**: Automatic FR/EN detection with accent recognition
+- **🎵 Voice Customization**: Different voices for each language with real-time switching
+- **⚡ Global Hotkeys**: Control from anywhere without window switching
 - **🎛️ Real-time Controls**: Speed, volume, and playback adjustments on the fly
-- **📱 Compact Interface**: Minimizable control panel with drag-and-drop positioning
-- **🔧 🆕 Enhanced Settings Persistence**: All settings (voice, position, speed, volume, language mode) are now preserved after Windows restart
-- **📋 Integrated Help**: Built-in shortcuts reference in the settings panel
-- **🆕 Start Minimized Option**: Option to start the control panel minimized
-- **🧪 Comprehensive Testing**: Settings persistence validated through automated test suite
+- **📱 Compact Interface**: Minimizable panel with drag positioning
+- **🔧 Settings Persistence**: All preferences saved automatically
+- **📋 Built-in Help**: Shortcuts reference in settings panel
 
-## 🎯 Keyboard Shortcuts
+## 🎮 ESSENTIAL CONTROLS
 
 ### **Main Controls**
-- **Win+Y** - Start/Stop reading selected text
-- **Win+Space** - Pause/Resume reading
-- **Win+F** - Show/Hide control panel (Full screen toggle)
+| Shortcut | Action | Description |
+|----------|--------|-------------|
+| **Win+Y** | Start/Stop | Begin reading selected text |
+| **Win+Space** | Pause/Resume | Interrupt or continue |
+| **Win+F** | Show/Hide | Toggle control panel |
 
-### **Navigation**
-- **Win+N** - Skip to **N**ext paragraph
-- **Win+P** - Go to **P**revious paragraph
+### **Navigation & Language**
+| Shortcut | Action | Description |
+|----------|--------|-------------|
+| **Win+N** | Next paragraph | Jump to next section |
+| **Win+P** | Previous paragraph | Go back |
+| **Win+.** | Change language | Auto → English → French |
 
-### **Language Control**
-- **Win+.** - Cycle through language modes (Auto → English → Français → Auto)
+### **Quick Adjustments**
+| Shortcut | Action | Description |
+|----------|--------|-------------|
+| **Numpad+** | Speed +0.5 | Increase reading speed |
+| **Numpad-** | Speed -0.5 | Decrease reading speed |
+| **Numpad*** | Volume +10 | Increase volume |
+| **Numpad/** | Volume -10 | Decrease volume |
 
-### **Speed Control**
-- **Numpad+** - Increase reading speed
-- **Numpad-** - Decrease reading speed
+## 🎛️ USER INTERFACE
 
-### **Volume Control**
-- **Numpad*** - Increase volume
-- **Numpad/** - Decrease volume
+### Control panel:
+```
+┌─────────────────────────────────┐
+│ ∔  ⏮  ⏸  ⏹  ⏭  ⚙             │
+│ [Drag here to move]             │
+└─────────────────────────────────┘
+```
 
-## 🎛️ Control Panel
+**Buttons:**
+- **∔** : Minimize ("TTS Running" notification appears)
+- **⏮/⏸/⏹/⏭** : Playback controls
+- **⚙** : Settings (voices, speed, volume)
 
-The control panel appears automatically when reading starts and includes:
+**Drag area:** Top zone (28px) to reposition panel
 
-- **∔** - Minimize panel (click the "TTS Running" notification to restore)
-- **⮌** - Previous paragraph
-- **⏸/▶** - Pause/Resume
-- **⏹** - Stop reading
-- **⭢** - Next paragraph
-- **⚙** - Settings menu
+### Minimized notification:
+- **Appears** in top-right when minimized
+- **Click** to restore control panel
+- **Disappears** automatically when stopped
 
-### **Draggable Interface**
-- **Drag the top area** of the control panel to reposition it anywhere on your screen
-- Position is remembered for next use
-- Minimize when you need screen space
-- **Notification when minimized**: A small "TTS Running" notification appears in the top-right corner when minimized - click it to restore the panel
+## ⚙️ Settings
 
-## ⚙️ Settings Panel
-
-Access settings through the gear icon (⚙) in the control panel. The settings panel features **three organized tabs**:
+**Access**: Click gear icon (⚙) in control panel
 
 ### **General Tab**
-- **Speed Control**: Adjust reading speed from -10 to +10
-- **Volume Control**: Set volume from 0 to 100
-- **Language Mode**: Choose Auto-detection, English only, or French only
-- **🆕 Start Minimized**: Option to automatically start the control panel minimized when reading begins
+- **Speed**: -10 to +10 (default: 2.5)
+- **Volume**: 0 to 100 (default: 100)
+- **Language Mode**: Auto/English/French
+- **Start Minimized**: Panel starts hidden
 
 ### **Voices Tab**
-- **English Voices**: Select from available English TTS voices
-- **French Voices**: Select from available French TTS voices
-- Voice changes apply immediately during reading
+- **English Voices**: Microsoft Mark, Zira, David (recommended)
+- **French Voices**: Microsoft Paul, Hortense, Julie (recommended)
+- **Real-time**: Changes apply immediately during reading
 
-### **Shortcuts Tab** ⭐ *New!*
-- **Complete Reference**: All keyboard shortcuts in one place
-- **Quick Access**: No need to remember shortcuts - they're always available
-- **Organized Layout**: Grouped by function (Controls, Navigation, Speed/Volume)
+### **Shortcuts Tab**
+- **Complete reference** of all keyboard shortcuts
+- **Organized** by function (Controls, Navigation, Speed/Volume)
 
 ## 🌐 Language Support
 
 ### **Automatic Detection**
-The application automatically detects the dominant language in your text:
-- **English text** → Uses selected English voice
-- **French text** → Uses selected French voice
-- **Mixed text** → Uses voice based on dominant language
+- **English text** → English voice
+- **French text** → French voice  
+- **Mixed text** → Based on dominant language
+- **Accent Recognition**: Uses French accents (é, è, à, ç) for detection
 
 ### **Manual Override**
-Force a specific language through the settings:
 - **Auto** - Automatic detection (default)
 - **English** - Always use English voice
-- **Français** - Always use French voice
+- **French** - Always use French voice
+- **Win+.** to cycle modes during reading
 
-## 🛠️ Advanced Features
+## 🛠️ Quick Troubleshooting
 
-### **Paragraph Navigation**
-- Text is automatically split into paragraphs
-- Skip boring sections with Win+N
-- Go back to repeat important parts with Win+P
-- Perfect for reading long documents, articles, or books
+### **No Sound**
+1. Check Windows volume mixer (Win+R → `sndvol`)
+2. Test a voice (Windows Settings → Voices)
+3. Test with Numpad */Numpad/ controls
+4. Restart application
 
-### **Real-time Adjustments**
-- Change speed and volume while reading
-- Switch voices on-the-fly
-- Cycle through language modes instantly with Win+.
-- Visual feedback with temporary overlay windows
-- Settings changes are applied instantly
+### **Wrong Language**
+1. **Win+.** to change during reading
+2. Check Language Mode in settings
+3. Settings → Language mode → Force manually
+4. Use French accents: é, è, à, ç
+5. Ensure appropriate voices are installed
 
-### **🆕 Language Mode Quick Cycling**
-- **Instant Language Switching**: Press Win+. to cycle through language modes (Auto → English → French → Auto)
-- **Visual Feedback**: See current language mode in a temporary overlay window
-- **Works During Reading**: Change language modes even while text is being read
-- **Seamless Integration**: Language changes are applied immediately without disrupting your reading flow
-- **Smart State Management**: Language preference is automatically saved for next use
-- **Perfect for Mixed Content**: Quickly switch between different language texts without stopping
+### **Control Panel Issues**
+1. **Win+F** to toggle panel visibility
+2. Click "TTS Running" notification to restore
+3. Settings → General → Uncheck "Start minimized"
+4. Restart application if needed
 
-### **Smart Interface Design**
-- **Drag Zone**: Only the top area (28px) of the control panel is draggable
-- **Button Protection**: Buttons remain fully functional and don't interfere with dragging
-- **Auto-positioning**: Settings panel follows the main panel when moved
-- **Minimize/Restore**: Clean notification system with proper cleanup
-
-### **Smart Text Processing**
-- Handles clipboard and selected text
-- Processes various text formats
-- Optimized for natural speech patterns
-
-### **🆕 Enhanced Minimization**
-- **Start Minimized**: Choose to start reading with the panel already minimized
-- **Clean Notification**: The minimized notification properly disappears when reading stops
-- **Easy Restore**: Click the notification or use Win+F to restore the panel
-- **Automatic Cleanup**: No persistent notifications after reading ends
-
-## 🎭 Use Cases
-
-- **📚 Reading Articles**: Speed through long articles with navigation controls
-- **📖 E-books**: Listen to digital books with bookmark-like paragraph jumping
-- **🌍 Multi-language Content**: Switch between language modes with Win+. for mixed-language texts
-- **📧 Emails**: Quickly listen to important messages
-- **📝 Documents**: Proof-read your writing by hearing it
-- **🌐 Web Content**: Make any webpage accessible through audio
-- **🔍 Research**: Listen to research papers while taking notes
-- **🎓 Learning**: Reference shortcuts anytime in the built-in help tab
-- **🤫 Discreet Reading**: Use the start minimized option for unobtrusive listening
-- **🔄 Language Switching**: Use Win+. to cycle through language modes during reading
+### **Shortcuts Not Working**
+1. Close other TTS applications
+2. Run as administrator if needed
+3. Check Windows accessibility settings
 
 ## 🔧 Technical Requirements
 
-- **Windows 10/11** with SAPI (Speech API) support
+- **Windows 10/11** with SAPI support
 - **AutoHotkey v2.0** runtime
-- **Available TTS voices** for desired languages
+- **TTS voices** installed for desired languages
 
-## 🚨 Troubleshooting
+## 📁 Available Help Files
 
-### **No Sound**
-- Check Windows volume mixer
-- Verify TTS voices are installed
-- Try adjusting volume with Numpad* and Numpad/
+- **[HELP_EN.md](HELP_EN.md)** - Complete quick reference guide
+- **[HELP_FR.md](HELP_FR.md)** - Guide complet en français
 
-### **Wrong Language**
-- Check language detection in settings General tab
-- Manually select language if auto-detection fails
-- Ensure appropriate language voice is installed in Voices tab
+## 🎭 Use Cases
 
-### **Control Panel Issues**
-- Use Win+F to toggle panel visibility
-- Click "TTS Running" notification to restore minimized panel
-- **Drag only the top area** of the panel to reposition it
-
-### **Settings Won't Open/Close**
-- Click the gear (⚙) button to toggle settings
-- Settings will close automatically when you stop reading
-- Use the gear button or close the main panel to close settings
-
-### **Hotkeys Not Working**
-- Ensure no other application is using the same shortcuts
-- Try running as administrator if needed
-- Check Windows accessibility settings
-- Refer to the Shortcuts tab in settings for a complete list
-
-### **🆕 Settings Persistence Issues**
-- **All Settings Now Persisted**: Voice selection, position, speed, volume, language mode, and start-minimized setting are all automatically saved
-- **Automatic Restoration**: All preferences are restored exactly as last used when restarting the application
-- **Validation Available**: Run the settings persistence test suite (`tests/SettingsPersistenceTest.ahk`) to verify functionality
-- **File Location**: Settings saved in `settingsTTS.ini` in the application directory
-
-### **Voice Installation for Regional Support**
-- **Problem**: Certain TTS voices (e.g., specific Mark and David voices) may not be available by default for your region.
-- **Solution**: To access a wider range of voices, ensure you have installed the necessary language packs for your region. For example, if you are in France and need specific English voices, you may need to install the English (United States) language pack and its associated TTS voices through Windows Settings.
-    - Go to `Settings > Time & language > Language & region`.
-    - Under "Preferred languages", click "Add a language".
-    - Search for and add the desired language (e.g., "English (United States)").
-    - Once added, click the three dots next to the language and select "Language options".
-    - Under "Speech", ensure "Text-to-speech" is installed.
-
-### **🆕 Minimized Notification Issues**
-- The notification should automatically disappear when reading stops
-- If it persists, click it or use Win+F to clear it
-- The notification cleanup is now improved and more reliable
-
-## 📋 File Structure
-
-```
-TTS Application/
-├── Main.ahk                 # Main application entry point
-├── UIManager.ahk           # User interface management
-├── HotkeyManager.ahk       # Keyboard shortcuts handling
-├── VoiceManager.ahk        # Speech synthesis management
-├── StateManager.ahk        # Application state management
-└── SystrayManager.ahk      # System tray integration
-```
-
-## 🆕 Recent Improvements
-
-### **Settings Persistence System 🆕**
-- ✅ **Complete Settings Preservation**: All user preferences now persist after Windows restart
-- ✅ **Voice Selection Persistence**: Selected English and French voices are saved and restored
-- ✅ **Position Memory**: Panel position is remembered across sessions
-- ✅ **Speed & Volume Preservation**: Reading speed and volume settings maintained
-- ✅ **Language Mode Persistence**: Auto-detection preference is saved
-- ✅ **Start-Minimized Setting**: This setting is now properly persisted (critical fix)
-- ✅ **Auto-save Functionality**: Settings are automatically saved during GUI movement and parameter changes
-- ✅ **Comprehensive Testing**: Settings persistence validated through automated test suite
-
-### **Enhanced User Experience**
-- ✅ **Three-tab Settings Panel**: General, Voices, and Shortcuts tabs
-- ✅ **Built-in Shortcuts Reference**: Never forget a shortcut again
-- ✅ **Smart Drag Zone**: Precise control over dragging behavior
-- ✅ **Better Visual Feedback**: Clear separation between interactive areas
-- ✅ **Start Minimized Option**: Choose to begin reading with panel minimized
-- ✅ **Improved Notification Cleanup**: No more persistent notifications after reading ends
-- ✅ **Language Cycling**: Win+. to quickly cycle through language modes with visual feedback
-
-### **Technical Enhancements**
-- ✅ **Optimized Event Handling**: More responsive drag and drop
-- ✅ **Enhanced Position Management**: Better window positioning and memory
-- ✅ **Improved Error Handling**: More robust GUI state management
-- ✅ **Better Resource Cleanup**: Proper disposal of minimized notifications
-- ✅ **State Management**: Enhanced settings management with INI file persistence
-- ✅ **Enhanced Language Detection**: Improved French accent recognition with 95% accuracy
-
-### **Bug Fixes**
-- ✅ **Fixed**: Settings persistence now works completely (previously missing)
-- ✅ **Fixed**: Start-minimized setting is now properly saved and restored
-- ✅ **Fixed**: GUI position persistence during drag operations
-- ✅ **Fixed**: Minimized notification now properly disappears when reading stops
-- ✅ **Fixed**: Better cleanup when stopping reading while minimized
-- ✅ **Fixed**: Improved error handling for GUI destruction
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Test with various text types and languages
-4. Test the new drag zone and settings interaction
-5. Test the start minimized option and notification cleanup
-6. Submit a pull request
-
-## 📄 License
-
-[Add your license information here]
-
-## 🙏 Acknowledgments
-
-Built with AutoHotkey v2.0 and Windows SAPI for reliable cross-system compatibility.
+- **📚 Articles**: Speed through long reading
+- **📖 E-books**: Listen with paragraph navigation  
+- **📧 Emails**: Quick message listening
+- **📝 Documents**: Proof-read by hearing
+- **🌐 Web Content**: Make any webpage audible
+- **🤫 Discreet**: Start minimized for quiet environments
 
 ---
 
-**🎧 Happy Listening!** Transform any text into an engaging audio experience with intuitive controls, smart features, built-in help that's always at your fingertips, and now with the convenience of starting minimized for discreet operation.
+## 📝 USAGE
+
+1. **Select/copy** text
+2. **Press Win+Y** → Reading starts
+3. **Adjust** in real-time if needed
+4. **Win+F** to hide panel
+
+**More help:** Check French help file `HELP_FR.md`
+
+---
+
+**🎧 Happy Listening!** Transform any text into engaging audio with intuitive controls and smart features.
+
+*TTS Application - Simplified version - 2025*
