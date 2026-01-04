@@ -292,5 +292,11 @@ IgnoreCharacters(text) {
     for char in charactersToIgnore {
         text := StrReplace(text, char, "")
     }
+
+    ; NEW: Ignore Unicode characters and emoticons (keep only basic ASCII and accented French characters)
+    ; This removes emojis and other Unicode symbols that are read aloud by TTS
+    ; Simple formula: remove all characters outside the basic ASCII range and French accented characters
+    text := RegExReplace(text, "[^\x00-\x7F\xC0-\xFF]", "")  ; Keep ASCII (0-127) and Latin-1 Supplement (128-255)
+    
     return text
 }
