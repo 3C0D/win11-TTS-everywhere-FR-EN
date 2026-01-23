@@ -58,6 +58,12 @@ ReadText() {
     ; Split text into paragraphs
     state.paragraphs := SplitIntoParagraphs(state.originalText)
 
+    ; Validate that we have valid paragraphs to read
+    if (state.paragraphs.Length == 0) {
+        ; No valid text to read (might be a file path or empty content)
+        return
+    }
+
     ; Start with the first paragraph
     state.currentParagraphIndex := 1
     state.currentText := state.paragraphs[state.currentParagraphIndex]

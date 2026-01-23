@@ -20,7 +20,18 @@ getSelOrCbText() {
         ; Use the selected text
         trimmedClipboard := RegExReplace(A_Clipboard, "[\s\r\n]+", "")
         if (trimmedClipboard != "") {
-            text := A_Clipboard
+            ; Check if the copied content is a Windows file path
+            ; Pattern: starts with drive letter (C:\) or UNC path (\\)
+            isFilePath := RegExMatch(trimmedClipboard, "^[A-Za-z]:\\|^\\\\")
+            
+            if (isFilePath && OldClipboard != "") {
+                ; File path detected, fallback to old clipboard content and restore clipboard
+                text := OldClipboard
+                A_Clipboard := OldClipboard
+            } else {
+                ; Normal selection, keep it (don't restore old clipboard)
+                text := A_Clipboard
+            }
         } else {
             text := OldClipboard
             A_Clipboard := OldClipboard
