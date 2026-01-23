@@ -65,6 +65,65 @@ DetermineDominantLanguage(text) {
     }
 }
 
+; Priority detection for French-specific indicators
+; Returns true if text contains French-specific characters or words that guarantee French detection
+HasFrenchPriorityIndicators(text) {
+    ; French-specific accented characters that are NEVER found in English
+    frenchSpecificChars := "éèêëàâäôöùûüçÉÈÊËÀÂÄÔÖÙÛÜÇ"
+    
+    ; Check for French-specific accented characters
+    for char in StrSplit(text) {
+        if InStr(frenchSpecificChars, char) {
+            return true  ; Quasi-absolute priority for French
+        }
+    }
+    
+    ; French-specific words WITHOUT ACCENTS that are NEVER found in English (case-insensitive)
+    ; Only words that don't contain accented characters (those are already caught above)
+    textLower := StrLower(text)
+    frenchGuaranteedWords := [
+        ; Articles and determinants specific to French (no accents)
+        "le", "la", "les", "du", "des", "au", "aux", "un", "une",
+        ; French-specific conjunctions and prepositions (no accents)
+        "chez", "parmi", "dans", "sur", "sous", "avec", "sans", "pour", "par", "dont",
+        ; French-specific adverbs and expressions (no accents)
+        "donc", "alors", "ainsi", "aussi", "voici", "voila", "beaucoup", "toujours", "jamais",
+        "encore", "maintenant", "demain", "hier", "quelque", "chaque", "tout", "tous", "toute", "toutes",
+        "rien", "personne", "quelqu'un",
+        ; French-specific verbs (no accents)
+        "avoir", "fait", "sont", "suis", "sommes", "avons", "avez", "ont"
+    ]
+    
+    ; Check for guaranteed French words (with word boundaries)
+    for word in frenchGuaranteedWords {
+        ; Use word boundaries to avoid partial matches
+        if RegExMatch(textLower, "\b" . word . "\b") {
+            return true  ; Quasi-absolute priority for French
+        }
+    }
+    
+    ; French-specific apostrophe patterns (contractions)
+    frenchApostrophePatterns := [
+        "qu'[aeiouy]",    ; qu'il, qu'elle, qu'on, qu'un, etc.
+        "l'[aeiouy]",     ; l'eau, l'ami, l'école, etc.
+        "d'[aeiouy]",     ; d'abord, d'accord, d'eau, etc.
+        "n'[aeiouy]",     ; n'est, n'ont, n'importe, etc.
+        "c'est",          ; c'est
+        "s'est",          ; s'est
+        "j'[aeiouy]",     ; j'ai, j'étais, etc.
+        "m'[aeiouy]",     ; m'a, m'ont, etc.
+        "t'[aeiouy]",     ; t'as, t'es, etc.
+    ]
+    
+    for pattern in frenchApostrophePatterns {
+        if RegExMatch(textLower, pattern) {
+            return true  ; Quasi-absolute priority for French
+        }
+    }
+    
+    return false
+}
+
 ; Calculate language scores for a given text
 CalculateLanguageScores(text, &frenchScore, &englishScore) {
     ; Language detection based on common words and patterns
@@ -101,12 +160,8 @@ CalculateLanguageScores(text, &frenchScore, &englishScore) {
     frenchScore := 0
     englishScore := 0
 
-    ; Count French-specific characters (adds to French score)
-    frenchChars := "éèêëàâäôöùûüçÉÈÊËÀÂÄÔÖÙÛÜÇ"
-    for char in StrSplit(text) {
-        if InStr(frenchChars, char)
-            frenchScore += 2  ; Strong weight to accented characters - very French-specific
-    }
+    ; NOTE: Accent detection is now handled by HasFrenchPriorityIndicators()
+    ; This function only handles word-based scoring for non-priority cases
 
     ; Split text into words, normalize to lowercase for accurate counting
     words := StrSplit(StrLower(text), " ")
@@ -132,6 +187,11 @@ CalculateLanguageScores(text, &frenchScore, &englishScore) {
 }
 
 DetectLanguage(text, contextLanguage := "") {
+    ; PRIORITY CHECK: French-specific characters and words with quasi-absolute priority
+    if (HasFrenchPriorityIndicators(text)) {
+        return "FR"
+    }
+    
     ; Enhanced language detection with adaptive thresholds
     frenchScore := 0
     englishScore := 0
@@ -174,28 +234,16 @@ DetectLanguage(text, contextLanguage := "") {
         if (confidence >= confidenceRequired) {
             return "EN"
         } else {
-            ; For texts with French words and accents, prefer French even with low confidence
-            hasFrenchChars := RegExMatch(text, "[éèêëàâäôöùûüç]")
-            hasFrenchWords := RegExMatch(text, "i)\s(et|du|la|le|les|des|un|une|que|qui|avec|par|dans|pour)\s")
-            if (hasFrenchChars || hasFrenchWords) {
-                return "FR"
-            }
             ; Low confidence - use context if available
             if (contextLanguage == "EN") {
                 return "EN"
             }
             return "UNCERTAIN"
         }
-    } else if (frenchScore > englishScore && (frenchScore - frenchScore) >= frenchThreshold) {
+    } else if (frenchScore > englishScore && (frenchScore - englishScore) >= frenchThreshold) {
         if (confidence >= confidenceRequired) {
             return "FR"
         } else {
-            ; Lower threshold for French - if any French score with French chars/words, accept it
-            hasFrenchChars := RegExMatch(text, "[éèêëàâäôöùûüç]")
-            hasFrenchWords := RegExMatch(text, "i)\s(et|du|la|le|les|des|un|une|que|qui|avec|par|dans|pour)\s")
-            if (hasFrenchChars || hasFrenchWords) {
-                return "FR"
-            }
             ; Low confidence - use context if available
             if (contextLanguage == "FR") {
                 return "FR"
@@ -203,15 +251,7 @@ DetectLanguage(text, contextLanguage := "") {
             return "UNCERTAIN"
         }
     } else {
-        ; Scores are close - heavily bias towards French for technical mixed content
-        hasFrenchChars := RegExMatch(text, "[éèêëàâäôöùûüç]")
-        hasFrenchWords := RegExMatch(text, "i)\s(et|du|la|le|les|des|un|une|que|qui|avec|par|dans|pour)\s")
-        
-        if (hasFrenchChars || hasFrenchWords) {
-            return "FR"
-        }
-
-        ; Fallback to pattern-based detection
+        ; Scores are close - use pattern-based detection
         if (RegExMatch(text, "i)the\s|and\s|of\s|to\s|in\s|is\s|are\s|that\s|it\s|for\s|with\s")) {
             if (contextLanguage == "EN" || contextLanguage == "") {
                 return "EN"
