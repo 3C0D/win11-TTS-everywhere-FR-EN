@@ -102,17 +102,18 @@ HasFrenchPriorityIndicators(text) {
         }
     }
     
-    ; French-specific apostrophe patterns (contractions)
+    ; French-specific apostrophe patterns (contractions) - with word boundary to avoid English false positives
+    ; The \b ensures we match French contractions like "d'abord" but NOT "don't"
     frenchApostrophePatterns := [
-        "qu'[aeiouy]",    ; qu'il, qu'elle, qu'on, qu'un, etc.
-        "l'[aeiouy]",     ; l'eau, l'ami, l'école, etc.
-        "d'[aeiouy]",     ; d'abord, d'accord, d'eau, etc.
-        "n'[aeiouy]",     ; n'est, n'ont, n'importe, etc.
-        "c'est",          ; c'est
-        "s'est",          ; s'est
-        "j'[aeiouy]",     ; j'ai, j'étais, etc.
-        "m'[aeiouy]",     ; m'a, m'ont, etc.
-        "t'[aeiouy]",     ; t'as, t'es, etc.
+        "\\bqu'[aeiouy]",    ; qu'il, qu'elle, qu'on, qu'un, etc.
+        "\\bl'[aeiouy]",     ; l'eau, l'ami, l'école, etc.
+        "\\bd'[aeiouy]",     ; d'abord, d'accord, d'eau, etc.
+        "\\bn'[aeiouy]",     ; n'est, n'ont, n'importe, etc.
+        "\\bc'est",          ; c'est
+        "\\bs'est",          ; s'est
+        "\\bj'[aeiouy]",     ; j'ai, j'étais, etc.
+        "\\bm'[aeiouy]",     ; m'a, m'ont, etc.
+        "\\bt'[aeiouy]",     ; t'as, t'es, etc.
     ]
     
     for pattern in frenchApostrophePatterns {
@@ -179,10 +180,10 @@ CalculateLanguageScores(text, &frenchScore, &englishScore) {
             englishScore += 2
     }
 
-    ; Check for language-specific patterns
-    if (RegExMatch(text, "i)qu'[aeiouy]|c'est|n'[aeiouy]|l'[aeiouy]|d'[aeiouy]"))
+    ; Check for language-specific patterns (with word boundaries to avoid English false positives)
+    if (RegExMatch(text, "i)\\bqu'[aeiouy]|\\bc'est|\\bn'[aeiouy]|\\bl'[aeiouy]|\\bd'[aeiouy]"))
         frenchScore += 3
-    if (RegExMatch(text, "i)ing\s|ed\s|'s\s|'ve\s|'re\s|'ll\s|'t\s|'d\s|th\s|wh\s"))
+    if (RegExMatch(text, "i)ing\\s|ed\\s|'s\\s|'ve\\s|'re\\s|'ll\\s|'t\\s|'d\\s|th\\s|wh\\s"))
         englishScore += 4  ; Increased weight for English patterns
 }
 
