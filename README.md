@@ -61,4 +61,16 @@ Complete list of available keyboard shortcuts.
 
 ---
 
+## 🎤 Microphone Management
+
+The application **automatically mutes the microphone** during text-to-speech reading to prevent audio feedback.
+
+- **During reading**: Microphone is muted
+- **During pause**: Microphone is unmuted  
+- **After stop**: Microphone is unmuted
+
+If your microphone has a different name than "Microphone" in Windows, you may need to adjust the device name in the source code.
+
+---
+
 **That's it! The interface is intuitive, you'll discover the rest by using it.**

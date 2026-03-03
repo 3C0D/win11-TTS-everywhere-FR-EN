@@ -19,10 +19,10 @@ state := {
     settingsGuiVisible: false,
     guiX: A_ScreenWidth - 400,
     guiY: 70,
-    languageMode: "AUTO",  ; Language selection: "AUTO", "EN", "FR"
-    selectedVoiceEN: "Microsoft Mark",  ; Selected English voice
-    selectedVoiceFR: "Microsoft Paul",   ; Selected French voice
-    startMinimized: false  ; New option: start minimized
+    languageMode: "AUTO", ; Language selection: "AUTO", "EN", "FR"
+    selectedVoiceEN: "Microsoft Mark", ; Selected English voice
+    selectedVoiceFR: "Microsoft Paul", ; Selected French voice
+    startMinimized: false ; New option: start minimized
 }
 
 ; Reset the state to initial values
@@ -44,9 +44,10 @@ StopReading() {
         state.isPaused := false
     }
     voice.Speak("", 3)
+    UnmuteMic()
     state.currentText := ""
     ResetState()
-    
+
     ; Clean up minimized notification if it exists
     if (minimizedGui) {
         try {
@@ -57,13 +58,31 @@ StopReading() {
             ; Ignore errors during cleanup
         }
     }
-    
+
     ; Timer removed - using optimized event-based position tracking
     if (state.settingsGuiVisible) {
         CloseSettingsGui()
     }
     if (state.controlGuiVisible) {
         CloseControlGui()
+    }
+}
+
+; Mute the default microphone input
+MuteMic() {
+    try {
+        SoundSetMute(1, , "Microphone")
+    } catch {
+        ; Ignore if no microphone is found
+    }
+}
+
+; Unmute the default microphone input
+UnmuteMic() {
+    try {
+        SoundSetMute(0, , "Microphone")
+    } catch {
+        ; Ignore if no microphone is found
     }
 }
 
@@ -77,9 +96,11 @@ TogglePause(*) {
     if (!state.isPaused) {
         voice.Pause()
         state.isPaused := true
+        UnmuteMic()
     } else {
         voice.Resume()
         state.isPaused := false
+        MuteMic()
     }
 
     ; Update the control GUI to reflect the new state

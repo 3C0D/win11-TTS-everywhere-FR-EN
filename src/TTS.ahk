@@ -19,15 +19,15 @@ if (!A_IsCompiled) {
 
 ; Shortcut for development only
 if (!A_IsCompiled) {
-    #!r:: Reload()  ; Win+Alt+R to reload the script
+    #!r:: Reload() ; Win+Alt+R to reload the script
 }
 
 ; Initialize Windows voices
 InitializeVoices()
 
 global voice := ComObject("SAPI.SpVoice")
-global controlGui := false  ; Will hold the control GUI instance
-global settingsGui := false  ; Will hold the settings GUI instance
+global controlGui := false ; Will hold the control GUI instance
+global settingsGui := false ; Will hold the settings GUI instance
 
 ; Load saved settings from INI file
 LoadVoiceSettings()
@@ -72,12 +72,13 @@ ReadText() {
         ; Use the selected language mode from settings
         SetVoiceLanguage(state.languageMode, state.originalText)
         voice.Rate := state.internalRate
-        voice.Volume := state.volume  ; Ensure volume is applied before reading
+        voice.Volume := state.volume ; Ensure volume is applied before reading
 
         state.isReading := true
+        MuteMic()
         ; Enable hotkeys when reading starts
         UpdateHotkeys(true)
-        voice.Speak(state.currentText, 1)  ; Asynchronous reading
+        voice.Speak(state.currentText, 1) ; Asynchronous reading
 
         ; Show the control GUI
         CreateControlGui()
@@ -118,7 +119,7 @@ CheckReadingStatus() {
 
                 voice.Rate := state.internalRate
                 voice.Volume := state.volume
-                voice.Speak(nextParagraphText, 1)  ; Start new asynchronous reading
+                voice.Speak(nextParagraphText, 1) ; Start new asynchronous reading
                 return
             }
         }
