@@ -65,25 +65,29 @@ CalculateLanguageScores(text, &frenchScore, &englishScore) {
     ; French common words (only words that DON'T exist
     ; as common English words)
     frenchWords := [
-        ; Articles / determinants (truly French-only)
-        "les", "des", "du", "aux",
+        ; Articles / determinants
+        "le", "la", "les", "un", "une", "des", "du", "aux",
         ; Pronouns
-        "je", "tu", "il", "elle", "nous", "vous",
+        "je", "tu", "il", "elle", "nous", "vous", "on", "se", "me",
         "ils", "elles",
         "mon", "ton", "notre", "votre", "leur",
         ; Conjunctions / prepositions
-        "mais", "donc", "ni", "car",
+        "et", "ou", "si", "mais", "donc", "ni", "car",
         "que", "qui", "quoi", "dont",
-        "avec", "dans", "sur", "sous",
-        "chez", "parmi",
+        "pour", "par", "avec", "dans", "sur", "sous", "sans",
+        "depuis", "pendant", "vers", "chez", "parmi",
         ; Adverbs / expressions
+        "très", "bien", "plus", "moins",
         "aussi", "ainsi", "alors", "donc",
+        "déjà", "encore", "surtout", "pourtant", "enfin",
         "beaucoup", "toujours", "jamais",
         "maintenant", "demain", "hier",
         "voici", "voila",
         "quelque", "chaque",
         "tout", "tous", "toute", "toutes",
-        "rien", "personne"
+        "rien", "personne",
+        ; Common verbs
+        "peut", "faut", "doit", "va",
     ]
 
     ; English common words
@@ -108,7 +112,11 @@ CalculateLanguageScores(text, &frenchScore, &englishScore) {
         "between", "through",
         "after", "before", "during", "while",
         "than", "then", "there", "here",
-        "not", "no", "yes"
+        "not", "no", "yes",
+        "get", "got", "make", "made",
+        "just", "like", "know", "see", "look",
+        "some", "more", "what", "all", "out", "up",
+        "new", "good", "great", "time",
     ]
 
     ; Distinctive words (extra weight: +2)
@@ -116,7 +124,9 @@ CalculateLanguageScores(text, &frenchScore, &englishScore) {
     distinctiveFrench := [
         "est", "sont", "avoir", "fait",
         "comme", "encore", "quelqu'un",
-        "aujourd'hui", "quelque chose"
+        "aujourd'hui", "quelque chose",
+        "parce", "puisque", "lorsque", "quand", "afin",
+        "oui", "non",
     ]
     distinctiveEnglish := [
         "very", "much", "always", "never",
@@ -124,7 +134,7 @@ CalculateLanguageScores(text, &frenchScore, &englishScore) {
         "might", "shall", "will",
         "thing", "think", "thought",
         "something", "anything",
-        "nothing", "everything"
+        "nothing", "everything",
     ]
 
     ; Split text into words, normalize to lowercase
@@ -168,13 +178,17 @@ CalculateLanguageScores(text, &frenchScore, &englishScore) {
     ; English contractions and suffixes
     ; These patterns are exclusive to English
     englishPatterns := [
-        "'t\b",     ; don't, can't, won't, isn't
-        "'ve\b",    ; I've, we've, they've
-        "'re\b",    ; you're, we're, they're
-        "'ll\b",    ; I'll, you'll, he'll
-        "'s\b",     ; it's, he's, that's
-        "'d\b",     ; I'd, you'd, he'd
-        "ing\b",    ; running, going, being
+        "'t\b",      ; don't, can't, won't, isn't
+        "'ve\b",     ; I've, we've, they've
+        "'re\b",     ; you're, we're, they're
+        "'ll\b",     ; I'll, you'll, he'll
+        "'s\b",      ; it's, he's, that's
+        "'d\b",      ; I'd, you'd, he'd
+        "ness\b",    ; happiness, darkness
+        "ful\b",     ; beautiful, helpful
+        "less\b",    ; useless, endless
+        "ize\b",     ; optimize, realize
+        "ise\b",     ; recognise, analyse
     ]
     for pattern in englishPatterns {
         if (RegExMatch(text, "i)" . pattern))
