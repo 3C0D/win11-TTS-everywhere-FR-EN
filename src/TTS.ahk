@@ -10,7 +10,7 @@
 #Include "StateManager.ahk"
 
 ; Define version first
-global APP_VERSION := "1.7.0"
+global APP_VERSION := "1.7.1"
 
 ; Debug message
 if (!A_IsCompiled) {

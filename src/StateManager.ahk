@@ -22,7 +22,8 @@ state := {
     languageMode: "AUTO", ; Language selection: "AUTO", "EN", "FR"
     selectedVoiceEN: "Microsoft Mark", ; Selected English voice
     selectedVoiceFR: "Microsoft Paul", ; Selected French voice
-    startMinimized: false ; New option: start minimized
+    startMinimized: false, ; New option: start minimized
+    micWasActive: false
 }
 
 ; Reset the state to initial values
@@ -71,7 +72,9 @@ StopReading() {
 ; Mute the default microphone input
 MuteMic() {
     try {
-        SoundSetMute(1, , "Microphone")
+        state.micWasActive := !SoundGetMute( , "Microphone")
+        if (state.micWasActive)
+            SoundSetMute(1, , "Microphone")
     } catch {
         ; Ignore if no microphone is found
     }
@@ -80,7 +83,8 @@ MuteMic() {
 ; Unmute the default microphone input
 UnmuteMic() {
     try {
-        SoundSetMute(0, , "Microphone")
+        if (state.micWasActive)
+            SoundSetMute(0, , "Microphone")
     } catch {
         ; Ignore if no microphone is found
     }
